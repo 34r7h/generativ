@@ -1,0 +1,217 @@
+{
+  "server/math.ts": {
+    "multiply": {
+      "arguments": {
+        "x": "number",
+        "y": "number"
+      },
+      "return": "number",
+      "test": {
+        "x": 2,
+        "y": 3
+      },
+      "result": 6,
+      "hash": "4bd0117a",
+      "inferredReturn": null,
+      "testableProperties": [
+        "range",
+        "precision",
+        "edge_cases"
+      ]
+    }
+  },
+  "server/test_functions.ts": {
+    "calculateArea": {
+      "arguments": {
+        "width": "number",
+        "height": "number"
+      },
+      "return": "number",
+      "test": {
+        "width": 5,
+        "height": 10
+      },
+      "result": 50,
+      "hash": "b8c0303b",
+      "inferredReturn": null,
+      "testableProperties": [
+        "range",
+        "precision",
+        "edge_cases"
+      ]
+    },
+    "fetchData": {
+      "arguments": {
+        "url": "string"
+      },
+      "return": "Promise<any>",
+      "test": {
+        "url": "http://localhost:3001/health"
+      },
+      "result": {
+        "status": "healthy",
+        "timestamp": "2025-08-11T18:16:17.199Z",
+        "uptime": 12.638320833
+      },
+      "hash": "595c5da8",
+      "inferredReturn": null,
+      "testableProperties": [
+        "async_behavior",
+        "timeout",
+        "error_handling"
+      ]
+    },
+    "getUserInfo": {
+      "arguments": {
+        "id": "string"
+      },
+      "return": "{ name: string; email: string } | null",
+      "test": {
+        "id": "user-123"
+      },
+      "result": {
+        "name": "John Doe",
+        "email": "john@example.com"
+      },
+      "hash": "1c2ff2ce",
+      "inferredReturn": null,
+      "testableProperties": [
+        "side_effects",
+        "state_changes",
+        "external_calls"
+      ]
+    },
+    "getNumbers": {
+      "arguments": {},
+      "return": "number[]",
+      "test": {},
+      "result": [1, 2, 3, 4, 5],
+      "hash": "2136f113",
+      "inferredReturn": null,
+      "testableProperties": []
+    },
+    "setTheme": {
+      "arguments": {
+        "theme": "'light' | 'dark'"
+      },
+      "return": "void",
+      "test": {
+        "theme": "light"
+      },
+      "hash": "26f771ca",
+      "inferredReturn": null,
+      "testableProperties": [
+        "side_effects",
+        "state_changes",
+        "external_calls"
+      ]
+    },
+    "createUser": {
+      "arguments": {
+        "name": "string",
+        "email?": "string"
+      },
+      "return": "{ name: string; email?: string }",
+      "test": {
+        "name": "Jane Smith",
+        "email?": "jane@example.com"
+      },
+      "result": {
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      },
+      "hash": "a8d1d58d",
+      "inferredReturn": null,
+      "testableProperties": [
+        "side_effects",
+        "state_changes",
+        "external_calls"
+      ]
+    },
+    "startServer": {
+      "arguments": {
+        "port": "number"
+      },
+      "return": "void",
+      "test": {
+        "port": 3001
+      },
+      "hash": "cad28f66",
+      "inferredReturn": null,
+      "testableProperties": [
+        "side_effects",
+        "state_changes",
+        "external_calls"
+      ]
+    },
+    "validateEmail": {
+      "arguments": {
+        "email": "string"
+      },
+      "return": "boolean",
+      "test": {
+        "email": "test@example.com"
+      },
+      "result": true,
+      "hash": "b643021d",
+      "inferredReturn": null,
+      "testableProperties": [
+        "truthiness",
+        "edge_cases"
+      ]
+    },
+    "formatDate": {
+      "arguments": {
+        "date": "Date"
+      },
+      "return": "string",
+      "test": {
+        "date": "2025-01-01T00:00:00.000Z"
+      },
+      "result": "2025-01-01T00:00:00.000Z",
+      "hash": "76fab310",
+      "inferredReturn": null,
+      "testableProperties": [
+        "length",
+        "format",
+        "content"
+      ]
+    },
+    "isActive": {
+      "arguments": {
+        "status": "string"
+      },
+      "return": "boolean",
+      "test": {
+        "status": "active"
+      },
+      "result": true,
+      "hash": "f0710186",
+      "inferredReturn": null,
+      "testableProperties": [
+        "truthiness",
+        "edge_cases"
+      ]
+    }
+  },
+  "server/index.ts": {
+    "serve": {
+      "arguments": {
+        "port": "number",
+        "fetch": "function"
+      },
+      "return": "void",
+      "test": {
+        "port": 3001,
+        "fetch": "function"
+      },
+      "hash": "05a12503",
+      "inferredReturn": null,
+      "testableProperties": [
+        "side_effects",
+        "state_changes",
+        "external_calls"
+      ]
+    }
+  }
+}
