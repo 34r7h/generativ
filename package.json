@@ -1,5 +1,23 @@
 {
+  "name": "generativ-cms",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev:client": "cd client && bun dev",
+    "dev:server": "cd server && bun dev",
+    "dev": "node start-dev.js",
+    "dev:seed": "node start-dev.js --seed",
+    "build": "cd client && bun run build"
+  },
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "concurrently": "^8.2.2"
+  },
   "dependencies": {
-    "@types/node": "^24.2.1"
+    "puppeteer": "^24.16.2"
   }
 }
