@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
+import heroImage from '../../assets/images/hero-image.svg';
+import placeholderPerson from '../../assets/images/placeholder-person.svg';
 
 const loading = ref(true);
 const error = ref(null);
@@ -123,7 +125,7 @@ onMounted(() => {
                 </div>
               </div>
               <div class="hero-image">
-                <img src="/img/hero-image.svg" alt="AI Safety and Performance" />
+                <img :src="heroImage" alt="AI Safety and Performance" />
               </div>
             </div>
           </section>
@@ -204,7 +206,7 @@ onMounted(() => {
                   class="team-card"
                 >
                   <div class="member-photo">
-                    <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
+                    <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
                   </div>
                   <h3>{{ member.name }}</h3>
                   <p class="member-position">{{ member.position }}</p>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { cmsAPI } from '../../api/client';
+import placeholderPerson from '../../assets/images/placeholder-person.svg';
 
 const loading = ref(true);
 const error = ref(null);
@@ -138,7 +139,7 @@ onMounted(() => {
               class="team-card"
             >
               <div class="member-photo">
-                <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
+                <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
               </div>
               <h2>{{ member.name }}</h2>
               <p class="member-position">{{ member.position }}</p>
