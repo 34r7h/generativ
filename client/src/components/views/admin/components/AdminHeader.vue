@@ -49,6 +49,14 @@ function markAllAsRead() {
   // In a real app, this would call an API
   showNotifications.value = false;
 }
+
+function logout() {
+  // Clear auth token and redirect to login
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('isAdmin');
+  window.location.href = '/admin/login';
+}
 </script>
 
 <template>
@@ -126,10 +134,10 @@ function markAllAsRead() {
           <div class="dropdown-divider"></div>
           
           <div class="dropdown-links">
-            <router-link to="/admin/login" class="dropdown-link">
+            <button @click="logout" class="dropdown-link">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
               <span>Logout</span>
-            </router-link>
+            </button>
           </div>
         </div>
       </div>

@@ -1,4 +1,55 @@
 import { serve } from "bun";
+import type { Request } from "bun";
+
+// Configuration with environment variables
+const config = {
+  port: parseInt(process.env.PORT || '3003'),
+  nodeEnv: process.env.NODE_ENV || 'development',
+  corsOrigins: process.env.CORS_ORIGINS?.split(',') || [
+    'http://localhost:5173',
+    'http://localhost:5174', 
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'https://www.generativ.cc',
+    'https://generativ.cc'
+  ],
+  logLevel: process.env.LOG_LEVEL || 'info'
+};
+
+// Standardized API response formatter
+function formatResponse(success: boolean, data: any = null, error: string | null = null, status: number = 200, headers: any = {}) {
+  const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  const response = {
+    success,
+    requestId,
+    timestamp: new Date().toISOString(),
+    ...(data !== null && { data }),
+    ...(error && { error })
+  };
+  
+  return new Response(JSON.stringify(response), {
+    status,
+    headers
+  });
+}
+
+// Simple logger
+const logger = {
+  info: (message: string, ...args: any[]) => {
+    if (['info', 'debug'].includes(config.logLevel)) {
+      console.log(`[INFO] ${new Date().toISOString()} - ${message}`, ...args);
+    }
+  },
+  error: (message: string, ...args: any[]) => {
+    console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, ...args);
+  },
+  warn: (message: string, ...args: any[]) => {
+    if (['info', 'debug', 'warn'].includes(config.logLevel)) {
+      console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, ...args);
+    }
+  }
+};
 import { initDB, authenticateUser, getUserById, getUserByEmail, updateUser, createDataRecord, getDataRecord, getDataRecordsByUser, updateDataRecord, deleteDataRecord, getDBStats, cleanupExpiredSessions } from "./actions/db.js";
 import { handleAuth } from "./actions/auth.js";
 import { initCMSDB } from "./cms/db.js";
@@ -36,15 +87,26 @@ initDB().then(async () => {
 });
 
 const server = serve({
-  port: 3001,
-  async fetch(req) {
+  port: config.port,
+  async fetch(req: Request) {
     const url = new URL(req.url);
+    const startTime = Date.now();
     
-    // Set CORS headers
+    // Log request
+    logger.info(`${req.method} ${url.pathname}`, { 
+      userAgent: req.headers.get('user-agent'),
+      origin: req.headers.get('origin')
+    });
+    
+    // Set CORS headers with proper origin handling
+    const origin = req.headers.get('origin');
+    const corsOrigin = origin && config.corsOrigins.includes(origin) ? origin : config.corsOrigins[0];
+    
     const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": corsOrigin,
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Credentials": "true",
       "Content-Type": "application/json"
     };
     
@@ -59,39 +121,31 @@ const server = serve({
     try {
       // Health endpoint
       if (url.pathname === "/health") {
-        return new Response(JSON.stringify({
+        const healthData = {
           status: "healthy",
-          timestamp: new Date().toISOString(),
-          uptime: process.uptime()
-        }), {
-          headers: corsHeaders
-        });
+          uptime: process.uptime(),
+          environment: config.nodeEnv,
+          version: "1.0.0"
+        };
+        
+        logger.info("Health check completed", healthData);
+        
+        return formatResponse(true, healthData, null, 200, corsHeaders);
       }
       
       // Authentication endpoint
       if (url.pathname === "/auth") {
         if (req.method !== "POST") {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            error: "Method not allowed" 
-          }), { 
-            status: 405, 
-            headers: corsHeaders 
-          });
+          return formatResponse(false, null, "Method not allowed", 405, corsHeaders);
         }
         
         try {
           const body = await req.json();
-          const { type, ...requestData } = body;
+          const { type, operation, ...requestData } = body;
+          const authType = type || operation;
           
-          if (!type || !['login', 'logout', 'signup', 'delete', 'otp'].includes(type)) {
-            return new Response(JSON.stringify({ 
-              success: false, 
-              error: "Invalid operation type" 
-            }), { 
-              status: 400, 
-              headers: corsHeaders 
-            });
+          if (!authType || !['login', 'logout', 'signup', 'delete', 'otp'].includes(authType)) {
+            return formatResponse(false, null, "Invalid operation type", 400, corsHeaders);
           }
           
           // Extract token from Authorization header for operations that need it
@@ -101,34 +155,28 @@ const server = serve({
             token = authHeader.substring(7);
           }
           
-          const result = await handleAuth(type as AuthOperation, requestData, token);
+          const result = await handleAuth(authType as AuthOperation, requestData, token);
           
-          return new Response(JSON.stringify(result), {
-            status: result.success ? 200 : 400,
-            headers: corsHeaders
-          });
+          // Format auth response consistently
+          const status = result.success ? 200 : (result.error?.includes('Invalid email or password') ? 401 : 400);
+          
+          if (result.success) {
+            logger.info(`Auth operation successful: ${authType}`, { userId: result.userId });
+            return formatResponse(true, result, null, status, corsHeaders);
+          } else {
+            logger.warn(`Auth operation failed: ${authType}`, { error: result.error });
+            return formatResponse(false, null, result.error, status, corsHeaders);
+          }
         } catch (error) {
-          console.error("Auth endpoint error:", error);
-          return new Response(JSON.stringify({ 
-            success: false, 
-            error: "Invalid request body" 
-          }), { 
-            status: 400, 
-            headers: corsHeaders 
-          });
+          logger.error("Auth endpoint error", { error: error.message });
+          return formatResponse(false, null, "Invalid request body", 400, corsHeaders);
         }
       }
       
       // CMS endpoint
       if (url.pathname === "/cms") {
         if (req.method !== "POST") {
-          return new Response(JSON.stringify({ 
-            success: false, 
-            error: "Method not allowed" 
-          }), { 
-            status: 405, 
-            headers: corsHeaders 
-          });
+          return formatResponse(false, null, "Method not allowed", 405, corsHeaders);
         }
         
         try {
@@ -136,13 +184,7 @@ const server = serve({
           const { operation, ...requestData } = body;
           
           if (!operation) {
-            return new Response(JSON.stringify({ 
-              success: false, 
-              error: "Operation is required" 
-            }), { 
-              status: 400, 
-              headers: corsHeaders 
-            });
+            return formatResponse(false, null, "Operation is required", 400, corsHeaders);
           }
           
           // Extract token for authentication
@@ -154,19 +196,19 @@ const server = serve({
           
           const result = await handleCMSOperation(operation as CMSOperation, requestData, token);
           
-          return new Response(JSON.stringify(result), {
-            status: result.success ? 200 : 400,
-            headers: corsHeaders
-          });
+          // Format CMS response consistently
+          const status = result.success ? 200 : (result.error?.includes('unauthorized') ? 403 : 400);
+          
+          if (result.success) {
+            logger.info(`CMS operation successful: ${operation}`, { operation });
+            return formatResponse(true, result, null, status, corsHeaders);
+          } else {
+            logger.warn(`CMS operation failed: ${operation}`, { error: result.error });
+            return formatResponse(false, null, result.error, status, corsHeaders);
+          }
         } catch (error) {
-          console.error("CMS endpoint error:", error);
-          return new Response(JSON.stringify({ 
-            success: false, 
-            error: "Invalid request body" 
-          }), { 
-            status: 400, 
-            headers: corsHeaders 
-          });
+          logger.error("CMS endpoint error", { error: error.message });
+          return formatResponse(false, null, "Invalid request body", 400, corsHeaders);
         }
       }
       
@@ -308,6 +350,21 @@ const server = serve({
              await cleanupExpiredSessions();
              result = { success: true, message: 'Expired sessions cleaned up' };
              break;
+             
+          case 'bootstrap-admin':
+            if (!requestData.userId || !requestData.role || !requestData.permissions) {
+              result = { success: false, error: 'userId, role, and permissions are required' };
+              break;
+            }
+            // Import the CMS admin functions
+            const { createAdminUser } = await import('./cms/db.js');
+            const adminCreated = await createAdminUser(
+              requestData.userId, 
+              requestData.role, 
+              requestData.permissions
+            );
+            result = { success: adminCreated, message: adminCreated ? 'Admin user created' : 'Failed to create admin user' };
+            break;
             
           default:
             result = { success: false, error: 'Invalid operation type' };
@@ -330,29 +387,42 @@ const server = serve({
       }
       
       // Default response for unknown endpoints
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: "Endpoint not found" 
-      }), { 
-        status: 404, 
-        headers: corsHeaders 
-      });
+      logger.warn(`404 - Endpoint not found: ${req.method} ${url.pathname}`);
+      return formatResponse(false, null, "Endpoint not found", 404, corsHeaders);
       
     } catch (error) {
-      console.error("Server error:", error);
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: "Internal server error" 
-      }), { 
-        status: 500, 
-        headers: corsHeaders 
+      const duration = Date.now() - startTime;
+      logger.error(`Server error on ${req.method} ${url.pathname}`, {
+        error: error.message,
+        stack: config.nodeEnv === 'development' ? error.stack : undefined,
+        duration
       });
+      
+      const errorMessage = config.nodeEnv === 'development' ? error.message : "Internal server error";
+      return formatResponse(false, null, errorMessage, 500, corsHeaders);
+    } finally {
+      // Log response time
+      const duration = Date.now() - startTime;
+      if (duration > 1000) {
+        logger.warn(`Slow request: ${req.method} ${url.pathname} took ${duration}ms`);
+      }
     }
   },
 });
 
-console.log(`Server running on http://localhost:${server.port}`);
-console.log(`Health endpoint available at http://localhost:${server.port}/health`);
-console.log(`Auth endpoint available at http://localhost:${server.port}/auth`);
-console.log(`CMS endpoint available at http://localhost:${server.port}/cms`);
-console.log(`Database endpoint available at http://localhost:${server.port}/db`);
+logger.info(`Server started successfully`, {
+  port: server.port,
+  environment: config.nodeEnv,
+  corsOrigins: config.corsOrigins,
+  endpoints: {
+    health: `/health`,
+    auth: `/auth`,
+    cms: `/cms`,
+    db: `/db`
+  }
+});
+
+console.log(`🚀 Server running on http://localhost:${server.port}`);
+console.log(`📊 Environment: ${config.nodeEnv}`);
+console.log(`🔗 CORS Origins: ${config.corsOrigins.join(', ')}`);
+console.log(`📝 Log Level: ${config.logLevel}`);

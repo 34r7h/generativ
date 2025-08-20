@@ -17,11 +17,7 @@ async function fetchPageData() {
     if (pageResponse.success && pageResponse.page) {
       pageData.value = pageResponse.page;
     } else {
-      // Fallback content if no about page exists yet
-      pageData.value = {
-        title: 'About Generativ Consulting Company',
-        content: 'The experts in AI safety and performance'
-      };
+      error.value = 'About page content not found';
     }
     
     // Get team members
@@ -29,45 +25,7 @@ async function fetchPageData() {
     if (teamResponse.success) {
       teamMembers.value = teamResponse.members?.filter(member => member.isActive) || [];
     } else {
-      // Fallback team data
-      teamMembers.value = [
-        {
-          id: 'leader1',
-          name: 'Alex Rodriguez',
-          position: 'Chief AI Safety Officer',
-          bio: 'Expert in building robust testing frameworks for generative AI models with over 10 years of experience in AI safety research.',
-          expertise: ['AI Testing', 'Machine Learning', 'Risk Assessment'],
-          isActive: true,
-          sortOrder: 1
-        },
-        {
-          id: 'leader2',
-          name: 'Jamie Lee',
-          position: 'Director of Parallelization',
-          bio: 'Specializes in architecting high-throughput systems for AI workloads with a background in distributed computing and cloud infrastructure.',
-          expertise: ['Distributed Systems', 'Cloud Architecture', 'Performance Optimization'],
-          isActive: true,
-          sortOrder: 2
-        },
-        {
-          id: 'leader3',
-          name: 'Morgan Chen',
-          position: 'Lead AI Educator',
-          bio: 'Designs critical thinking curricula for technical and non-technical teams with a focus on responsible AI use and ethical considerations.',
-          expertise: ['AI Education', 'Prompt Engineering', 'Ethical AI'],
-          isActive: true,
-          sortOrder: 3
-        },
-        {
-          id: 'leader4',
-          name: 'Taylor Johnson',
-          position: 'Operations & Events Manager',
-          bio: 'Oversees company operations and coordinates educational events and workshops with a background in project management and corporate education.',
-          expertise: ['Operations', 'Event Planning', 'Project Management'],
-          isActive: true,
-          sortOrder: 4
-        }
-      ];
+      console.error('Failed to load team members:', teamResponse.error);
     }
     
     loading.value = false;
@@ -99,212 +57,129 @@ onMounted(() => {
     
     <!-- Content -->
     <div v-else>
-      <!-- Hero Section -->
-      <section class="page-hero">
-        <div class="container">
-          <h1>About Us</h1>
-          <p class="hero-description">
-            Get to know the minds behind Generativ Consulting Company and our mission to
-            accelerate industry progress through AI safety, performance, and education.
-          </p>
-        </div>
-      </section>
-      
-      <!-- Mission Section -->
-      <section class="mission-section">
-        <div class="container">
-          <div class="mission-grid">
-            <div class="mission-content">
-              <h2>Our Mission</h2>
-              <p>
-                Generativ Consulting Company exists to become the foremost experts in AI safety and performance, 
-                accelerating industry progress through rigorous testing, parallelization, and critical-thinking education.
-              </p>
-              <p>
-                We believe that AI adoption brings both tremendous opportunities and significant risks. Our mission is 
-                to ensure our clients land on the right side of disruption, turning technological challenges into 
-                competitive advantages.
-              </p>
-              <p>
-                Through our comprehensive suite of services, we help organizations navigate the complexities of AI 
-                implementation, ensuring their systems are not only powerful and efficient but also safe, reliable, 
-                and aligned with business objectives.
-              </p>
-            </div>
-            <div class="mission-image">
-              <img src="/img/mission.jpg" alt="Our Mission" />
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Values Section -->
-      <section class="values-section">
-        <div class="container">
-          <h2>Our Core Values</h2>
-          <div class="values-grid">
-            <div class="value-card">
-              <div class="value-icon">🔍</div>
-              <h3>Rigor</h3>
-              <p>We approach every challenge with methodical attention to detail, ensuring our solutions are thoroughly tested and validated.</p>
-            </div>
-            
-            <div class="value-card">
-              <div class="value-icon">🚀</div>
-              <h3>Innovation</h3>
-              <p>We continuously explore new approaches and technologies to deliver cutting-edge solutions for our clients.</p>
-            </div>
-            
-            <div class="value-card">
-              <div class="value-icon">🤝</div>
-              <h3>Partnership</h3>
-              <p>We work alongside our clients as true partners, deeply understanding their needs to deliver tailored solutions.</p>
-            </div>
-            
-            <div class="value-card">
-              <div class="value-icon">🧠</div>
-              <h3>Education</h3>
-              <p>We believe in empowering our clients through knowledge transfer and skill building, not just providing solutions.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Leadership Section -->
-      <section class="leadership-section">
-        <div class="container">
-          <h2>Our Leadership Team</h2>
-          <p class="section-intro">
-            Meet the experts leading our initiatives in AI safety, performance, and education.
-          </p>
+      <!-- Dynamic Page Content -->
+      <div v-if="pageData">
+        <!-- Render page sections dynamically -->
+        <div v-for="section in pageData.sections" :key="section.id" class="page-section">
           
-          <div class="team-grid">
-            <div 
-              v-for="member in teamMembers" 
-              :key="member.id" 
-              class="team-card"
-            >
-              <div class="member-photo">
-                <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
-              </div>
-              <h3>{{ member.name }}</h3>
-              <p class="member-position">{{ member.position }}</p>
-              <p class="member-bio">{{ member.bio }}</p>
+          <!-- Hero Section -->
+          <section v-if="section.type === 'hero'" class="page-hero">
+            <div class="container">
+              <h1>{{ section.title }}</h1>
+              <p class="hero-description">{{ section.content }}</p>
+            </div>
+          </section>
+
+          <!-- Content Section -->
+          <section v-else-if="section.type === 'content'" class="content-section">
+            <div class="container">
+              <h2>{{ section.title }}</h2>
+              <div class="content-text" v-html="section.content"></div>
               
-              <div class="member-expertise" v-if="member.expertise && member.expertise.length">
+              <!-- Values -->
+              <div v-if="section.settings?.values" class="values-grid">
                 <div 
-                  v-for="(skill, index) in member.expertise" 
-                  :key="index" 
-                  class="expertise-tag"
+                  v-for="value in section.settings.values" 
+                  :key="value.title"
+                  class="value-card"
                 >
-                  {{ skill }}
+                  <div class="value-icon">{{ value.icon }}</div>
+                  <h3>{{ value.title }}</h3>
+                  <p>{{ value.description }}</p>
+                </div>
+              </div>
+
+              <!-- Steps -->
+              <div v-if="section.settings?.steps" class="approach-steps">
+                <div 
+                  v-for="(step, index) in section.settings.steps" 
+                  :key="step.title"
+                  class="approach-step"
+                >
+                  <div class="step-number">{{ index + 1 }}</div>
+                  <div class="step-content">
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
+
+          <!-- Team Section -->
+          <section v-else-if="section.type === 'team'" class="leadership-section">
+            <div class="container">
+              <h2>{{ section.title }}</h2>
+              <p class="section-intro">{{ section.content }}</p>
+              
+              <div class="team-grid">
+                <div 
+                  v-for="member in teamMembers" 
+                  :key="member.id" 
+                  class="team-card"
+                >
+                  <div class="member-photo">
+                    <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
+                  </div>
+                  <h3>{{ member.name }}</h3>
+                  <p class="member-position">{{ member.position }}</p>
+                  <p class="member-bio">{{ member.bio }}</p>
+                  
+                  <div class="member-expertise" v-if="member.expertise && member.expertise.length">
+                    <div 
+                      v-for="(skill, index) in member.expertise" 
+                      :key="index" 
+                      class="expertise-tag"
+                    >
+                      {{ skill }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- CTA Section -->
+          <section v-else-if="section.type === 'cta'" class="cta-section">
+            <div class="container">
+              <h2>{{ section.title }}</h2>
+              <p>{{ section.content }}</p>
+              <div class="cta-buttons" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
+                <router-link 
+                  v-if="section.settings?.ctaPrimary" 
+                  :to="section.settings.ctaPrimary.url" 
+                  class="primary-button"
+                >
+                  {{ section.settings.ctaPrimary.text }}
+                </router-link>
+                <router-link 
+                  v-if="section.settings?.ctaSecondary" 
+                  :to="section.settings.ctaSecondary.url" 
+                  class="secondary-button"
+                >
+                  {{ section.settings.ctaSecondary.text }}
+                </router-link>
+              </div>
+            </div>
+          </section>
+
         </div>
-      </section>
-      
-      <!-- Approach Section -->
-      <section class="approach-section">
+
+        <!-- Main Page Content (if any) -->
+        <section v-if="pageData.content" class="page-content-section">
+          <div class="container">
+            <div class="page-content" v-html="pageData.content"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Fallback if no page data -->
+      <div v-else class="no-page-data">
         <div class="container">
-          <h2>Our Approach</h2>
-          <p class="section-intro">
-            We follow a methodical process to ensure consistent, high-quality results.
-          </p>
-          
-          <div class="approach-steps">
-            <div class="approach-step">
-              <div class="step-number">1</div>
-              <div class="step-content">
-                <h3>Comprehensive Assessment</h3>
-                <p>We begin with a thorough evaluation of your current AI systems, identifying strengths, weaknesses, and opportunities for improvement.</p>
-              </div>
-            </div>
-            
-            <div class="approach-step">
-              <div class="step-number">2</div>
-              <div class="step-content">
-                <h3>Strategic Planning</h3>
-                <p>Based on our assessment, we develop a tailored roadmap that addresses your specific challenges and aligns with your business objectives.</p>
-              </div>
-            </div>
-            
-            <div class="approach-step">
-              <div class="step-number">3</div>
-              <div class="step-content">
-                <h3>Implementation</h3>
-                <p>Our experts work alongside your team to implement solutions, ensuring knowledge transfer and building internal capabilities.</p>
-              </div>
-            </div>
-            
-            <div class="approach-step">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h3>Continuous Improvement</h3>
-                <p>We maintain an ongoing relationship, providing support and regularly reassessing your systems as AI technology and your business evolve.</p>
-              </div>
-            </div>
-          </div>
+          <h1>About Us</h1>
+          <p>Page content is loading...</p>
         </div>
-      </section>
-      
-      <!-- Timeline Section -->
-      <section class="timeline-section">
-        <div class="container">
-          <h2>Our Journey</h2>
-          
-          <div class="timeline">
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h3>Foundation</h3>
-                <p class="timeline-date">2023</p>
-                <p>Generativ Consulting Company was founded with a mission to address the growing need for AI safety and performance expertise.</p>
-              </div>
-            </div>
-            
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h3>Methodology Development</h3>
-                <p class="timeline-date">2023</p>
-                <p>Development of our proprietary "Agent See Safety Protocol" and "10x Output Speed" methodologies.</p>
-              </div>
-            </div>
-            
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h3>First Client Successes</h3>
-                <p class="timeline-date">2024</p>
-                <p>Successful implementation of our approaches with early clients, demonstrating significant improvements in AI safety and performance.</p>
-              </div>
-            </div>
-            
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h3>Expansion</h3>
-                <p class="timeline-date">Present</p>
-                <p>Growing our team and expanding our service offerings to meet the evolving needs of the AI industry.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- CTA Section -->
-      <section class="cta-section">
-        <div class="container">
-          <h2>Join Us on Our Mission</h2>
-          <p>Ready to transform your AI implementation with industry-leading expertise?</p>
-          <div class="cta-buttons">
-            <router-link to="/contact" class="primary-button">Get in Touch</router-link>
-            <router-link to="/services" class="secondary-button">Explore Our Services</router-link>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   </div>
 </template>
@@ -368,54 +243,32 @@ onMounted(() => {
   color: var(--light-text);
 }
 
-/* Mission Section */
-.mission-section {
+/* Content Section */
+.content-section {
   padding: 80px 0;
 }
 
-.mission-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-
-.mission-content h2 {
+.content-section h2 {
   font-size: 2.5rem;
   color: var(--dark-blue);
-  margin-bottom: 20px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.mission-content p {
-  margin-bottom: 20px;
+.content-text {
+  max-width: 800px;
+  margin: 0 auto 40px;
   font-size: 1.1rem;
   color: var(--text-color);
   line-height: 1.6;
 }
 
-.mission-image img {
-  width: 100%;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
-/* Values Section */
-.values-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
-  text-align: center;
-}
-
-.values-section h2 {
-  font-size: 2.5rem;
-  color: var(--dark-blue);
-  margin-bottom: 50px;
-}
-
+/* Values Grid */
 .values-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
+  margin-top: 40px;
 }
 
 .value-card {
@@ -423,6 +276,7 @@ onMounted(() => {
   border-radius: var(--border-radius);
   padding: 30px;
   box-shadow: var(--box-shadow);
+  text-align: center;
   transition: transform 0.3s;
 }
 
@@ -445,14 +299,63 @@ onMounted(() => {
   color: var(--light-text);
 }
 
+/* Approach Steps */
+.approach-steps {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.approach-step {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.approach-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  height: calc(100% + 20px);
+  width: 2px;
+  background-color: var(--primary-color);
+  opacity: 0.3;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.step-content h3 {
+  font-size: 1.3rem;
+  color: var(--dark-blue);
+  margin-bottom: 10px;
+}
+
+.step-content p {
+  color: var(--light-text);
+  line-height: 1.6;
+}
+
 /* Leadership Section */
 .leadership-section {
   padding: 80px 0;
 }
 
-.leadership-section h2,
-.approach-section h2,
-.timeline-section h2 {
+.leadership-section h2 {
   font-size: 2.5rem;
   color: var(--dark-blue);
   text-align: center;
@@ -531,125 +434,6 @@ onMounted(() => {
   border-radius: 15px;
 }
 
-/* Approach Section */
-.approach-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
-}
-
-.approach-steps {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.approach-step {
-  display: flex;
-  gap: 30px;
-  margin-bottom: 40px;
-  position: relative;
-}
-
-.approach-step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 40px;
-  left: 20px;
-  height: calc(100% + 20px);
-  width: 2px;
-  background-color: var(--primary-color);
-  opacity: 0.3;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  background-color: var(--primary-color);
-  color: var(--white);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.step-content h3 {
-  font-size: 1.3rem;
-  color: var(--dark-blue);
-  margin-bottom: 10px;
-}
-
-.step-content p {
-  color: var(--light-text);
-  line-height: 1.6;
-}
-
-/* Timeline Section */
-.timeline-section {
-  padding: 80px 0;
-}
-
-.timeline {
-  max-width: 800px;
-  margin: 0 auto;
-  position: relative;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50px;
-  height: 100%;
-  width: 2px;
-  background-color: var(--primary-color);
-  opacity: 0.3;
-}
-
-.timeline-item {
-  margin-bottom: 50px;
-  position: relative;
-  padding-left: 100px;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: 44px;
-  width: 14px;
-  height: 14px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  top: 30px;
-  z-index: 2;
-}
-
-.timeline-content {
-  background-color: var(--white);
-  border-radius: var(--border-radius);
-  padding: 25px;
-  box-shadow: var(--box-shadow);
-}
-
-.timeline-content h3 {
-  font-size: 1.3rem;
-  color: var(--dark-blue);
-  margin-bottom: 5px;
-}
-
-.timeline-date {
-  font-size: 0.9rem;
-  color: var(--primary-color);
-  font-weight: 500;
-  margin-bottom: 15px;
-}
-
-.timeline-content p:not(.timeline-date) {
-  color: var(--light-text);
-}
-
 /* CTA Section */
 .cta-section {
   padding: 60px 0;
@@ -683,6 +467,7 @@ onMounted(() => {
   border-radius: var(--border-radius);
   font-weight: 500;
   display: inline-block;
+  text-decoration: none;
 }
 
 .secondary-button {
@@ -693,6 +478,7 @@ onMounted(() => {
   border-radius: var(--border-radius);
   font-weight: 500;
   display: inline-block;
+  text-decoration: none;
 }
 
 .primary-button:hover {
@@ -705,43 +491,43 @@ onMounted(() => {
   color: var(--white);
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-  .mission-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .mission-content {
-    order: 1;
-  }
-  
-  .mission-image {
-    order: 0;
-    margin-bottom: 30px;
-  }
-  
-  .page-hero h1,
-  .mission-content h2,
-  .values-section h2,
-  .leadership-section h2,
-  .approach-section h2,
-  .timeline-section h2,
-  .cta-section h2 {
-    font-size: 2rem;
-  }
+/* Page Content Section */
+.page-content-section {
+  padding: 80px 0;
 }
 
+.page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* No Page Data */
+.no-page-data {
+  text-align: center;
+  padding: 100px 0;
+}
+
+.no-page-data h1 {
+  font-size: 2.5rem;
+  color: var(--dark-blue);
+  margin-bottom: 20px;
+}
+
+.no-page-data p {
+  font-size: 1.2rem;
+  color: var(--light-text);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .timeline::before {
-    left: 30px;
-  }
-  
-  .timeline-dot {
-    left: 24px;
-  }
-  
-  .timeline-item {
-    padding-left: 70px;
+  .page-hero h1,
+  .content-section h2,
+  .leadership-section h2,
+  .cta-section h2 {
+    font-size: 2rem;
   }
   
   .approach-step {

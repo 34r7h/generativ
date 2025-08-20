@@ -1,12 +1,43 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { cmsAPI } from '../../api/client';
 
 const route = useRoute();
 const router = useRouter();
 
-// Placeholder resource data
-const resourceData = {
+const loading = ref(true);
+const error = ref(null);
+const currentResource = ref(null);
+
+const slug = computed(() => route.params.slug);
+
+// Load currentResource data
+async function loadResource() {
+  try {
+    loading.value = true;
+    
+    // Try to get as blog post first
+    const blogResponse = await cmsAPI.getBlogPostBySlug(slug.value);
+    if (blogResponse.success && blogResponse.post) {
+      currentResource.value = {
+        ...blogResponse.post,
+        type: 'Report',
+        date: new Date(blogResponse.post.publishedAt || blogResponse.post.createdAt).toLocaleDateString()
+      };
+    } else {
+      error.value = 'Resource not found';
+    }
+  } catch (err) {
+    console.error('Error loading currentResource:', err);
+    error.value = 'Failed to load currentResource';
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Fallback currentResource data
+const currentResourceData = {
   'disruption-radar': {
     title: 'Disruption Radar: Q3 2023',
     type: 'Report',
@@ -126,7 +157,7 @@ const resourceData = {
       <ul>
         <li><strong>Workflow Analysis:</strong> We identified bottlenecks and parallelization opportunities in their existing system.</li>
         <li><strong>Infrastructure Redesign:</strong> We implemented a hybrid parallelization approach combining data, model, and pipeline parallelism.</li>
-        <li><strong>Resource Orchestration:</strong> We developed a dynamic resource allocation system to optimize computing resource utilization.</li>
+        <li><strong>Resource Orchestration:</strong> We developed a dynamic currentResource allocation system to optimize computing currentResource utilization.</li>
         <li><strong>Safety Integration:</strong> Throughout implementation, we maintained rigorous testing to ensure accuracy remained high.</li>
       </ul>
       
@@ -138,7 +169,7 @@ const resourceData = {
         <li>Average processing time decreased from 45 minutes to 4.2 minutes (10.7x improvement)</li>
         <li>System was able to handle 860% more concurrent requests</li>
         <li>Diagnostic accuracy remained at pre-optimization levels (99.3%)</li>
-        <li>Infrastructure costs decreased by 32% due to more efficient resource utilization</li>
+        <li>Infrastructure costs decreased by 32% due to more efficient currentResource utilization</li>
         <li>Emergency department wait times decreased by an average of 27 minutes</li>
       </ul>
     `,
@@ -146,45 +177,58 @@ const resourceData = {
   }
 };
 
-// Get the resource slug from the route params
-const slug = computed(() => route.params.slug);
 
-// Get the current resource
-const resource = computed(() => {
-  return resourceData[slug.value] || null;
-});
 
-// Related resources
+
+
+// Related currentResources
 const relatedResources = computed(() => {
-  if (!resource.value || !resource.value.relatedResources) return [];
+  if (!currentResource.value || !currentResource.value.relatedResources) return [];
   
-  return resource.value.relatedResources
+  return currentResource.value.relatedResources
     .map(slug => ({
       slug,
-      ...resourceData[slug]
+      ...currentResourceData[slug]
     }))
     .slice(0, 2);
 });
 
 function goBack() {
-  router.push('/resources');
+  router.push('/currentResources');
 }
+
+onMounted(() => {
+  loadResource();
+});
 </script>
 
 <template>
-  <div class="resource-detail-page">
-    <div v-if="resource">
+  <div class="currentResource-detail-page">
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading currentResource...</p>
+    </div>
+    
+    <!-- Error State -->
+    <div v-else-if="error" class="error-state">
+      <h2>Resource Not Found</h2>
+      <p>{{ error }}</p>
+      <button @click="goBack" class="btn btn-primary">Back to Resources</button>
+    </div>
+    
+    <div v-else-if="resource || currentResource">
       <!-- Resource Header -->
       <section class="resource-header">
         <div class="container">
           <div class="resource-meta">
-            <span class="resource-type">{{ resource.type }}</span>
-            <span class="resource-date">{{ resource.date }}</span>
+            <span class="resource-type">{{ (resource || currentResource).type }}</span>
+            <span class="resource-date">{{ (resource || currentResource).date }}</span>
           </div>
-          <h1>{{ resource.title }}</h1>
-          <p class="resource-summary">{{ resource.summary }}</p>
+          <h1>{{ (resource || currentResource).title }}</h1>
+          <p class="resource-summary">{{ (resource || currentResource).summary }}</p>
           <button class="download-button">
-            Download {{ resource.type }}
+            Download {{ (resource || currentResource).type }}
           </button>
         </div>
       </section>
@@ -192,7 +236,7 @@ function goBack() {
       <!-- Resource Content -->
       <section class="resource-content">
         <div class="container">
-          <div class="resource-body" v-html="resource.content"></div>
+          <div class="resource-body" v-html="(resource || currentResource).content"></div>
           
           <div class="resource-navigation">
             <button @click="goBack" class="back-button">
@@ -203,20 +247,20 @@ function goBack() {
       </section>
       
       <!-- Related Resources -->
-      <section class="related-resources" v-if="relatedResources.length">
+      <section class="related-currentResources" v-if="relatedResources.length">
         <div class="container">
           <h2>Related Resources</h2>
           
-          <div class="related-resources-grid">
+          <div class="related-currentResources-grid">
             <div 
               v-for="related in relatedResources" 
               :key="related.slug" 
-              class="related-resource-card"
+              class="related-currentResource-card"
             >
-              <div class="resource-type">{{ related.type }}</div>
+              <div class="currentResource-type">{{ related.type }}</div>
               <h3>{{ related.title }}</h3>
-              <p class="resource-summary">{{ related.summary }}</p>
-              <router-link :to="`/resources/${related.slug}`" class="resource-link">
+              <p class="currentResource-summary">{{ related.summary }}</p>
+              <router-link :to="`/currentResources/${related.slug}`" class="currentResource-link">
                 View Resource
               </router-link>
             </div>
@@ -229,7 +273,7 @@ function goBack() {
     <div v-else class="not-found">
       <div class="container">
         <h1>Resource Not Found</h1>
-        <p>The resource you're looking for doesn't exist or has been removed.</p>
+        <p>The currentResource you're looking for doesn't exist or has been removed.</p>
         <button @click="goBack" class="primary-button">
           Back to Resources
         </button>
@@ -239,21 +283,21 @@ function goBack() {
 </template>
 
 <style scoped>
-.resource-detail-page {
+.currentResource-detail-page {
   min-height: calc(100vh - 80px - 300px);
 }
 
 /* Resource Header */
-.resource-header {
+.currentResource-header {
   padding: 60px 0;
   background-color: var(--light-blue);
 }
 
-.resource-meta {
+.currentResource-meta {
   margin-bottom: 20px;
 }
 
-.resource-type {
+.currentResource-type {
   display: inline-block;
   background-color: var(--primary-color);
   color: var(--white);
@@ -264,19 +308,19 @@ function goBack() {
   margin-right: 15px;
 }
 
-.resource-date {
+.currentResource-date {
   color: var(--light-text);
   font-size: 0.9rem;
 }
 
-.resource-header h1 {
+.currentResource-header h1 {
   font-size: 2.8rem;
   color: var(--dark-blue);
   margin-bottom: 20px;
   line-height: 1.2;
 }
 
-.resource-summary {
+.currentResource-summary {
   font-size: 1.2rem;
   color: var(--light-text);
   max-width: 800px;
@@ -300,11 +344,11 @@ function goBack() {
 }
 
 /* Resource Content */
-.resource-content {
+.currentResource-content {
   padding: 60px 0;
 }
 
-.resource-body {
+.currentResource-body {
   max-width: 800px;
   margin: 0 auto;
   font-size: 1.1rem;
@@ -312,32 +356,32 @@ function goBack() {
   color: var(--text-color);
 }
 
-.resource-body :deep(h2) {
+.currentResource-body :deep(h2) {
   font-size: 1.8rem;
   color: var(--dark-blue);
   margin: 40px 0 20px;
 }
 
-.resource-body :deep(h3) {
+.currentResource-body :deep(h3) {
   font-size: 1.4rem;
   color: var(--dark-blue);
   margin: 30px 0 15px;
 }
 
-.resource-body :deep(p) {
+.currentResource-body :deep(p) {
   margin-bottom: 20px;
 }
 
-.resource-body :deep(ul) {
+.currentResource-body :deep(ul) {
   margin-bottom: 20px;
   padding-left: 20px;
 }
 
-.resource-body :deep(li) {
+.currentResource-body :deep(li) {
   margin-bottom: 10px;
 }
 
-.resource-navigation {
+.currentResource-navigation {
   max-width: 800px;
   margin: 40px auto 0;
   text-align: center;
@@ -360,25 +404,25 @@ function goBack() {
 }
 
 /* Related Resources */
-.related-resources {
+.related-currentResources {
   padding: 60px 0;
   background-color: var(--light-blue);
 }
 
-.related-resources h2 {
+.related-currentResources h2 {
   text-align: center;
   font-size: 2rem;
   color: var(--dark-blue);
   margin-bottom: 40px;
 }
 
-.related-resources-grid {
+.related-currentResources-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
 
-.related-resource-card {
+.related-currentResource-card {
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -386,29 +430,29 @@ function goBack() {
   transition: transform 0.3s;
 }
 
-.related-resource-card:hover {
+.related-currentResource-card:hover {
   transform: translateY(-5px);
 }
 
-.related-resource-card h3 {
+.related-currentResource-card h3 {
   font-size: 1.3rem;
   color: var(--dark-blue);
   margin: 10px 0;
   line-height: 1.3;
 }
 
-.related-resource-card .resource-summary {
+.related-currentResource-card .currentResource-summary {
   font-size: 0.95rem;
   margin-bottom: 20px;
 }
 
-.resource-link {
+.currentResource-link {
   color: var(--primary-color);
   font-weight: 500;
   font-size: 0.9rem;
 }
 
-.resource-link:hover {
+.currentResource-link:hover {
   text-decoration: underline;
 }
 
@@ -445,11 +489,11 @@ function goBack() {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .resource-header h1 {
+  .currentResource-header h1 {
     font-size: 2rem;
   }
   
-  .resource-body {
+  .currentResource-body {
     font-size: 1rem;
   }
 }

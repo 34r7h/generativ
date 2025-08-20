@@ -1,7 +1,38 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { cmsAPI } from '../../api/client';
 
-// Placeholder resources data
+const loading = ref(true);
+const error = ref(null);
+const blogPosts = ref([]);
+const media = ref([]);
+
+// Load resources from CMS 
+async function loadResources() {
+  try {
+    loading.value = true;
+    
+    // Get blog posts as "reports"
+    const blogResponse = await cmsAPI.getBlogPosts();
+    if (blogResponse.success) {
+      blogPosts.value = blogResponse.posts.filter(post => post.isPublished);
+    }
+    
+    // Get media files as resources
+    const mediaResponse = await cmsAPI.getAllMedia();
+    if (mediaResponse.success) {
+      media.value = mediaResponse.media || [];
+    }
+    
+  } catch (err) {
+    console.error('Error loading resources:', err);
+    error.value = 'Failed to load resources';
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Fallback resources data for display structure
 const resources = ref({
   reports: [
     {
@@ -44,6 +75,10 @@ const resources = ref({
       date: 'July 2023'
     }
   ]
+});
+
+onMounted(() => {
+  loadResources();
 });
 </script>
 

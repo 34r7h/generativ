@@ -13,88 +13,16 @@ async function fetchTeamData() {
   try {
     loading.value = true;
     error.value = null;
-    
+
     const response = await cmsAPI.getTeamMembers();
     if (response.success) {
       teamMembers.value = response.members || [];
     } else {
-      // Fallback team data if API returns no members
-      teamMembers.value = [
-        {
-          id: 'leader1',
-          name: 'Alex Rodriguez',
-          position: 'Chief AI Safety Officer',
-          bio: 'Expert in building robust testing frameworks for generative AI models with over 10 years of experience in AI safety research.',
-          expertise: ['AI Testing', 'Machine Learning', 'Risk Assessment'],
-          isActive: true,
-          sortOrder: 1
-        },
-        {
-          id: 'leader2',
-          name: 'Jamie Lee',
-          position: 'Director of Parallelization',
-          bio: 'Specializes in architecting high-throughput systems for AI workloads with a background in distributed computing and cloud infrastructure.',
-          expertise: ['Distributed Systems', 'Cloud Architecture', 'Performance Optimization'],
-          isActive: true,
-          sortOrder: 2
-        },
-        {
-          id: 'leader3',
-          name: 'Morgan Chen',
-          position: 'Lead AI Educator',
-          bio: 'Designs critical thinking curricula for technical and non-technical teams with a focus on responsible AI use and ethical considerations.',
-          expertise: ['AI Education', 'Prompt Engineering', 'Ethical AI'],
-          isActive: true,
-          sortOrder: 3
-        },
-        {
-          id: 'leader4',
-          name: 'Taylor Johnson',
-          position: 'Operations & Events Manager',
-          bio: 'Oversees company operations and coordinates educational events and workshops with a background in project management and corporate education.',
-          expertise: ['Operations', 'Event Planning', 'Project Management'],
-          isActive: true,
-          sortOrder: 4
-        },
-        {
-          id: 'member5',
-          name: 'Jordan Smith',
-          position: 'AI Safety Engineer',
-          bio: 'Specializes in detecting edge cases and vulnerabilities in large language models.',
-          expertise: ['AI Testing', 'Prompt Engineering', 'Red Teaming'],
-          isActive: true,
-          sortOrder: 5
-        },
-        {
-          id: 'member6',
-          name: 'Casey Wong',
-          position: 'Parallelization Architect',
-          bio: 'Expert in scaling AI workloads across distributed computing environments.',
-          expertise: ['Distributed Systems', 'Cloud Architecture', 'Performance Optimization'],
-          isActive: true,
-          sortOrder: 6
-        },
-        {
-          id: 'member7',
-          name: 'Riley Patel',
-          position: 'AI Ethics Researcher',
-          bio: 'Focuses on the ethical implications and guardrails for AI systems in high-risk domains.',
-          expertise: ['AI Ethics', 'Policy Development', 'Risk Assessment'],
-          isActive: true,
-          sortOrder: 7
-        },
-        {
-          id: 'member8',
-          name: 'Avery Jackson',
-          position: 'Technical Content Specialist',
-          bio: 'Creates educational materials and documentation for AI safety and performance best practices.',
-          expertise: ['Technical Writing', 'AI Education', 'Documentation'],
-          isActive: true,
-          sortOrder: 8
-        }
-      ];
+      console.error('Failed to load team members:', response.error);
+      error.value = 'Failed to load team members';
+      teamMembers.value = [];
     }
-    
+
     loading.value = false;
   } catch (err) {
     console.error('Error fetching team data:', err);
@@ -107,7 +35,7 @@ async function fetchTeamData() {
 const expertiseTags = computed(() => {
   const tags = new Set();
   tags.add('all');
-  
+
   teamMembers.value.forEach(member => {
     if (member.expertise && Array.isArray(member.expertise)) {
       member.expertise.forEach(tag => {
@@ -115,7 +43,7 @@ const expertiseTags = computed(() => {
       });
     }
   });
-  
+
   return Array.from(tags);
 });
 
@@ -123,16 +51,16 @@ const expertiseTags = computed(() => {
 const filteredTeamMembers = computed(() => {
   return teamMembers.value.filter(member => {
     // Filter by tag
-    const matchesTag = filterTag.value === 'all' || 
+    const matchesTag = filterTag.value === 'all' ||
       (member.expertise && member.expertise.includes(filterTag.value));
-    
+
     // Filter by search
     const query = searchQuery.value.toLowerCase();
-    const matchesSearch = !query || 
-      member.name.toLowerCase().includes(query) || 
+    const matchesSearch = !query ||
+      member.name.toLowerCase().includes(query) ||
       member.position.toLowerCase().includes(query) ||
       member.bio.toLowerCase().includes(query);
-    
+
     return matchesTag && matchesSearch;
   });
 });
@@ -149,12 +77,12 @@ onMounted(() => {
       <div class="container">
         <h1>Our Team</h1>
         <p class="hero-description">
-          Meet the experts behind Generativ Consulting Company, dedicated to advancing 
+          Meet the experts behind Generativ Consulting Company, dedicated to advancing
           AI safety and performance.
         </p>
       </div>
     </section>
-    
+
     <!-- Team Content -->
     <section class="team-content">
       <div class="container">
@@ -163,29 +91,29 @@ onMounted(() => {
           <div class="spinner"></div>
           <p>Loading team members...</p>
         </div>
-        
+
         <!-- Error State -->
         <div v-else-if="error" class="error-state">
           <p>{{ error }}</p>
           <button @click="fetchTeamData" class="secondary-button">Try Again</button>
         </div>
-        
+
         <!-- Team Filters and Grid -->
         <div v-else>
           <!-- Team Filters -->
           <div class="team-filters">
             <div class="search-filter">
-              <input 
-                type="text" 
-                v-model="searchQuery" 
-                placeholder="Search team members..." 
+              <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Search team members..."
                 class="search-input"
               />
             </div>
-            
+
             <div class="tag-filters">
-              <button 
-                v-for="tag in expertiseTags" 
+              <button
+                v-for="tag in expertiseTags"
                 :key="tag"
                 :class="['tag-button', { active: filterTag === tag }]"
                 @click="filterTag = tag"
@@ -194,19 +122,19 @@ onMounted(() => {
               </button>
             </div>
           </div>
-          
+
           <!-- Results Summary -->
           <div class="results-summary">
             Showing {{ filteredTeamMembers.length }} {{ filteredTeamMembers.length === 1 ? 'member' : 'members' }}
             <span v-if="filterTag !== 'all'"> with expertise in {{ filterTag }}</span>
             <span v-if="searchQuery"> matching "{{ searchQuery }}"</span>
           </div>
-          
+
           <!-- Team Grid -->
           <div class="team-grid">
-            <div 
-              v-for="member in filteredTeamMembers" 
-              :key="member.id" 
+            <div
+              v-for="member in filteredTeamMembers"
+              :key="member.id"
               class="team-card"
             >
               <div class="member-photo">
@@ -215,18 +143,18 @@ onMounted(() => {
               <h2>{{ member.name }}</h2>
               <p class="member-position">{{ member.position }}</p>
               <p class="member-bio">{{ member.bio }}</p>
-              
+
               <div class="member-expertise" v-if="member.expertise && member.expertise.length">
-                <div 
-                  v-for="(skill, index) in member.expertise" 
-                  :key="index" 
+                <div
+                  v-for="(skill, index) in member.expertise"
+                  :key="index"
                   class="expertise-tag"
                   @click="filterTag = skill"
                 >
                   {{ skill }}
                 </div>
               </div>
-              
+
               <div class="member-social" v-if="member.linkedIn || member.twitter || member.email">
                 <a v-if="member.email" :href="`mailto:${member.email}`" class="social-link">Email</a>
                 <a v-if="member.linkedIn" :href="member.linkedIn" target="_blank" rel="noopener noreferrer" class="social-link">LinkedIn</a>
@@ -234,7 +162,7 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          
+
           <!-- No Results -->
           <div v-if="filteredTeamMembers.length === 0" class="no-results">
             <p>No team members found matching your criteria.</p>
@@ -245,7 +173,7 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    
+
     <!-- Join Team Section -->
     <section class="join-team-section">
       <div class="container">
@@ -262,7 +190,7 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    
+
     <!-- Culture Section -->
     <section class="culture-section">
       <div class="container">
@@ -270,26 +198,26 @@ onMounted(() => {
         <p class="section-intro">
           At Generativ Consulting Company, we foster a culture of innovation, collaboration, and continuous learning.
         </p>
-        
+
         <div class="culture-grid">
           <div class="culture-item">
             <div class="culture-icon">🔍</div>
             <h3>Intellectual Curiosity</h3>
             <p>We encourage deep exploration of complex problems and celebrate asking the right questions.</p>
           </div>
-          
+
           <div class="culture-item">
             <div class="culture-icon">🤝</div>
             <h3>Collaborative Spirit</h3>
             <p>We believe the best solutions emerge from diverse perspectives working together.</p>
           </div>
-          
+
           <div class="culture-item">
             <div class="culture-icon">📈</div>
             <h3>Growth Mindset</h3>
             <p>We embrace challenges and see failures as opportunities to learn and improve.</p>
           </div>
-          
+
           <div class="culture-item">
             <div class="culture-icon">🎯</div>
             <h3>Impact-Driven</h3>
@@ -298,7 +226,7 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    
+
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
@@ -690,7 +618,7 @@ onMounted(() => {
     margin-right: auto;
     gap: 10px;
   }
-  
+
   .tag-filters {
     justify-content: center;
   }

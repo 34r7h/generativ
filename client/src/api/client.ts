@@ -1,7 +1,20 @@
 // API Client for Generativ Consulting Company
 
 // Configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003';
+
+// Custom error class for API errors
+class APIError extends Error {
+  public status: number;
+  public data: any;
+  
+  constructor(message: string, status: number, data: any) {
+    super(message);
+    this.name = 'APIError';
+    this.status = status;
+    this.data = data;
+  }
+}
 
 // Utility to get auth token from localStorage
 const getToken = (): string | null => {
@@ -35,9 +48,13 @@ async function apiRequest<T>(
   const headers = requireAuth ? getAuthHeaders() : baseHeaders;
   const options: RequestInit = {
     method,
-    headers,
-    credentials: 'include'
+    headers
   };
+
+  // Only include credentials for authenticated requests
+  if (requireAuth) {
+    options.credentials = 'include';
+  }
 
   if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
     options.body = JSON.stringify(data);
@@ -45,19 +62,66 @@ async function apiRequest<T>(
 
   try {
     console.log(`Making API request to ${endpoint}:`, data);
-    const response = await fetch(`${API_URL}${endpoint}`, options);
+    
+    // Add timeout handling
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API request failed with status ${response.status}`);
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+      }
+      
+      throw new APIError(
+        errorData.error || `Request failed with status ${response.status}`,
+        response.status,
+        errorData
+      );
     }
 
     const responseData = await response.json();
     console.log(`API response from ${endpoint}:`, responseData);
+    
+    // Validate response structure
+    if (typeof responseData !== 'object' || responseData === null) {
+      throw new APIError('Invalid response format', 500, responseData);
+    }
+    
+    // Handle standardized API responses
+    if (responseData.hasOwnProperty('success')) {
+      if (!responseData.success && responseData.error) {
+        throw new APIError(responseData.error, response.status, responseData);
+      }
+      // Return the data field if it exists, otherwise return the full response
+      return responseData.data || responseData;
+    }
+    
     return responseData;
   } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    
+    if (error.name === 'AbortError') {
+      throw new APIError('Request timeout', 408, null);
+    }
+    
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new APIError('Network error - please check your connection', 0, null);
+    }
+    
     console.error('API request error:', error);
-    throw error;
+    throw new APIError(error.message || 'Unknown error occurred', 500, null);
   }
 }
 
@@ -65,7 +129,7 @@ async function apiRequest<T>(
 export const authAPI = {
   login: async (email: string, password: string) => {
     return apiRequest<any>('/auth', 'POST', {
-      type: 'login',
+      operation: 'login',
       email,
       password
     });
@@ -73,7 +137,7 @@ export const authAPI = {
 
   signup: async (email: string, password: string) => {
     return apiRequest<any>('/auth', 'POST', {
-      type: 'signup',
+      operation: 'signup',
       email,
       password
     });
@@ -81,7 +145,7 @@ export const authAPI = {
 
   logout: async () => {
     return apiRequest<any>('/auth', 'POST', {
-      type: 'logout'
+      operation: 'logout'
     }, true);
   }
 };
@@ -189,6 +253,42 @@ export const cmsAPI = {
     }, true);
   },
 
+  // Blog Posts
+  getBlogPosts: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getAllBlogPosts'
+    });
+  },
+
+  getBlogPostBySlug: async (slug: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getBlogPostBySlug',
+      slug
+    });
+  },
+
+  createBlogPost: async (post: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'createBlogPost',
+      post
+    }, true);
+  },
+
+  updateBlogPost: async (postId: string, updates: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'updateBlogPost',
+      postId,
+      updates
+    }, true);
+  },
+
+  deleteBlogPost: async (postId: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'deleteBlogPost',
+      postId
+    }, true);
+  },
+
   // Media
   getAllMedia: async () => {
     return apiRequest<any>('/cms', 'POST', {
@@ -210,6 +310,42 @@ export const cmsAPI = {
     }, true);
   },
 
+  // Resources
+  getAllResources: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getAllResources'
+    });
+  },
+
+  getResourceBySlug: async (slug: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getResourceBySlug',
+      slug
+    });
+  },
+
+  createResource: async (resource: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'createResource',
+      resource
+    }, true);
+  },
+
+  updateResource: async (resourceId: string, updates: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'updateResource',
+      resourceId,
+      updates
+    }, true);
+  },
+
+  deleteResource: async (resourceId: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'deleteResource',
+      resourceId
+    }, true);
+  },
+
   // Settings
   getSiteSettings: async () => {
     return apiRequest<any>('/cms', 'POST', {
@@ -225,7 +361,9 @@ export const cmsAPI = {
   }
 };
 
-// Export default API client
+// Export API error class and default client
+export { APIError };
+
 export default {
   auth: authAPI,
   cms: cmsAPI

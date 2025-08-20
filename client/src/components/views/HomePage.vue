@@ -14,7 +14,7 @@ async function fetchPageData() {
   try {
     loading.value = true;
     console.log('Fetching home page data...');
-    
+
     // Get site settings
     try {
       const settingsResponse = await cmsAPI.getSiteSettings();
@@ -25,7 +25,7 @@ async function fetchPageData() {
     } catch (settingsError) {
       console.warn('Failed to load site settings:', settingsError);
     }
-    
+
     // Get home page data
     try {
       const pageResponse = await cmsAPI.getPageBySlug('home');
@@ -34,41 +34,13 @@ async function fetchPageData() {
         pageData.value = pageResponse.page;
         console.log('Home page data loaded:', pageData.value);
       } else {
-        // Fallback content if no home page exists yet
-        pageData.value = {
-          title: 'Generativ Consulting Company',
-          content: 'The experts in AI safety and performance',
-          sections: [
-            {
-              id: 'hero',
-              type: 'hero',
-              title: 'Where AI Speed Meets Human Trust',
-              content: 'The foremost experts in AI safety and performance, accelerating industry progress through rigorous testing, parallelization, and critical-thinking education.',
-              sortOrder: 1,
-              settings: {
-                ctaPrimary: {
-                  text: 'Get Started',
-                  url: '/contact'
-                },
-                ctaSecondary: {
-                  text: 'Explore Services',
-                  url: '/services'
-                }
-              }
-            }
-          ]
-        };
-        console.log('Using fallback home page data');
+        error.value = 'Home page content not found';
       }
     } catch (pageError) {
       console.error('Failed to load home page:', pageError);
-      // Set fallback data
-      pageData.value = {
-        title: 'Generativ Consulting Company',
-        content: 'The experts in AI safety and performance'
-      };
+      error.value = 'Failed to load home page content';
     }
-    
+
     // Get services
     try {
       const servicesResponse = await cmsAPI.getServices();
@@ -80,7 +52,7 @@ async function fetchPageData() {
     } catch (servicesError) {
       console.error('Failed to load services:', servicesError);
     }
-    
+
     // Get team members
     try {
       const teamResponse = await cmsAPI.getTeamMembers();
@@ -92,7 +64,7 @@ async function fetchPageData() {
     } catch (teamError) {
       console.error('Failed to load team members:', teamError);
     }
-    
+
     loading.value = false;
   } catch (err) {
     console.error('Error fetching page data:', err);
@@ -113,193 +85,186 @@ onMounted(() => {
       <div class="spinner"></div>
       <p>Loading...</p>
     </div>
-    
+
     <!-- Error State -->
     <div v-else-if="error" class="error-state">
       <p>{{ error }}</p>
       <button @click="fetchPageData">Try Again</button>
     </div>
-    
+
     <!-- Content -->
     <div v-else>
-      <!-- Hero Section -->
-      <section class="hero-section">
-        <div class="container">
-          <div class="hero-content">
-            <h1>Where AI Speed Meets Human Trust</h1>
-            <p>The foremost experts in AI safety and performance, accelerating industry progress through rigorous testing, parallelization, and critical-thinking education.</p>
-            <div class="hero-cta">
-              <router-link to="/contact" class="primary-button">Get Started</router-link>
-              <router-link to="/services" class="secondary-button">Explore Services</router-link>
-            </div>
-          </div>
-          <div class="hero-image">
-            <img src="/img/hero-image.svg" alt="AI Safety and Performance" />
-          </div>
-        </div>
-      </section>
-      
-      <!-- Services Section -->
-      <section class="services-section">
-        <div class="container">
-          <h2>Our Services</h2>
-          <p class="section-intro">We help organizations navigate AI adoption safely and effectively.</p>
+      <!-- Dynamic Page Content -->
+      <div v-if="pageData">
+        <!-- Render page sections dynamically -->
+        <div v-for="section in pageData.sections" :key="section.id" class="page-section">
           
-          <div class="services-grid" v-if="services.length">
-            <div 
-              v-for="service in services" 
-              :key="service.id" 
-              class="service-card"
-            >
-              <div class="service-icon" v-if="service.icon">{{ service.icon }}</div>
-              <h3>{{ service.title }}</h3>
-              <p>{{ service.shortDescription }}</p>
-              <router-link :to="`/services/${service.slug}`" class="service-link">
-                Learn More
-              </router-link>
-            </div>
-          </div>
-          
-          <!-- Fallback if no services exist yet -->
-          <div class="services-grid" v-else>
-            <div class="service-card">
-              <div class="service-icon">🔒</div>
-              <h3>AI Safety Testing</h3>
-              <p>Rigorous testing methodologies to ensure your AI systems operate safely and reliably.</p>
-              <router-link to="/services/safety-testing" class="service-link">
-                Learn More
-              </router-link>
-            </div>
-            
-            <div class="service-card">
-              <div class="service-icon">⚡</div>
-              <h3>Parallelization Infrastructure</h3>
-              <p>Speed up your AI workflows with state-of-the-art parallelization techniques and infrastructure.</p>
-              <router-link to="/services/parallelization" class="service-link">
-                Learn More
-              </router-link>
-            </div>
-            
-            <div class="service-card">
-              <div class="service-icon">🧠</div>
-              <h3>Critical Thinking Education</h3>
-              <p>Equip your team with the critical thinking skills needed to work effectively with AI systems.</p>
-              <router-link to="/services/critical-thinking" class="service-link">
-                Learn More
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- Value Proposition -->
-      <section class="value-prop-section">
-        <div class="container">
-          <div class="value-prop-content">
-            <h2>Navigate AI Disruption With Confidence</h2>
-            <p>In an era where AI adoption determines career trajectories and business outcomes, our expertise ensures you land on the right side of disruption.</p>
-            <div class="value-points">
-              <div class="value-point">
-                <div class="value-icon">✓</div>
-                <div class="value-text">
-                  <h4>Testing Frameworks</h4>
-                  <p>Comprehensive validation of AI outputs across code, text, and visual content.</p>
+          <!-- Hero Section -->
+          <section v-if="section.type === 'hero'" class="hero-section">
+            <div class="container">
+              <div class="hero-content">
+                <h1>{{ section.title }}</h1>
+                <p>{{ section.content }}</p>
+                <div class="hero-cta" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
+                  <router-link 
+                    v-if="section.settings?.ctaPrimary" 
+                    :to="section.settings.ctaPrimary.url" 
+                    class="primary-button"
+                  >
+                    {{ section.settings.ctaPrimary.text }}
+                  </router-link>
+                  <router-link 
+                    v-if="section.settings?.ctaSecondary" 
+                    :to="section.settings.ctaSecondary.url" 
+                    class="secondary-button"
+                  >
+                    {{ section.settings.ctaSecondary.text }}
+                  </router-link>
                 </div>
               </div>
+              <div class="hero-image">
+                <img src="/img/hero-image.svg" alt="AI Safety and Performance" />
+              </div>
+            </div>
+          </section>
+
+          <!-- Services Section -->
+          <section v-else-if="section.type === 'services'" class="services-section">
+            <div class="container">
+              <div class="section-header">
+                <h2>{{ section.title }}</h2>
+                <p class="section-intro">{{ section.content }}</p>
+              </div>
+
+              <div class="services-grid" v-if="services.length">
+                <div
+                  v-for="service in services"
+                  :key="service.id"
+                  class="service-card"
+                >
+                  <div class="service-icon" v-if="service.icon">{{ service.icon }}</div>
+                  <h3>{{ service.title }}</h3>
+                  <p>{{ service.shortDescription }}</p>
+                  <router-link :to="`/services/${service.slug}`" class="service-link">
+                    Learn More
+                  </router-link>
+                </div>
+              </div>
+
+              <div v-else class="no-services">
+                <p>No services available yet.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Content Section -->
+          <section v-else-if="section.type === 'content'" class="content-section">
+            <div class="container">
+              <h2>{{ section.title }}</h2>
+              <div class="content-text" v-html="section.content"></div>
               
-              <div class="value-point">
-                <div class="value-icon">✓</div>
-                <div class="value-text">
-                  <h4>Output Acceleration</h4>
-                  <p>10x productivity through intelligent parallelization techniques.</p>
+              <!-- Value Points -->
+              <div v-if="section.settings?.valuePoints" class="value-points">
+                <div 
+                  v-for="point in section.settings.valuePoints" 
+                  :key="point.title"
+                  class="value-point"
+                >
+                  <div class="value-icon">✓</div>
+                  <div class="value-text">
+                    <h4>{{ point.title }}</h4>
+                    <p>{{ point.description }}</p>
+                  </div>
                 </div>
               </div>
-              
-              <div class="value-point">
-                <div class="value-icon">✓</div>
-                <div class="value-text">
-                  <h4>Risk Mitigation</h4>
-                  <p>Identify and address AI vulnerabilities before they impact your business.</p>
+
+              <!-- CTA -->
+              <router-link 
+                v-if="section.settings?.ctaText && section.settings?.ctaUrl" 
+                :to="section.settings.ctaUrl" 
+                class="text-button"
+              >
+                {{ section.settings.ctaText }} →
+              </router-link>
+            </div>
+          </section>
+
+          <!-- Team Section -->
+          <section v-else-if="section.type === 'team'" class="team-section">
+            <div class="container">
+              <div class="section-header">
+                <h2>{{ section.title }}</h2>
+                <p class="section-intro">{{ section.content }}</p>
+              </div>
+
+              <div class="team-grid" v-if="teamMembers.length">
+                <div
+                  v-for="member in teamMembers.slice(0, section.settings?.showMembers || 3)"
+                  :key="member.id"
+                  class="team-card"
+                >
+                  <div class="member-photo">
+                    <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
+                  </div>
+                  <h3>{{ member.name }}</h3>
+                  <p class="member-position">{{ member.position }}</p>
+                  <p class="member-bio">{{ member.bio }}</p>
                 </div>
               </div>
+
+              <div v-else class="no-team">
+                <p>No team members available yet.</p>
+              </div>
+
+              <div class="team-cta" v-if="section.settings?.ctaText && section.settings?.ctaUrl">
+                <router-link :to="section.settings.ctaUrl" class="secondary-button">
+                  {{ section.settings.ctaText }}
+                </router-link>
+              </div>
             </div>
-            
-            <router-link to="/about" class="text-button">Learn About Our Approach →</router-link>
-          </div>
-          <div class="value-prop-image">
-            <img src="/img/value-prop.svg" alt="AI Value Proposition" />
-          </div>
+          </section>
+
+          <!-- CTA Section -->
+          <section v-else-if="section.type === 'cta'" class="cta-section">
+            <div class="container">
+              <h2>{{ section.title }}</h2>
+              <p>{{ section.content }}</p>
+              <div class="cta-buttons" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
+                <router-link 
+                  v-if="section.settings?.ctaPrimary" 
+                  :to="section.settings.ctaPrimary.url" 
+                  class="primary-button"
+                >
+                  {{ section.settings.ctaPrimary.text }}
+                </router-link>
+                <router-link 
+                  v-if="section.settings?.ctaSecondary" 
+                  :to="section.settings.ctaSecondary.url" 
+                  class="secondary-button"
+                >
+                  {{ section.settings.ctaSecondary.text }}
+                </router-link>
+              </div>
+            </div>
+          </section>
+
         </div>
-      </section>
-      
-      <!-- Team Section -->
-      <section class="team-section">
+
+        <!-- Main Page Content (if any) -->
+        <section v-if="pageData.content" class="page-content-section">
+          <div class="container">
+            <div class="page-content" v-html="pageData.content"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Fallback if no page data -->
+      <div v-else class="no-page-data">
         <div class="container">
-          <h2>Our Expert Team</h2>
-          <p class="section-intro">Meet the minds behind our innovative approaches to AI safety and performance.</p>
-          
-          <div class="team-grid" v-if="teamMembers.length">
-            <div 
-              v-for="member in teamMembers.slice(0, 3)" 
-              :key="member.id" 
-              class="team-card"
-            >
-              <div class="member-photo">
-                <img :src="member.photo?.filePath || '/img/placeholder-person.svg'" :alt="member.name" />
-              </div>
-              <h3>{{ member.name }}</h3>
-              <p class="member-position">{{ member.position }}</p>
-              <p class="member-bio">{{ member.bio }}</p>
-            </div>
-          </div>
-          
-          <!-- Fallback if no team members exist yet -->
-          <div class="team-grid" v-else>
-            <div class="team-card">
-              <div class="member-photo">
-                <img src="/img/placeholder-person.svg" alt="Team Member" />
-              </div>
-              <h3>Alex Rodriguez</h3>
-              <p class="member-position">Chief AI Safety Officer</p>
-              <p class="member-bio">Expert in building robust testing frameworks for generative AI models.</p>
-            </div>
-            
-            <div class="team-card">
-              <div class="member-photo">
-                <img src="/img/placeholder-person.svg" alt="Team Member" />
-              </div>
-              <h3>Jamie Lee</h3>
-              <p class="member-position">Director of Parallelization</p>
-              <p class="member-bio">Specializes in architecting high-throughput systems for AI workloads.</p>
-            </div>
-            
-            <div class="team-card">
-              <div class="member-photo">
-                <img src="/img/placeholder-person.svg" alt="Team Member" />
-              </div>
-              <h3>Morgan Chen</h3>
-              <p class="member-position">Lead AI Educator</p>
-              <p class="member-bio">Designs critical thinking curricula for technical and non-technical teams.</p>
-            </div>
-          </div>
-          
-          <div class="team-cta">
-            <router-link to="/team" class="secondary-button">Meet The Full Team</router-link>
-          </div>
+          <h1>Welcome</h1>
+          <p>Page content is loading...</p>
         </div>
-      </section>
-      
-      <!-- CTA Section -->
-      <section class="cta-section">
-        <div class="container">
-          <h2>Ready to Bulletproof Your AI Deployment?</h2>
-          <p>Turn disruption from a threat into a career catalyst with our expert guidance.</p>
-          <div class="cta-buttons">
-            <router-link to="/contact" class="primary-button">Request Free Assessment</router-link>
-            <router-link to="/resources/disruption-radar" class="secondary-button">Read Disruption Radar</router-link>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   </div>
 </template>
@@ -342,23 +307,66 @@ onMounted(() => {
   max-width: 500px;
 }
 
+/* Content Section */
+.content-section {
+  padding: 80px 0;
+  background-color: var(--light-blue);
+}
+
+.content-text {
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+.content-section .container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.content-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+  color: var(--black);
+}
+
+/* No data states */
+.no-services,
+.no-team,
+.no-page-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--gray-600);
+}
+
+.no-page-data {
+  padding: 80px 20px;
+}
+
 /* Services Section */
 .services-section {
   padding: 80px 0;
   background-color: var(--white);
 }
 
+.section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
 .section-intro {
   max-width: 600px;
-  margin: 0 auto 40px;
-  text-align: center;
+  margin: 0 auto;
   font-size: 1.2rem;
   color: var(--light-text);
 }
 
-.services-section h2 {
+.services-section h2,
+.team-section h2 {
   font-size: 2.5rem;
-  text-align: center;
   margin-bottom: 16px;
   color: var(--black);
 }
@@ -632,6 +640,62 @@ onMounted(() => {
   display: inline-block;
 }
 
+/* Page Content Section */
+.page-content-section {
+  padding: 60px 0;
+  background-color: var(--white);
+}
+
+.page-content {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+.page-content h1,
+.page-content h2,
+.page-content h3,
+.page-content h4,
+.page-content h5,
+.page-content h6 {
+  color: var(--black);
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.page-content h1:first-child,
+.page-content h2:first-child,
+.page-content h3:first-child,
+.page-content h4:first-child,
+.page-content h5:first-child,
+.page-content h6:first-child {
+  margin-top: 0;
+}
+
+.page-content p {
+  margin-bottom: 1.5rem;
+}
+
+.page-content ul,
+.page-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+}
+
+.page-content li {
+  margin-bottom: 0.5rem;
+}
+
+.page-content a {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.page-content a:hover {
+  color: #3a5ad9;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .hero-section .container,
@@ -639,26 +703,26 @@ onMounted(() => {
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
+
   .hero-image,
   .value-prop-image {
     margin-top: 30px;
     display: flex;
     justify-content: center;
   }
-  
+
   .value-point {
     justify-content: center;
   }
-  
+
   .hero-cta {
     justify-content: center;
   }
-  
+
   .hero-content h1 {
     font-size: 2.5rem;
   }
-  
+
   .value-prop-content h2,
   .services-section h2,
   .team-section h2,

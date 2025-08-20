@@ -1,3 +1,51 @@
+import { Resource } from './schema';
+
+// CMS database instances
+let resourcesDB: any = null;
+
+export async function initResourcesDB(db: any) {
+  resourcesDB = db.openDB('cms_resources', {
+    keyPath: 'id',
+    autoIncrement: false,
+  });
+}
+
+export async function getAllResources(): Promise<Resource[]> {
+  return resourcesDB.getAll();
+}
+
+export async function getResource(id: string): Promise<Resource | null> {
+  return resourcesDB.get(id);
+}
+
+export async function createResource(resource: Omit<Resource, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const id = `resource_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const newResource: Resource = {
+    ...resource,
+    id,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  await resourcesDB.put(newResource);
+  return id;
+}
+
+export async function updateResource(id: string, updates: Partial<Resource>): Promise<boolean> {
+  const resource = await resourcesDB.get(id);
+  if (!resource) return false;
+  const updatedResource = {
+    ...resource,
+    ...updates,
+    updatedAt: new Date().toISOString(),
+  };
+  await resourcesDB.put(updatedResource);
+  return true;
+}
+
+export async function deleteResource(id: string): Promise<boolean> {
+  await resourcesDB.delete(id);
+  return true;
+}
 import { getDB } from '../actions/db.js';
 import type {
   Page,
@@ -175,6 +223,87 @@ export async function createAuditLogEntry(userId: string, action: 'create' | 'up
   await auditLogDB.put(entry.id, entry);
 }
 
+// BlogPost operations
+export async function createBlogPost(post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const id = `blog_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const now = new Date().toISOString();
+  
+  const newPost: BlogPost = {
+    ...post,
+    id,
+    createdAt: now,
+    updatedAt: now
+  };
+  
+  await getDB().transaction(() => {
+    blogPostsDB.put(id, newPost);
+    blogPostSlugIndexDB.put(post.slug, id);
+  });
+  
+  return id;
+}
+
+export async function getBlogPostById(id: string): Promise<BlogPost | null> {
+  return blogPostsDB.get(id);
+}
+
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+  const ids = blogPostSlugIndexDB.getValues(slug);
+  
+  for (const id of ids) {
+    const post = await getBlogPostById(id);
+    if (post) return post;
+  }
+  
+  return null;
+}
+
+export async function getAllBlogPosts(): Promise<BlogPost[]> {
+  const posts: BlogPost[] = [];
+  const entries = blogPostsDB.getRange();
+  
+  for (const { value } of entries) {
+    posts.push(value);
+  }
+  
+  return posts;
+}
+
+export async function updateBlogPost(id: string, updates: Partial<BlogPost>): Promise<boolean> {
+  const post = await getBlogPostById(id);
+  if (!post) return false;
+  
+  const updatedPost: BlogPost = {
+    ...post,
+    ...updates,
+    updatedAt: new Date().toISOString()
+  };
+  
+  await getDB().transaction(() => {
+    blogPostsDB.put(id, updatedPost);
+    
+    // If slug changed, update the index
+    if (updates.slug && updates.slug !== post.slug) {
+      blogPostSlugIndexDB.remove(post.slug, id);
+      blogPostSlugIndexDB.put(updates.slug, id);
+    }
+  });
+  
+  return true;
+}
+
+export async function deleteBlogPost(id: string): Promise<boolean> {
+  const post = await getBlogPostById(id);
+  if (!post) return false;
+  
+  await getDB().transaction(() => {
+    blogPostsDB.remove(id);
+    blogPostSlugIndexDB.remove(post.slug, id);
+  });
+  
+  return true;
+}
+
 // Page operations
 export async function createPage(page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
   const id = `page_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -200,14 +329,32 @@ export async function getPageById(id: string): Promise<Page | null> {
 }
 
 export async function getPageBySlug(slug: string): Promise<Page | null> {
-  const ids = pageSlugIndexDB.getValues(slug);
+  // Bypass the corrupted index and always use full scan
+  // This ensures we get consistent results
+  const pages = await getAllPages();
+  const matchingPages = pages.filter(p => p.slug === slug);
   
-  for (const id of ids) {
-    const page = await getPageById(id);
-    if (page) return page;
+  if (matchingPages.length === 0) {
+    return null;
   }
   
-  return null;
+  if (matchingPages.length === 1) {
+    return matchingPages[0];
+  }
+  
+  // If multiple pages with same slug, prioritize published ones
+  const publishedPages = matchingPages.filter(p => p.isPublished);
+  if (publishedPages.length > 0) {
+    // Return the most recently updated published page
+    return publishedPages.sort((a, b) => 
+      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    )[0];
+  }
+  
+  // If no published pages, return the most recently updated one
+  return matchingPages.sort((a, b) => 
+    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  )[0];
 }
 
 export async function getAllPages(): Promise<Page[]> {
@@ -509,6 +656,102 @@ export async function getAllAdminUsers(): Promise<AdminUser[]> {
   }
   
   return users;
+}
+
+// Contact submission operations
+export async function createContactSubmission(submission: Omit<ContactSubmission, 'id' | 'submittedAt' | 'updatedAt'>): Promise<string> {
+  const id = `contact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const now = new Date().toISOString();
+  
+  const newSubmission: ContactSubmission = {
+    ...submission,
+    id,
+    submittedAt: now,
+    updatedAt: now
+  };
+  
+  await contactSubmissionsDB.put(id, newSubmission);
+  return id;
+}
+
+export async function getContactSubmissionById(id: string): Promise<ContactSubmission | null> {
+  return contactSubmissionsDB.get(id);
+}
+
+export async function getAllContactSubmissions(): Promise<ContactSubmission[]> {
+  const submissions: ContactSubmission[] = [];
+  const entries = contactSubmissionsDB.getRange();
+  
+  for (const { value } of entries) {
+    submissions.push(value);
+  }
+  
+  return submissions;
+}
+
+export async function updateContactSubmission(id: string, updates: Partial<ContactSubmission>): Promise<boolean> {
+  const submission = await getContactSubmissionById(id);
+  if (!submission) return false;
+  
+  const updatedSubmission: ContactSubmission = {
+    ...submission,
+    ...updates,
+    updatedAt: new Date().toISOString()
+  };
+  
+  await contactSubmissionsDB.put(id, updatedSubmission);
+  return true;
+}
+
+export async function deleteContactSubmission(id: string): Promise<boolean> {
+  const submission = await getContactSubmissionById(id);
+  if (!submission) return false;
+  
+  await contactSubmissionsDB.remove(id);
+  return true;
+}
+
+// Get database statistics
+export async function getCMSStats(): Promise<{ 
+  pages: number; 
+  services: number; 
+  team: number; 
+  blogPosts: number; 
+  media: number; 
+  contactSubmissions: number; 
+}> {
+  try {
+    let pages = 0, services = 0, team = 0, blogPosts = 0, media = 0, contactSubmissions = 0;
+
+    // Count pages
+    const pageEntries = pagesDB.getRange();
+    for (const _ of pageEntries) pages++;
+
+    // Count services
+    const serviceEntries = servicesDB.getRange();
+    for (const _ of serviceEntries) services++;
+
+    // Count team members
+    const teamEntries = teamDB.getRange();
+    for (const _ of teamEntries) team++;
+
+    // Count blog posts
+    const blogEntries = blogPostsDB.getRange();
+    for (const _ of blogEntries) blogPosts++;
+
+    // Count media
+    const mediaEntries = mediaDB.getRange();
+    for (const _ of mediaEntries) media++;
+
+    // Count contact submissions
+    const contactEntries = contactSubmissionsDB.getRange();
+    for (const _ of contactEntries) contactSubmissions++;
+
+    return { pages, services, team, blogPosts, media, contactSubmissions };
+  } catch (error) {
+    console.error('Error getting CMS stats:', error);
+    return { pages: 0, services: 0, team: 0, blogPosts: 0, media: 0, contactSubmissions: 0 };
+  }
 }
 
 // Close CMS databases

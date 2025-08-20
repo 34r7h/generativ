@@ -1,33 +1,37 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { cmsAPI } from '../../api/client';
 
-// Placeholder blog posts
-const posts = ref([
-  {
-    id: 1,
-    title: 'Understanding AI Safety: A Primer',
-    excerpt: 'An introduction to the key concepts in AI safety and why they matter for your organization.',
-    date: '2023-09-15',
-    author: 'Alex Rodriguez',
-    category: 'AI Safety'
-  },
-  {
-    id: 2,
-    title: 'Parallelization Techniques for Modern AI Workloads',
-    excerpt: 'How to dramatically improve performance through advanced parallelization strategies.',
-    date: '2023-08-22',
-    author: 'Jamie Lee',
-    category: 'Performance'
-  },
-  {
-    id: 3,
-    title: 'Critical Thinking: The Human Edge in an AI World',
-    excerpt: 'Building critical thinking skills that complement rather than compete with AI systems.',
-    date: '2023-07-10',
-    author: 'Morgan Chen',
-    category: 'Education'
+const loading = ref(true);
+const error = ref(null);
+const posts = ref([]);
+
+// Fetch blog posts from CMS
+async function fetchBlogPosts() {
+  try {
+    loading.value = true;
+    error.value = null;
+    
+    const response = await cmsAPI.getBlogPosts();
+    if (response.success) {
+      posts.value = response.posts || [];
+    } else {
+      console.error('Failed to load blog posts:', response.error);
+      error.value = 'Failed to load blog posts';
+      posts.value = [];
+    }
+  } catch (err) {
+    console.error('Error fetching blog posts:', err);
+    error.value = 'Failed to load blog posts';
+    posts.value = [];
+  } finally {
+    loading.value = false;
   }
-]);
+}
+
+onMounted(() => {
+  fetchBlogPosts();
+});
 </script>
 
 <template>
@@ -45,19 +49,33 @@ const posts = ref([
     <!-- Blog Content -->
     <section class="blog-content">
       <div class="container">
-        <div class="blog-grid">
+        <div v-if="loading" class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading blog posts...</p>
+        </div>
+        
+        <div v-else-if="error" class="error-message">
+          {{ error }}
+        </div>
+        
+        <div v-else-if="posts.length > 0" class="blog-grid">
           <div v-for="post in posts" :key="post.id" class="blog-card">
-            <div class="blog-category">{{ post.category }}</div>
+            <div class="blog-category">{{ post.categories?.[0] || 'Uncategorized' }}</div>
             <h2>{{ post.title }}</h2>
             <p class="blog-excerpt">{{ post.excerpt }}</p>
             <div class="blog-meta">
-              <span class="blog-date">{{ post.date }}</span>
+              <span class="blog-date">{{ new Date(post.publishedAt).toLocaleDateString() }}</span>
               <span class="blog-author">by {{ post.author }}</span>
             </div>
-            <router-link :to="`/blog/${post.id}`" class="blog-link">
+            <router-link :to="`/blog/${post.slug}`" class="blog-link">
               Read More
             </router-link>
           </div>
+        </div>
+        
+        <div v-else class="empty-state">
+          <h3>No blog posts yet</h3>
+          <p>Check back soon for insights and updates from our team.</p>
         </div>
       </div>
     </section>
@@ -151,6 +169,50 @@ const posts = ref([
 
 .blog-link:hover {
   text-decoration: underline;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.error-message {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+  padding: 15px;
+  border-radius: var(--border-radius-md);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state h3 {
+  color: var(--gray-900);
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: var(--gray-600);
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--gray-300);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s linear infinite;
+  margin: 0 auto 15px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive */

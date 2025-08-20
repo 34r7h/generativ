@@ -17,30 +17,8 @@ const stats = ref({
   contactSubmissions: 0
 });
 
-// Recent activity (would come from audit log in a real implementation)
-const recentActivity = ref([
-  {
-    id: 1,
-    action: 'Created page',
-    user: 'Admin',
-    resource: 'Homepage',
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
-  },
-  {
-    id: 2,
-    action: 'Updated service',
-    user: 'Admin',
-    resource: 'AI Safety Testing',
-    timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString() // 5 hours ago
-  },
-  {
-    id: 3,
-    action: 'Added media',
-    user: 'Admin',
-    resource: 'hero-image.svg',
-    timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
-  }
-]);
+// Recent activity from audit log
+const recentActivity = ref([]);
 
 // Format date for display
 function formatDate(dateString) {
@@ -68,23 +46,36 @@ async function loadDashboardData() {
     loading.value = true;
     error.value = null;
     
-    // In a real implementation, these would be API calls
-    // For now, we'll simulate data loading with timeouts
+    // Get data from API
+    const [pagesResponse, servicesResponse, teamResponse, blogPostsResponse] = await Promise.all([
+      cmsAPI.getPages(),
+      cmsAPI.getServices(),
+      cmsAPI.getTeamMembers(),
+      cmsAPI.getBlogPosts()
+    ]);
     
-    setTimeout(() => {
-      // Simulate API responses
-      stats.value = {
-        pages: 5,
-        services: 3,
-        team: 4,
-        media: 12,
-        blogPosts: 8,
-        contactSubmissions: 3
-      };
-      
-      loading.value = false;
-    }, 1000);
+    // Get media (requires auth)
+    let mediaCount = 0;
+    try {
+      const mediaResponse = await cmsAPI.getAllMedia();
+      if (mediaResponse.success && mediaResponse.media) {
+        mediaCount = mediaResponse.media.length;
+      }
+    } catch {
+      console.warn('Could not load media data, might need authentication');
+    }
     
+    // Update stats with real data
+    stats.value = {
+      pages: pagesResponse.success ? pagesResponse.pages.length : 0,
+      services: servicesResponse.success ? servicesResponse.services.length : 0,
+      team: teamResponse.success ? teamResponse.members.length : 0,
+      media: mediaCount,
+      blogPosts: blogPostsResponse.success ? blogPostsResponse.posts.length : 0,
+      contactSubmissions: 0 // Not implemented yet
+    };
+    
+    loading.value = false;
   } catch (err) {
     console.error('Error loading dashboard data:', err);
     error.value = 'Failed to load dashboard data';
@@ -115,8 +106,19 @@ onMounted(() => {
       
       <!-- Loading State -->
       <div v-if="loading" class="loading-state">
-        <div class="spinner"></div>
-        <p>Loading dashboard data...</p>
+        <div class="loading-grid">
+          <div class="loading-card" v-for="i in 4" :key="i">
+            <div class="skeleton-icon"></div>
+            <div class="skeleton-text">
+              <div class="skeleton-line short"></div>
+              <div class="skeleton-line long"></div>
+            </div>
+          </div>
+        </div>
+        <div class="loading-indicator">
+          <div class="spinner"></div>
+          <p>Loading dashboard data...</p>
+        </div>
       </div>
       
       <!-- Error State -->
@@ -298,7 +300,68 @@ onMounted(() => {
 }
 
 /* Loading and Error States */
-.loading-state,
+.loading-state {
+  padding: var(--spacing-lg) 0;
+}
+
+.loading-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.loading-card {
+  background-color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+}
+
+.skeleton-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  margin-right: var(--spacing-md);
+}
+
+.skeleton-text {
+  flex: 1;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.short {
+  width: 60%;
+  height: 10px;
+}
+
+.skeleton-line.long {
+  width: 40%;
+  height: 20px;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-lg) 0;
+}
+
 .error-state {
   display: flex;
   flex-direction: column;
@@ -355,7 +418,7 @@ onMounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
+  color: transparent;
 }
 
 .welcome-content p {
@@ -608,6 +671,15 @@ onMounted(() => {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }
 </style>

@@ -4,8 +4,8 @@ import { useRouter } from 'vue-router';
 import { authAPI } from '../../../api/client';
 
 const router = useRouter();
-const email = ref('admin@generativ.cc');
-const password = ref('admin123');
+const email = ref('admin3@generativ.cc');
+const password = ref('Admin123!');
 const loading = ref(false);
 const error = ref('');
 const showPassword = ref(false);
@@ -13,8 +13,8 @@ const rememberMe = ref(false);
 
 // Default admin credentials for demo purposes
 const defaultCredentials = {
-  email: 'admin@generativ.cc',
-  password: 'admin123'
+  email: 'admin3@generativ.cc',
+  password: 'Admin123!'
 };
 
 async function handleLogin() {
@@ -51,7 +51,8 @@ async function handleLogin() {
         // Redirect to admin dashboard
         router.push('/admin/dashboard');
       } else {
-        throw new Error(response.error || 'Invalid credentials');
+        error.value = response.error || 'Invalid email or password';
+        return;
       }
     }
   } catch (err) {

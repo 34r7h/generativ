@@ -19,7 +19,7 @@ bun install
 # Start the server
 bun run index.ts
 
-# Server runs on http://localhost:3001
+# Server runs on http://localhost:3003
 ```
 
 ## API Endpoints
@@ -31,7 +31,7 @@ bun run index.ts
 Check server status and uptime.
 
 ```bash
-curl -X GET http://localhost:3001/health
+curl -X GET http://localhost:3003/health
 ```
 
 **Expected Output:**
@@ -54,7 +54,7 @@ curl -X GET http://localhost:3001/health
 Create a new user account.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -d '{
     "type": "signup",
@@ -86,7 +86,7 @@ curl -X POST http://localhost:3001/auth \
 Authenticate user and receive JWT token.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -d '{
     "type": "login",
@@ -119,7 +119,7 @@ curl -X POST http://localhost:3001/auth \
 Invalidate user session.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -141,7 +141,7 @@ curl -X POST http://localhost:3001/auth \
 Delete user account and all associated data.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -163,7 +163,7 @@ curl -X POST http://localhost:3001/auth \
 Generate one-time password for email verification.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -d '{
     "type": "otp",
@@ -187,7 +187,7 @@ curl -X POST http://localhost:3001/auth \
 Verify one-time password.
 
 ```bash
-curl -X POST http://localhost:3001/auth \
+curl -X POST http://localhost:3003/auth \
   -H "Content-Type: application/json" \
   -d '{
     "type": "otp",
@@ -225,7 +225,7 @@ All database operations require authentication via the `Authorization: Bearer <t
 Retrieve user information by user ID.
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -d '{
     "type": "getUserById",
@@ -254,7 +254,7 @@ curl -X POST http://localhost:3001/db \
 Retrieve user information by email address.
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -d '{
     "type": "getUserByEmail",
@@ -283,7 +283,7 @@ curl -X POST http://localhost:3001/db \
 Update user information (requires authentication).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -308,7 +308,7 @@ curl -X POST http://localhost:3001/db \
 Create a new data record (requires authentication).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -336,7 +336,7 @@ curl -X POST http://localhost:3001/db \
 Retrieve a specific data record by ID.
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -d '{
     "type": "getDataRecord",
@@ -369,7 +369,7 @@ curl -X POST http://localhost:3001/db \
 Retrieve all data records for the authenticated user.
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -404,7 +404,7 @@ curl -X POST http://localhost:3001/db \
 Update a data record (requires authentication and ownership).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -433,7 +433,7 @@ curl -X POST http://localhost:3001/db \
 Delete a data record (requires authentication and ownership).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
@@ -456,7 +456,7 @@ curl -X POST http://localhost:3001/db \
 Get database statistics (no authentication required).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -d '{
     "type": "getDBStats"
@@ -482,7 +482,7 @@ curl -X POST http://localhost:3001/db \
 Clean up expired sessions (no authentication required).
 
 ```bash
-curl -X POST http://localhost:3001/db \
+curl -X POST http://localhost:3003/db \
   -H "Content-Type: application/json" \
   -d '{
     "type": "cleanupExpiredSessions"

@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { cmsAPI } from '../../api/client';
 
 // Form data
 const formData = ref({
@@ -17,6 +18,15 @@ const formData = ref({
 const loading = ref(false);
 const success = ref(false);
 const error = ref(null);
+
+// CMS data
+const pageLoading = ref(true);
+const siteSettings = ref(null);
+const contactInfo = ref({
+  email: 'info@generativ.cc',
+  phone: '+1 (555) 123-4567',
+  address: 'San Francisco, CA'
+});
 
 // Validate form data
 function validateForm() {
@@ -43,6 +53,33 @@ function validateForm() {
   }
   
   return null;
+}
+
+// Load site settings
+async function loadPageData() {
+  try {
+    pageLoading.value = true;
+    
+    const response = await cmsAPI.getSiteSettings();
+    if (response.success && response.settings) {
+      siteSettings.value = response.settings;
+      
+      // Update contact info from site settings
+      if (response.settings.contactEmail) {
+        contactInfo.value.email = response.settings.contactEmail;
+      }
+      if (response.settings.contactPhone) {
+        contactInfo.value.phone = response.settings.contactPhone;
+      }
+      if (response.settings.contactAddress) {
+        contactInfo.value.address = response.settings.contactAddress;
+      }
+    }
+  } catch (err) {
+    console.error('Error loading page data:', err);
+  } finally {
+    pageLoading.value = false;
+  }
 }
 
 // Submit form
@@ -83,8 +120,12 @@ async function submitForm() {
   } catch (err) {
     console.error('Form submission error:', err);
     error.value = 'Failed to submit the form. Please try again.';
-    loading.value = false;
-  }
+      loading.value = false;
+}
+
+onMounted(() => {
+  loadPageData();
+});
 }
 
 function setFormType(type) {

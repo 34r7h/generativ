@@ -1,11 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { cmsAPI } from '../../api/client';
 
 const route = useRoute();
 const router = useRouter();
 
-// Placeholder blog post data
+const loading = ref(true);
+const error = ref(null);
+const blogPost = ref(null);
+const relatedPosts = ref([]);
+
+// Get blog post slug/ID from route
+const postId = computed(() => route.params.id);
 const blogPosts = {
   1: {
     id: 1,
@@ -95,51 +102,99 @@ const blogPosts = {
   }
 };
 
-// Get the post ID from the route params
-const postId = computed(() => Number(route.params.slug));
+
 
 // Get the current post
-const currentPost = computed(() => {
-  return blogPosts[postId.value] || null;
-});
+// Load blog post data
+async function loadBlogPost() {
+  try {
+    loading.value = true;
+    error.value = null;
+    
+    // Try to get blog post by slug first, then by ID
+    let response;
+    if (isNaN(postId.value)) {
+      // It's a slug
+      response = await cmsAPI.getBlogPostBySlug(postId.value);
+    } else {
+      // It's an ID - get all posts and find by ID
+      const allPosts = await cmsAPI.getBlogPosts();
+      if (allPosts.success) {
+        const post = allPosts.posts.find(p => p.id === postId.value);
+        response = post ? { success: true, post } : { success: false, error: 'Post not found' };
+      }
+    }
+    
+    if (response && response.success && response.post) {
+      blogPost.value = response.post;
+      
+      // Load related posts
+      const allPostsResponse = await cmsAPI.getBlogPosts();
+      if (allPostsResponse.success) {
+        relatedPosts.value = allPostsResponse.posts
+          .filter(p => p.id !== blogPost.value.id && p.isPublished)
+          .slice(0, 3);
+      }
+    } else {
+      error.value = 'Blog post not found';
+    }
+  } catch (err) {
+    console.error('Error loading blog post:', err);
+    error.value = 'Failed to load blog post';
+  } finally {
+    loading.value = false;
+  }
+}
 
-// Related posts (excluding current)
-const relatedPosts = computed(() => {
-  return Object.values(blogPosts)
-    .filter(post => post.id !== postId.value)
-    .slice(0, 2);
-});
+
 
 function goBack() {
   router.push('/blog');
 }
+
+onMounted(() => {
+  loadBlogPost();
+});
 </script>
 
 <template>
   <div class="blog-post-page">
-    <div v-if="currentPost">
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading blog post...</p>
+    </div>
+    
+    <!-- Error State -->
+    <div v-else-if="error" class="error-state">
+      <h2>Post Not Found</h2>
+      <p>{{ error }}</p>
+      <button @click="goBack" class="btn btn-primary">Back to Blog</button>
+    </div>
+    
+    <div v-else-if="blogPost">
       <!-- Post Header -->
       <section class="post-header">
         <div class="container">
           <div class="post-meta">
-            <span class="post-category">{{ currentPost.category }}</span>
-            <span class="post-date">{{ currentPost.date }}</span>
+            <span class="post-category">{{ blogPost.category }}</span>
+            <span class="post-date">{{ blogPost.date }}</span>
           </div>
-          <h1>{{ currentPost.title }}</h1>
-          <p class="post-author">By {{ currentPost.author }}</p>
+          <h1>{{ blogPost.title }}</h1>
+          <p class="post-author">By {{ blogPost.author }}</p>
         </div>
       </section>
       
       <!-- Post Content -->
       <section class="post-content">
         <div class="container">
-          <div class="post-body" v-html="currentPost.content"></div>
+          <div class="post-body" v-html="blogPost.content"></div>
           
-          <div class="post-tags" v-if="currentPost.tags && currentPost.tags.length">
+          <div class="post-tags" v-if="blogPost.tags && blogPost.tags.length">
             <h3>Tags:</h3>
             <div class="tags-list">
               <span 
-                v-for="(tag, index) in currentPost.tags" 
+                v-for="(tag, index) in blogPost.tags" 
                 :key="index" 
                 class="tag"
               >

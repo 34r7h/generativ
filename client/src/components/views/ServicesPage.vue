@@ -11,52 +11,16 @@ async function fetchServicesData() {
   try {
     loading.value = true;
     error.value = null;
-    
+
     const response = await cmsAPI.getServices();
     if (response.success) {
       services.value = response.services || [];
     } else {
-      // If no services exist yet, use fallback content
-      services.value = [
-        {
-          id: 'safety',
-          title: 'AI Safety Testing',
-          slug: 'safety-testing',
-          icon: '🔒',
-          shortDescription: 'Rigorous testing methodologies to ensure your AI systems operate safely and reliably.',
-          benefits: [
-            'Identify hallucination risks',
-            'Reduce security vulnerabilities',
-            'Ensure compliance with standards'
-          ]
-        },
-        {
-          id: 'parallel',
-          title: 'Parallelization Infrastructure',
-          slug: 'parallelization',
-          icon: '⚡',
-          shortDescription: 'Speed up your AI workflows with state-of-the-art parallelization techniques and infrastructure.',
-          benefits: [
-            '10x performance improvement',
-            'Scalable cloud infrastructure',
-            'Optimized resource utilization'
-          ]
-        },
-        {
-          id: 'critical',
-          title: 'Critical Thinking Education',
-          slug: 'critical-thinking',
-          icon: '🧠',
-          shortDescription: 'Equip your team with the critical thinking skills needed to work effectively with AI systems.',
-          benefits: [
-            'Enhance AI judgment',
-            'Improve prompt engineering',
-            'Develop failure analysis skills'
-          ]
-        }
-      ];
+      console.error('Failed to load services:', response.error);
+      error.value = 'Failed to load services';
+      services.value = [];
     }
-    
+
     loading.value = false;
   } catch (err) {
     console.error('Error fetching services:', err);
@@ -82,7 +46,7 @@ onMounted(() => {
         </p>
       </div>
     </section>
-    
+
     <!-- Services Content -->
     <section class="services-content">
       <div class="container">
@@ -91,24 +55,24 @@ onMounted(() => {
           <div class="spinner"></div>
           <p>Loading services...</p>
         </div>
-        
+
         <!-- Error State -->
         <div v-else-if="error" class="error-state">
           <p>{{ error }}</p>
           <button @click="fetchServicesData" class="secondary-button">Try Again</button>
         </div>
-        
+
         <!-- Services List -->
         <div v-else class="services-grid">
-          <div 
-            v-for="service in services" 
-            :key="service.id" 
+          <div
+            v-for="service in services"
+            :key="service.id"
             class="service-card"
           >
             <div class="service-icon" v-if="service.icon">{{ service.icon }}</div>
             <h2>{{ service.title }}</h2>
             <p class="service-description">{{ service.shortDescription }}</p>
-            
+
             <div class="service-benefits" v-if="service.benefits && service.benefits.length">
               <h3>Key Benefits</h3>
               <ul>
@@ -117,7 +81,7 @@ onMounted(() => {
                 </li>
               </ul>
             </div>
-            
+
             <router-link :to="`/services/${service.slug}`" class="primary-button">
               Learn More
             </router-link>
@@ -125,18 +89,18 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    
+
     <!-- Approach Section -->
     <section class="approach-section">
       <div class="container">
         <div class="approach-content">
           <h2>Our Approach</h2>
           <p>
-            At Generativ Consulting Company, we believe in a methodical, evidence-based 
+            At Generativ Consulting Company, we believe in a methodical, evidence-based
             approach to AI safety and performance. Our process combines rigorous testing,
             innovative parallelization techniques, and critical thinking education.
           </p>
-          
+
           <div class="process-steps">
             <div class="process-step">
               <div class="step-number">1</div>
@@ -145,7 +109,7 @@ onMounted(() => {
                 <p>We begin by thoroughly evaluating your current AI implementation, identifying strengths and vulnerabilities.</p>
               </div>
             </div>
-            
+
             <div class="process-step">
               <div class="step-number">2</div>
               <div class="step-content">
@@ -153,7 +117,7 @@ onMounted(() => {
                 <p>Our experts design custom solutions tailored to your specific needs and challenges.</p>
               </div>
             </div>
-            
+
             <div class="process-step">
               <div class="step-number">3</div>
               <div class="step-content">
@@ -161,7 +125,7 @@ onMounted(() => {
                 <p>We work alongside your team to implement our recommended solutions, ensuring seamless integration.</p>
               </div>
             </div>
-            
+
             <div class="process-step">
               <div class="step-number">4</div>
               <div class="step-content">
@@ -173,7 +137,7 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    
+
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
@@ -433,11 +397,11 @@ onMounted(() => {
     margin: 0 auto;
     gap: 10px;
   }
-  
+
   .page-hero h1 {
     font-size: 2.5rem;
   }
-  
+
   .approach-content h2 {
     font-size: 2rem;
   }

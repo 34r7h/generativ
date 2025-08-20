@@ -3,14 +3,20 @@ import {
   createService,
   createTeamMember,
   createMedia,
-  saveSiteSettings
+  saveSiteSettings,
+  createAdminUser,
+  createAuditLogEntry,
+  createBlogPost
 } from './db.js';
 import type {
   Page,
   Service,
   TeamMember,
   MediaAsset,
-  SiteSettings
+  SiteSettings,
+  AdminUser,
+  BlogPost,
+  ContactSubmission
 } from './schema';
 
 /**
@@ -427,6 +433,266 @@ export async function seedCMSData() {
     await createTeamMember(member);
   }
   console.log('Team members created');
+
+  // 6. Create Blog Posts
+  const blogPosts: Array<Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>> = [
+    {
+      slug: 'ai-safety-best-practices',
+      title: 'AI Safety Best Practices for Enterprise Deployment',
+      content: `
+<p>As AI systems become increasingly integrated into critical business processes, ensuring their safe and reliable operation is paramount. This post outlines key best practices for enterprise AI deployment.</p>
+
+<h2>Comprehensive Testing Frameworks</h2>
+
+<p>Before deploying any AI system in production, it's essential to establish rigorous testing protocols that evaluate:</p>
+
+<ul>
+  <li><strong>Output Quality:</strong> Systematically verify that AI-generated content meets quality standards across various inputs</li>
+  <li><strong>Edge Cases:</strong> Test with unusual or boundary inputs to identify potential failure modes</li>
+  <li><strong>Adversarial Scenarios:</strong> Attempt to deliberately cause failures or undesirable outputs</li>
+  <li><strong>Compliance:</strong> Ensure outputs adhere to regulatory requirements and ethical guidelines</li>
+</ul>
+
+<h2>Human Oversight Integration</h2>
+
+<p>Even the most advanced AI systems benefit from human supervision:</p>
+
+<ul>
+  <li>Implement clear escalation paths for uncertain or high-risk decisions</li>
+  <li>Establish feedback loops where human experts can correct AI errors</li>
+  <li>Maintain comprehensive audit trails of AI decisions and human interventions</li>
+</ul>
+
+<h2>Continuous Monitoring</h2>
+
+<p>AI safety isn't a one-time effort but requires ongoing vigilance:</p>
+
+<ul>
+  <li>Monitor performance metrics to detect degradation over time</li>
+  <li>Track input distribution shifts that might affect model performance</li>
+  <li>Implement alerting systems for anomalous behavior</li>
+</ul>
+
+<p>By following these best practices, organizations can harness the power of AI while minimizing associated risks.</p>
+      `,
+      excerpt: 'Essential guidelines for safely deploying AI systems in enterprise environments, focusing on testing frameworks, human oversight, and continuous monitoring.',
+      author: 'team_1', // Will be linked to Alex Rodriguez
+      categories: ['AI Safety', 'Enterprise', 'Best Practices'],
+      tags: ['testing', 'monitoring', 'deployment', 'oversight'],
+      isPublished: true,
+      publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+      seo: {
+        title: 'AI Safety Best Practices for Enterprise Deployment | Generativ Consulting',
+        description: 'Learn essential guidelines for safely deploying AI systems in enterprise environments, focusing on testing frameworks, human oversight, and continuous monitoring.',
+        keywords: ['AI safety', 'enterprise AI', 'AI testing', 'AI deployment']
+      }
+    },
+    {
+      slug: 'parallelization-techniques',
+      title: '10x Your AI Workflow with Advanced Parallelization Techniques',
+      content: `
+<p>In today's competitive landscape, the speed at which you can deploy and iterate on AI solutions can be a decisive advantage. This post explores practical techniques for parallelizing AI workflows to achieve dramatic performance improvements.</p>
+
+<h2>Workflow Analysis</h2>
+
+<p>Before implementing parallelization strategies, it's crucial to understand your current workflow:</p>
+
+<ul>
+  <li>Identify bottlenecks through systematic profiling</li>
+  <li>Determine which processes can run independently</li>
+  <li>Map data dependencies between workflow stages</li>
+</ul>
+
+<h2>Effective Parallelization Strategies</h2>
+
+<p>Once you've analyzed your workflow, consider these parallelization approaches:</p>
+
+<h3>1. Data Parallelism</h3>
+
+<p>Process multiple data batches simultaneously across different compute resources. This approach is particularly effective for:</p>
+
+<ul>
+  <li>Batch inference tasks</li>
+  <li>Large-scale data preprocessing</li>
+  <li>Independent validation runs</li>
+</ul>
+
+<h3>2. Model Parallelism</h3>
+
+<p>Distribute different parts of your model across multiple devices:</p>
+
+<ul>
+  <li>Shard large models across GPUs</li>
+  <li>Run ensemble components in parallel</li>
+  <li>Pipeline model stages for continuous processing</li>
+</ul>
+
+<h3>3. Task Parallelism</h3>
+
+<p>Execute different workflow components simultaneously:</p>
+
+<ul>
+  <li>Run data preprocessing alongside model training</li>
+  <li>Perform hyperparameter tuning in parallel</li>
+  <li>Simultaneously evaluate multiple model variants</li>
+</ul>
+
+<h2>Implementation Considerations</h2>
+
+<p>When implementing parallelization:</p>
+
+<ul>
+  <li>Balance resource allocation to prevent bottlenecks</li>
+  <li>Implement efficient synchronization mechanisms</li>
+  <li>Consider communication overhead in distributed systems</li>
+  <li>Establish monitoring to identify optimization opportunities</li>
+</ul>
+
+<p>By thoughtfully applying these parallelization techniques, organizations can achieve dramatic improvements in AI workflow efficiency, often reaching 10x or greater speedups compared to sequential processing approaches.</p>
+      `,
+      excerpt: 'Practical techniques for parallelizing AI workflows to achieve dramatic performance improvements through data, model, and task parallelism.',
+      author: 'team_2', // Will be linked to Jamie Lee
+      categories: ['Performance Optimization', 'Infrastructure', 'Workflows'],
+      tags: ['parallelization', 'performance', 'optimization', 'scaling'],
+      isPublished: true,
+      publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days ago
+      seo: {
+        title: '10x Your AI Workflow with Advanced Parallelization Techniques | Generativ Consulting',
+        description: 'Learn practical techniques for parallelizing AI workflows to achieve dramatic performance improvements through data, model, and task parallelism.',
+        keywords: ['AI parallelization', 'workflow optimization', 'performance scaling', 'AI infrastructure']
+      }
+    },
+    {
+      slug: 'critical-thinking-ai-era',
+      title: 'Critical Thinking in the AI Era: Essential Skills for the Modern Workforce',
+      content: `
+<p>As AI systems become increasingly integrated into workplace processes, the ability to think critically about AI outputs is becoming an essential professional skill. This post explores key critical thinking competencies needed in the AI era.</p>
+
+<h2>Understanding AI Capabilities and Limitations</h2>
+
+<p>Effective collaboration with AI tools begins with a clear understanding of what they can and cannot do:</p>
+
+<ul>
+  <li>Recognize the types of tasks where AI excels and where it struggles</li>
+  <li>Understand the concept of AI hallucinations and when they're likely to occur</li>
+  <li>Identify signs that an AI system is operating outside its training domain</li>
+</ul>
+
+<h2>Prompt Engineering Literacy</h2>
+
+<p>The ability to effectively instruct AI systems is becoming a fundamental workplace skill:</p>
+
+<ul>
+  <li>Craft clear, specific prompts that guide AI toward desired outputs</li>
+  <li>Break complex tasks into manageable components</li>
+  <li>Iterate on prompts based on system responses</li>
+  <li>Understand how context and framing affect AI outputs</li>
+</ul>
+
+<h2>Output Evaluation Skills</h2>
+
+<p>Perhaps most crucial is the ability to critically evaluate AI-generated content:</p>
+
+<ul>
+  <li>Verify factual claims against reliable sources</li>
+  <li>Identify logical inconsistencies or flawed reasoning</li>
+  <li>Detect subtle biases in AI-generated content</li>
+  <li>Assess whether outputs actually address the original objective</li>
+</ul>
+
+<h2>Refinement Techniques</h2>
+
+<p>Beyond evaluation, professionals need skills to improve AI outputs:</p>
+
+<ul>
+  <li>Provide effective feedback to guide AI systems toward better results</li>
+  <li>Edit and enhance AI-generated content</li>
+  <li>Combine outputs from multiple prompts or systems</li>
+  <li>Know when to abandon an AI approach in favor of human expertise</li>
+</ul>
+
+<h2>Developing Critical Thinking Skills</h2>
+
+<p>Organizations can foster these critical thinking skills through:</p>
+
+<ul>
+  <li>Structured training programs focused on AI collaboration</li>
+  <li>Regular practice with diverse AI systems and tasks</li>
+  <li>Team review sessions to share effective approaches</li>
+  <li>Creating a culture that values thoughtful AI use over blind acceptance</li>
+</ul>
+
+<p>By developing these critical thinking skills, professionals can transform AI from a potential source of misinformation into a powerful tool that enhances their work while maintaining human judgment at the core of important decisions.</p>
+      `,
+      excerpt: 'Essential critical thinking skills for effectively working with AI systems, including prompt engineering, output evaluation, and refinement techniques.',
+      author: 'team_3', // Will be linked to Morgan Chen
+      categories: ['Critical Thinking', 'Professional Development', 'AI Literacy'],
+      tags: ['critical thinking', 'prompt engineering', 'AI literacy', 'workforce skills'],
+      isPublished: true,
+      publishedAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(), // 21 days ago
+      seo: {
+        title: 'Critical Thinking in the AI Era: Essential Skills for the Modern Workforce | Generativ Consulting',
+        description: 'Learn the essential critical thinking skills needed to effectively work with AI systems, including prompt engineering, output evaluation, and refinement techniques.',
+        keywords: ['critical thinking', 'AI literacy', 'prompt engineering', 'workforce skills']
+      }
+    }
+  ];
+
+  for (const post of blogPosts) {
+    await createBlogPost(post);
+  }
+  console.log('Blog posts created');
+
+  // 7. Create Admin User - First create the regular user account
+  console.log('Creating admin user account...');
+  
+  // Import the user creation function from the regular DB
+  const { createUser, getUserByEmail } = await import('../actions/db.js');
+  
+  // Check if admin user already exists
+  let adminUserId: string;
+  const existingAdmin = await getUserByEmail('admin@generativ.cc');
+  
+  if (existingAdmin) {
+    console.log('Admin user already exists, using existing ID:', existingAdmin.id);
+    adminUserId = existingAdmin.id;
+  } else {
+    // Hash the admin password
+    const crypto = await import('crypto');
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.pbkdf2Sync('admin123', salt, 10000, 64, 'sha512').toString('hex');
+    const passwordHash = `${salt}:${hash}`;
+    
+    // Create the admin user in the regular users table
+    adminUserId = await createUser('admin@generativ.cc', passwordHash);
+    console.log('Admin user account created with ID:', adminUserId);
+  }
+  
+  // Create the CMS admin user entry (check if exists first)
+  const { getAdminUser } = await import('./db.js');
+  const existingCMSAdmin = await getAdminUser(adminUserId);
+  
+  if (!existingCMSAdmin) {
+    const adminUser: Omit<AdminUser, 'lastLogin' | 'createdAt' | 'updatedAt'> = {
+      userId: adminUserId,
+      role: 'admin',
+      permissions: ['create', 'update', 'delete', 'publish']
+    };
+
+    await createAdminUser(adminUser.userId, adminUser.role, adminUser.permissions);
+    console.log('CMS admin user created');
+  } else {
+    console.log('CMS admin user already exists');
+  }
+
+  // 8. Create Audit Log Entries
+  await createAuditLogEntry(adminUserId, 'create', 'site_settings', 'site_settings', { action: 'Initial setup' });
+  await createAuditLogEntry(adminUserId, 'create', 'page', 'home', { title: 'Home Page' });
+  await createAuditLogEntry(adminUserId, 'create', 'page', 'about', { title: 'About Page' });
+  await createAuditLogEntry(adminUserId, 'create', 'service', 'safety-testing', { title: 'AI Safety Testing' });
+  await createAuditLogEntry(adminUserId, 'create', 'service', 'parallelization', { title: 'Parallelization Infrastructure' });
+  await createAuditLogEntry(adminUserId, 'create', 'service', 'critical-thinking', { title: 'Critical Thinking Education' });
+  console.log('Audit log entries created');
 
   console.log('CMS data seeding completed');
 }

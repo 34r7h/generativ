@@ -1,32 +1,23 @@
-import * as cmsDB from './db.js';
-import { authenticateUser } from '../actions/db.js';
-import type { 
-  Page, 
-  TeamMember, 
-  Service, 
-  CaseStudy, 
-  BlogPost, 
-  MediaAsset, 
-  Event, 
-  ContactSubmission, 
-  SiteSettings,
-  AdminUser
-} from './schema';
-
-// CMS operation types
-export type CMSOperation = 
-  // Pages
+// Supported CMS operations
+export type CMSOperation =
+  // Page operations
   'createPage' | 'getPage' | 'getPageBySlug' | 'getAllPages' | 'updatePage' | 'deletePage' |
-  // Team members
+  // Team member operations
   'createTeamMember' | 'getTeamMember' | 'getAllTeamMembers' | 'updateTeamMember' | 'deleteTeamMember' |
-  // Services
+  // Service operations
   'createService' | 'getService' | 'getServiceBySlug' | 'getAllServices' | 'updateService' | 'deleteService' |
-  // Media
+  // Blog post operations
+  'createBlogPost' | 'getBlogPost' | 'getBlogPostBySlug' | 'getAllBlogPosts' | 'updateBlogPost' | 'deleteBlogPost' |
+  // Media operations
   'uploadMedia' | 'getMedia' | 'getAllMedia' | 'updateMedia' | 'deleteMedia' |
+  // Resource operations
+  'createResource' | 'getResource' | 'getAllResources' | 'updateResource' | 'deleteResource' |
   // Settings
   'getSiteSettings' | 'updateSiteSettings' |
   // Admin users
   'createAdminUser' | 'getAdminUser' | 'getAllAdminUsers' | 'updateAdminUser' | 'deleteAdminUser';
+import * as cmsDB from './db.js';
+import { authenticateUser } from '../actions/db.js';
 
 // Check if a user has admin permissions
 export async function isAdminUser(userId: string): Promise<boolean> {
@@ -46,6 +37,19 @@ export async function hasPermission(userId: string, requiredPermission: string):
   return adminUser.permissions.includes(requiredPermission);
 }
 
+// Input validation helpers
+function validateSlug(slug: string): boolean {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+}
+
+function sanitizeString(input: string): string {
+  return input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').trim();
+}
+
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 // Main handler for CMS API operations
 export async function handleCMSOperation(operation: CMSOperation, requestData: any, token?: string): Promise<any> {
   // For operations that require authentication
@@ -60,7 +64,10 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
     'getAllTeamMembers', 
     'getServiceBySlug', 
     'getAllServices',
+    'getBlogPostBySlug',
+    'getAllBlogPosts',
     'getMedia',
+    'getAllMedia',
     'getSiteSettings'
   ];
   
@@ -110,9 +117,25 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
         if (!requestData.page) {
           return { success: false, error: 'Page data is required' };
         }
-        const pageId = await cmsDB.createPage(requestData.page);
+        // Validate required fields
+        const pageData = requestData.page;
+        pageData.title = typeof pageData.title === 'string' ? pageData.title.trim() : '';
+        if (pageData.title.length === 0) {
+          return { success: false, error: 'Valid page title is required' };
+        }
+        if (!pageData.slug || typeof pageData.slug !== 'string' || !validateSlug(pageData.slug)) {
+          return { success: false, error: 'Valid page slug is required (lowercase letters, numbers, and hyphens only)' };
+        }
+        if (!pageData.content || typeof pageData.content !== 'string') {
+          return { success: false, error: 'Page content is required' };
+        }
+        // Sanitize inputs
+        pageData.title = sanitizeString(pageData.title);
+        pageData.content = sanitizeString(pageData.content);
+        if (pageData.excerpt) pageData.excerpt = sanitizeString(pageData.excerpt);
+        const pageId = await cmsDB.createPage(pageData);
         if (userId) {
-          await cmsDB.createAuditLogEntry(userId, 'create', 'page', pageId, { title: requestData.page.title });
+          await cmsDB.createAuditLogEntry(userId, 'create', 'page', pageId, { title: pageData.title });
         }
         return { success: true, pageId };
         
@@ -265,6 +288,62 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
           await cmsDB.createAuditLogEntry(userId, 'delete', 'service', requestData.serviceId, {});
         }
         return { success: serviceDeleted };
+      
+      // Blog post operations
+      case 'createBlogPost':
+        if (!requestData.post) {
+          return { success: false, error: 'Blog post data is required' };
+        }
+        const postId = await cmsDB.createBlogPost(requestData.post);
+        if (userId) {
+          await cmsDB.createAuditLogEntry(userId, 'create', 'blog_post', postId, { title: requestData.post.title });
+        }
+        return { success: true, postId };
+        
+      case 'getBlogPost':
+        if (!requestData.postId) {
+          return { success: false, error: 'Blog post ID is required' };
+        }
+        const post = await cmsDB.getBlogPostById(requestData.postId);
+        return { success: !!post, post };
+        
+      case 'getBlogPostBySlug':
+        if (!requestData.slug) {
+          return { success: false, error: 'Blog post slug is required' };
+        }
+        const postBySlug = await cmsDB.getBlogPostBySlug(requestData.slug);
+        return { success: !!postBySlug, post: postBySlug };
+        
+      case 'getAllBlogPosts':
+        const posts = await cmsDB.getAllBlogPosts();
+        // For public requests, only return published posts
+        if (!userId) {
+          return { 
+            success: true, 
+            posts: posts.filter(post => post.isPublished) 
+          };
+        }
+        return { success: true, posts };
+        
+      case 'updateBlogPost':
+        if (!requestData.postId || !requestData.updates) {
+          return { success: false, error: 'Blog post ID and updates are required' };
+        }
+        const postUpdated = await cmsDB.updateBlogPost(requestData.postId, requestData.updates);
+        if (postUpdated && userId) {
+          await cmsDB.createAuditLogEntry(userId, 'update', 'blog_post', requestData.postId, requestData.updates);
+        }
+        return { success: postUpdated };
+        
+      case 'deleteBlogPost':
+        if (!requestData.postId) {
+          return { success: false, error: 'Blog post ID is required' };
+        }
+        const postDeleted = await cmsDB.deleteBlogPost(requestData.postId);
+        if (postDeleted && userId) {
+          await cmsDB.createAuditLogEntry(userId, 'delete', 'blog_post', requestData.postId, {});
+        }
+        return { success: postDeleted };
       
       // Media operations
       case 'uploadMedia':

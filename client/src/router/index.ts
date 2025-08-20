@@ -23,6 +23,7 @@ import AdminTeam from '../components/views/admin/TeamPage.vue'
 import AdminServices from '../components/views/admin/ServicesPage.vue'
 import AdminBlog from '../components/views/admin/BlogPage.vue'
 import AdminMedia from '../components/views/admin/MediaPage.vue'
+import AdminResources from '../components/views/admin/ResourcesPage.vue'
 import AdminSettings from '../components/views/admin/SettingsPage.vue'
 
 // Auth guard for admin routes
@@ -148,6 +149,13 @@ const router = createRouter({
       path: '/admin/media',
       name: 'admin-media',
       component: AdminMedia,
+      beforeEnter: requireAuth,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/admin/resources',
+      name: 'admin-resources',
+      component: AdminResources,
       beforeEnter: requireAuth,
       meta: { requiresAuth: true }
     },

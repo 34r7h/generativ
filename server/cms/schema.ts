@@ -9,6 +9,26 @@ export interface SEOMetadata {
   ogImage?: string;
 }
 
+export interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  url: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+// CMS Schema Definitions
+// This file defines the data structures for the CMS content
+
+// Common types
+export interface SEOMetadata {
+  title: string;
+  description: string;
+  keywords: string[];
+  ogImage?: string;
+}
+
 export interface MediaAsset {
   id: string;
   title: string;
@@ -60,6 +80,7 @@ export interface TeamMember {
   twitter?: string;
   sortOrder: number;
   isActive: boolean;
+  userId?: string; // Optional link to admin user account
   createdAt: string;
   updatedAt: string;
 }

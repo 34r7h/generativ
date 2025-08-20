@@ -52,23 +52,27 @@ export interface OTPResponse {
 }
 
 // Utility functions
-function hashPassword(password: string): string {
-  return crypto.createHash('sha256').update(password).digest('hex');
+function hashPassword(password: string, salt?: string): string {
+  if (!salt) {
+    salt = crypto.randomBytes(16).toString('hex');
+  }
+  const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password: string, hashedPassword: string): boolean {
+  const [salt, hash] = hashedPassword.split(':');
+  const hashedInput = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+  return hash === hashedInput;
 }
 
 function generateJWT(userId: string): string {
-  // This is a simple token generation - in production, use a proper JWT library
-  const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const payload = btoa(JSON.stringify({ 
-    userId, 
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
-  }));
-  const signature = crypto.createHash('sha256')
-    .update(`${header}.${payload}`)
-    .digest('hex');
+  // Generate a secure random token - NOT a real JWT, just a session token
+  const randomBytes = crypto.randomBytes(32);
+  const timestamp = Date.now().toString(36);
+  const userHash = crypto.createHash('sha256').update(userId).digest('hex').slice(0, 8);
   
-  return `${header}.${payload}.${signature}`;
+  return `${timestamp}.${userHash}.${randomBytes.toString('hex')}`;
 }
 
 function generateOTP(): string {
@@ -77,6 +81,9 @@ function generateOTP(): string {
 
 // Store OTP codes temporarily (in production, use Redis or similar)
 const otpStore = new Map<string, { code: string; expiresAt: number }>();
+
+// Track login attempts for rate limiting
+const attemptTracker = new Map<string, { count: number; lastAttempt: number }>();
 
 // Authentication operations
 export async function login(request: LoginRequest): Promise<LoginResponse> {
@@ -88,17 +95,44 @@ export async function login(request: LoginRequest): Promise<LoginResponse> {
       return { success: false, error: 'Email and password are required' };
     }
     
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { success: false, error: 'Invalid email format' };
+    }
+    
+    // Rate limiting check (temporarily disabled for debugging)
+    // const loginAttempts = attemptTracker.get(email) || { count: 0, lastAttempt: 0 };
+    // const now = Date.now();
+    // const timeDiff = now - loginAttempts.lastAttempt;
+    
+    // if (loginAttempts.count >= 5 && timeDiff < 15 * 60 * 1000) { // 15 minutes
+    //   return { success: false, error: 'Too many login attempts. Please try again later.' };
+    // }
+    
     // Find user by email
     const user = await db.getUserByEmail(email);
     if (!user) {
+      // Track failed attempt (temporarily disabled)
+      // attemptTracker.set(email, { 
+      //   count: loginAttempts.count + 1, 
+      //   lastAttempt: now 
+      // });
       return { success: false, error: 'Invalid email or password' };
     }
     
     // Verify password
-    const hashedPassword = hashPassword(password);
-    if (user.passwordHash !== hashedPassword) {
+    if (!verifyPassword(password, user.passwordHash)) {
+      // Track failed attempt (temporarily disabled)
+      // attemptTracker.set(email, { 
+      //   count: loginAttempts.count + 1, 
+      //   lastAttempt: now 
+      // });
       return { success: false, error: 'Invalid email or password' };
     }
+    
+    // Clear failed attempts on successful login
+    attemptTracker.delete(email);
     
     // Generate JWT token
     const token = generateJWT(user.id);
@@ -126,8 +160,19 @@ export async function signup(request: SignupRequest): Promise<SignupResponse> {
       return { success: false, error: 'Email and password are required' };
     }
     
-    if (password.length < 6) {
-      return { success: false, error: 'Password must be at least 6 characters long' };
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return { success: false, error: 'Invalid email format' };
+    }
+    
+    // Strong password validation
+    if (password.length < 8) {
+      return { success: false, error: 'Password must be at least 8 characters long' };
+    }
+    
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+      return { success: false, error: 'Password must contain at least one lowercase letter, one uppercase letter, and one number' };
     }
     
     // Check if user already exists
