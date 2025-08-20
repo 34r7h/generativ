@@ -1,7 +1,10 @@
 // API Client for Generativ Consulting Company
 
+// Import API configuration
+import { API_CONFIG } from '../config/api';
+
 // Configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003';
+const API_URL = API_CONFIG.API_URL;
 
 // Custom error class for API errors
 class APIError extends Error {
