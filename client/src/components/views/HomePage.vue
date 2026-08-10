@@ -47,7 +47,8 @@ async function fetchPageData() {
       const servicesResponse = await cmsAPI.getServices();
       console.log('Services response:', servicesResponse);
       if (servicesResponse.success) {
-        services.value = servicesResponse.services || [];
+        services.value = [...(servicesResponse.services || [])]
+          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
         console.log('Services loaded:', services.value);
       }
     } catch (servicesError) {

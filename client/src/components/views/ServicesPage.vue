@@ -14,7 +14,8 @@ async function fetchServicesData() {
 
     const response = await cmsAPI.getServices();
     if (response.success) {
-      services.value = response.services || [];
+      services.value = [...(response.services || [])]
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
     } else {
       console.error('Failed to load services:', response.error);
       error.value = 'Failed to load services';
@@ -121,7 +122,7 @@ onMounted(() => {
               <div class="step-number">3</div>
               <div class="step-content">
                 <h3>Sizing</h3>
-                <p>Opportunity sizing and cost projections against stated labour and time assumptions.</p>
+                <p>Opportunity sizing and cost projections against stated labor and time assumptions.</p>
               </div>
             </div>
 
@@ -148,7 +149,7 @@ onMounted(() => {
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
-        <h2>Enquiries</h2>
+        <h2>Inquiries</h2>
         <p>Scoping starts with a short conversation about how the practice currently runs.</p>
         <div class="cta-buttons">
           <router-link to="/contact" class="primary-button">Contact</router-link>

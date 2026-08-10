@@ -80,7 +80,7 @@ const LEAK_STATS = [
 const VERTICALS = [
   {
     title: 'Real estate and property management',
-    leak: 'Inbound enquiries arriving after hours or at weekends are answered late, if at all.',
+    leak: 'Inbound inquiries arriving after hours or at weekends are answered late, if at all.',
     before: 'Manual sorting; around 12 minutes to first response',
     after: 'Qualified and routed in under 60 seconds',
     proof: 'Reported payback in two to three weeks where inbound volume is steady.'
@@ -289,7 +289,7 @@ const aboutPage: PageSeed = {
         stats: [
           {
             value: '40%+',
-            label: 'of agentic AI projects expected to be cancelled by end of 2027',
+            label: 'of agentic AI projects expected to be canceled by end of 2027',
             detail: 'Gartner — driven by cost, unclear value, and inadequate risk controls.'
           },
           {
@@ -353,7 +353,7 @@ const aboutPage: PageSeed = {
     {
       id: 'about-cta',
       type: 'cta',
-      title: 'Enquiries',
+      title: 'Inquiries',
       content:
         'Scoping starts with a short conversation about how the practice currently runs.',
       sortOrder: 7,
@@ -386,7 +386,7 @@ const services: ServiceSeed[] = [
 <h3>Deliverables</h3>
 <ul>
   <li><strong>Readiness assessment:</strong> the state of the existing systems, the quality of the underlying data, and what the team can realistically operate.</li>
-  <li><strong>Three bottlenecks:</strong> the processes consuming the most manual labour, each with its annual cost and the assumptions used to reach it.</li>
+  <li><strong>Three bottlenecks:</strong> the processes consuming the most manual labor, each with its annual cost and the assumptions used to reach it.</li>
   <li><strong>90-day roadmap:</strong> what to implement first, what it integrates with, and how the result is measured.</li>
 </ul>
 
@@ -500,7 +500,7 @@ const services: ServiceSeed[] = [
     shortDescription:
       'Red teaming, output validation and compliance controls for systems whose output is not deterministic.',
     fullDescription: `
-<p>Before an automation is recommended on the basis of what it saves, its behaviour when it is wrong has to be characterised. That work is included in every implementation and available separately for teams already running systems in production.</p>
+<p>Before an automation is recommended on the basis of what it saves, its behavior when it is wrong has to be characterized. That work is included in every implementation and available separately for teams already running systems in production.</p>
 
 <h3>Scope</h3>
 <ul>
@@ -515,7 +515,7 @@ const services: ServiceSeed[] = [
 <p>For any critical action — sending a client email, modifying a legal document, processing a transaction — the agent drafts, queues, and alerts. A person verifies and approves before anything goes live.</p>
     `,
     benefits: [
-      'Hallucination risk characterised before deployment',
+      'Hallucination risk characterized before deployment',
       'Reduced security and disclosure exposure',
       'Human approval gates on critical actions',
       'Evidence trails that hold up under a professional audit cycle'
@@ -577,7 +577,7 @@ const services: ServiceSeed[] = [
 <ul>
   <li><strong>Approval-gate judgment:</strong> what to check before clicking Approve on an agent-drafted action.</li>
   <li><strong>Error recognition:</strong> spotting the subtle inaccuracies that look plausible and are not.</li>
-  <li><strong>Prompt and instruction design:</strong> getting reliable behaviour out of the tools your team already touches.</li>
+  <li><strong>Prompt and instruction design:</strong> getting reliable behavior out of the tools your team already touches.</li>
   <li><strong>Output evaluation:</strong> systematic assessment of AI-generated content against the original objective.</li>
   <li><strong>Ethics and disclosure:</strong> what has to be told to a client, a patient, or a court.</li>
 </ul>
@@ -637,13 +637,13 @@ const blogPosts: BlogSeed[] = [
     seo: {
       title: 'What administrative overhead costs a small practice',
       description:
-        'A costing of three common administrative losses: unanswered calls, manual form processing, and slow response to inbound enquiries.',
+        'A costing of three common administrative losses: unanswered calls, manual form processing, and slow response to inbound inquiries.',
       keywords: ['profit leak', 'missed calls', 'manual data entry cost', 'small business overhead']
     }
   },
   {
     slug: 'speed-to-lead-12-minutes-to-12-seconds',
-    title: 'Response time and lost enquiries in property management',
+    title: 'Response time and lost inquiries in property management',
     content: `
 <p>In a dense rental market, lead loss is a 24/7 threat, and it is almost never a pricing problem. Inquiries arrive at 9pm on a Sunday from a listing portal. By Monday at 10am, the prospect has toured two other apartments.</p>
 
@@ -660,22 +660,22 @@ const blogPosts: BlogSeed[] = [
 <p>In real-world pilots this pattern has been used to match against portfolios exceeding £18B in property value. The mechanism is not exotic; it is the connector layer between the portal and the calendar, which most brokerages simply do not have.</p>
 
 <h2>Whether it is worth building</h2>
-<p>It depends entirely on inbound volume. A brokerage losing several fee-earning enquiries a month to slow follow-up recovers the build cost quickly; one with light or highly qualified inbound may not. Where volume is steady, reported payback is two to three weeks, with booking rates up around 20% in the first month.</p>
+<p>It depends entirely on inbound volume. A brokerage losing several fee-earning inquiries a month to slow follow-up recovers the build cost quickly; one with light or highly qualified inbound may not. Where volume is steady, reported payback is two to three weeks, with booking rates up around 20% in the first month.</p>
 
 <h2>The limiting factor</h2>
 <p>Response speed only helps if the qualification logic reflects how the agents actually work. That is the purpose of walking the real intake path with the person who runs it, including the exceptions that were never written down.</p>
     `,
     excerpt:
-      'The industry benchmark for first response to a property enquiry is around 12 minutes. What automated qualification changes, and what it does not.',
+      'The industry benchmark for first response to a property inquiry is around 12 minutes. What automated qualification changes, and what it does not.',
     author: 'Generativ Consulting Company',
     categories: ['Real Estate', 'Automation'],
     tags: ['speed to lead', 'real estate', 'lead qualification', 'CRM integration'],
     isPublished: true,
     publishedAt: daysAgo(5),
     seo: {
-      title: 'Response time and lost enquiries in property management',
+      title: 'Response time and lost inquiries in property management',
       description:
-        'How continuous enquiry intake and qualification affects response time, and the conditions under which it is worth building.',
+        'How continuous inquiry intake and qualification affects response time, and the conditions under which it is worth building.',
       keywords: ['speed to lead', 'real estate automation', 'lead response time', 'StreetEasy automation']
     }
   },
@@ -683,7 +683,7 @@ const blogPosts: BlogSeed[] = [
     slug: 'clinic-intake-and-the-no-show-problem',
     title: 'Where front-desk hours go in a small clinic',
     content: `
-<p>A neighbourhood clinic does not lose money dramatically. It loses it in eight to fifteen hours a week of front-desk time spent on phone tag, retyping paper intake forms into the EHR, and chasing past-due invoices.</p>
+<p>A neighborhood clinic does not lose money dramatically. It loses it in eight to fifteen hours a week of front-desk time spent on phone tag, retyping paper intake forms into the EHR, and chasing past-due invoices.</p>
 
 <h2>Where the hours go</h2>
 <ul>
@@ -753,10 +753,10 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'why-40-percent-of-agentic-ai-projects-get-cancelled',
-    title: 'Why agentic AI projects are cancelled',
+    slug: 'why-40-percent-of-agentic-ai-projects-get-canceled',
+    title: 'Why agentic AI projects are canceled',
     content: `
-<p>Gartner's forecast is blunt: <strong>more than 40% of agentic AI projects are expected to be cancelled by the end of 2027</strong>. Read alongside the adoption numbers, it is a stranger picture than it first appears.</p>
+<p>Gartner's forecast is blunt: <strong>more than 40% of agentic AI projects are expected to be canceled by the end of 2027</strong>. Read alongside the adoption numbers, it is a stranger picture than it first appears.</p>
 
 <h2>Both things are true</h2>
 <ul>
@@ -771,22 +771,22 @@ const blogPosts: BlogSeed[] = [
 <p>There is a fourth, more mundane one: <strong>data quality is implicated in roughly 85% of failed AI projects.</strong> Agents built on unreconciled spreadsheets and duplicate records hallucinate for entirely ordinary reasons.</p>
 
 <h2>The pattern behind the failures</h2>
-<p>Most cancelled projects are a rebranded chatbot with an agent label. An agent is not a single model call wrapped in a UI. Real deployments need planning loops with retries, state that survives failure, a connector layer into the systems of record, and traces from every decision back to its inputs.</p>
+<p>Most canceled projects are a rebranded chatbot with an agent label. An agent is not a single model call wrapped in a UI. Real deployments need planning loops with retries, state that survives failure, a connector layer into the systems of record, and traces from every decision back to its inputs.</p>
 
 <h2>Applying it</h2>
-<p>Each opportunity identified in a review is assessed against five criteria before it is recommended: orchestration, governance, integration, observability, and outcomes — the last measured in resolution time and revenue rather than in systems deployed. An opportunity that fails one is not proposed. Cancelling at that stage costs a week and a fixed fee rather than a quarter.</p>
+<p>Each opportunity identified in a review is assessed against five criteria before it is recommended: orchestration, governance, integration, observability, and outcomes — the last measured in resolution time and revenue rather than in systems deployed. An opportunity that fails one is not proposed. Canceling at that stage costs a week and a fixed fee rather than a quarter.</p>
     `,
     excerpt:
-      'Gartner expects over 40% of agentic AI projects to be cancelled by 2027 — from cost, unclear value and missing risk controls. The five tests that catch it early.',
+      'Gartner expects over 40% of agentic AI projects to be canceled by 2027 — from cost, unclear value and missing risk controls. The five tests that catch it early.',
     author: 'Generativ Consulting Company',
     categories: ['Agentic AI', 'Strategy'],
     tags: ['Gartner', 'agentic AI', 'project failure', 'governance', 'observability'],
     isPublished: true,
     publishedAt: daysAgo(14),
     seo: {
-      title: 'Why agentic AI projects are cancelled',
+      title: 'Why agentic AI projects are canceled',
       description:
-        'Gartner forecasts over 40% of agentic AI projects cancelled by end of 2027. The recurring causes are cost, undefined value, and inadequate risk controls.',
+        'Gartner forecasts over 40% of agentic AI projects canceled by end of 2027. The recurring causes are cost, undefined value, and inadequate risk controls.',
       keywords: ['agentic AI failure', 'Gartner agentic AI', 'AI project cancellation', 'AI governance']
     }
   },
@@ -869,7 +869,9 @@ async function upsertServices(): Promise<{ created: number; updated: number }> {
       created++;
     } else {
       for (const match of matches) {
-        await updateService(match.id, seed);
+        // `icon` is no longer set by the seed; updateService merges, so an
+        // explicit empty value is required to clear a previously stored emoji.
+        await updateService(match.id, { icon: '', ...seed });
         updated++;
       }
     }
