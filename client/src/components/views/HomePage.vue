@@ -1105,4 +1105,49 @@ onMounted(() => {
     margin: 0 auto;
   }
 }
+
+/* On a phone the hero has to fit the first screen, so the type steps down and
+   the graphic gives up height rather than the calls to action falling below
+   the fold. */
+@media (max-width: 640px) {
+  .hero-section {
+    padding: 40px 0 44px;
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 14px;
+    font-size: 0.76rem;
+    padding: 5px 11px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.05rem;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    max-width: none;
+  }
+
+  .hero-lede {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .hero-serves {
+    gap: 6px 16px;
+    margin-bottom: 22px;
+  }
+
+  .hero-serves li {
+    font-size: 0.87rem;
+  }
+
+  .hero-graphic {
+    margin-top: 26px;
+  }
+
+  .hero-anim {
+    max-width: 300px;
+  }
+}
 </style>
