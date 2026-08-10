@@ -165,13 +165,21 @@ const homePage: PageSeed = {
     {
       id: 'hero',
       type: 'hero',
-      title: 'AI promises a lot. Your P&L is where it shows up — or doesn\'t.',
+      title: 'AI and automation consulting for professional practices',
       content:
-        'Generativ builds the second half. We work with real estate, clinical and legal practices ' +
-        'to turn agentic technology into hours and margin you can point at.',
+        'We review how the work actually runs, cost what it is losing, and build the automations ' +
+        'worth building — then run them. We also handle the search and answer-engine visibility ' +
+        'that brings new work in.',
       sortOrder: 1,
       settings: {
         eyebrow: 'AI and agentic consulting',
+        // Who the work is for, stated on the first screen.
+        serves: [
+          'Real estate and property',
+          'Clinical practices',
+          'Law and tax',
+          'Professional services, 5 to 50 people'
+        ],
         ctaPrimary: { text: 'Start with an audit', url: '/services/ai-opportunity-audit' },
         ctaSecondary: { text: 'See all services', url: '/services' }
       }

@@ -125,6 +125,12 @@ onMounted(() => {
                 </p>
                 <h1>{{ section.title }}</h1>
                 <p class="hero-lede">{{ section.content }}</p>
+                <ul class="hero-serves" v-if="section.settings?.serves">
+                  <li v-for="item in section.settings.serves" :key="item">
+                    <AppIcon name="check" :size="15" />
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
                 <div class="hero-cta" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
                   <router-link 
                     v-if="section.settings?.ctaPrimary" 
