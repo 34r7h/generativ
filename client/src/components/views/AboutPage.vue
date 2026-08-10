@@ -100,7 +100,7 @@ onMounted(() => {
                   :key="value.title"
                   class="value-card"
                 >
-                  <div class="value-icon">{{ value.icon }}</div>
+                  <div class="value-icon" v-if="value.icon">{{ value.icon }}</div>
                   <h3>{{ value.title }}</h3>
                   <p>{{ value.description }}</p>
                 </div>
@@ -290,18 +290,17 @@ onMounted(() => {
 
 .stat-card {
   background-color: var(--white, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius, 8px);
-  border-top: 4px solid var(--primary-color);
-  padding: 28px 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 24px;
 }
 
 .stat-value {
-  font-size: 2.2rem;
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--primary-color);
-  margin-bottom: 10px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--dark-blue);
+  margin-bottom: 8px;
 }
 
 .stat-label {

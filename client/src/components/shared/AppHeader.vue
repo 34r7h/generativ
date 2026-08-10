@@ -35,7 +35,6 @@ const fetchSiteSettings = async () => {
 // Navigation items
 const navItems = [
   { name: 'Home', path: '/' },
-  { name: 'The $500 Audit', path: '/services/ai-opportunity-audit' },
   { name: 'Services', path: '/services' },
   { name: 'About', path: '/about' },
   { name: 'Team', path: '/team' },

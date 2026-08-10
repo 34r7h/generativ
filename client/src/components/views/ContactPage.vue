@@ -134,7 +134,7 @@ function setFormType(type) {
   // Set default subject based on form type
   switch (type) {
     case 'assessment':
-      formData.value.subject = 'AI Opportunity Audit Request ($500)';
+      formData.value.subject = 'Operational review enquiry';
       break;
     case 'newsletter':
       formData.value.subject = 'Newsletter Subscription';
@@ -150,10 +150,10 @@ function setFormType(type) {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Book the $500 Audit</h1>
+        <h1>Contact</h1>
         <p class="hero-description">
-          Thirty minutes to scope it, five business days to deliver it. If we do not find at
-          least $5,000 in verifiable annual savings, you get the $500 back — no questions asked.
+          Scoping an operational review starts with a short conversation about how the
+          practice currently runs.
         </p>
       </div>
     </section>
@@ -175,7 +175,7 @@ function setFormType(type) {
                 :class="['form-type-button', { active: formData.formType === 'assessment' }]"
                 @click="setFormType('assessment')"
               >
-                Book the $500 Audit
+                Request a review
               </button>
               <button 
                 :class="['form-type-button', { active: formData.formType === 'newsletter' }]"
@@ -195,7 +195,7 @@ function setFormType(type) {
             <!-- Contact Form -->
             <form v-else @submit.prevent="submitForm" class="contact-form">
               <h2>{{ 
-                formData.formType === 'assessment' ? 'Book Your AI Opportunity Audit' :
+                formData.formType === 'assessment' ? 'Request an operational review' :
                 formData.formType === 'newsletter' ? 'Subscribe to Our Newsletter' : 
                 'Send Us a Message' 
               }}</h2>

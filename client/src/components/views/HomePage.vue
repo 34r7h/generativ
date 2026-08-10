@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
-import heroImage from '../../assets/images/hero-image.svg';
 import placeholderPerson from '../../assets/images/placeholder-person.svg';
 
 const loading = ref(true);
@@ -123,9 +122,6 @@ onMounted(() => {
                     {{ section.settings.ctaSecondary.text }}
                   </router-link>
                 </div>
-              </div>
-              <div class="hero-image">
-                <img :src="heroImage" alt="The $500 AI Opportunity Audit" />
               </div>
             </div>
           </section>
@@ -417,18 +413,17 @@ onMounted(() => {
 
 .stat-card {
   background-color: var(--white, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius, 8px);
-  border-top: 4px solid var(--primary-color);
-  padding: 28px 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 24px;
 }
 
 .stat-value {
-  font-size: 2.6rem;
-  font-weight: 700;
-  line-height: 1.1;
-  color: var(--primary-color);
-  margin-bottom: 10px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--black);
+  margin-bottom: 8px;
 }
 
 .stat-label {
@@ -462,9 +457,9 @@ onMounted(() => {
 
 .vertical-card {
   background-color: var(--white, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius, 8px);
-  padding: 32px 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 28px;
   display: flex;
   flex-direction: column;
 }

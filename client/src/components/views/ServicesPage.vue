@@ -39,11 +39,10 @@ onMounted(() => {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>One Way In. Two Ways Forward.</h1>
+        <h1>Services</h1>
         <p class="hero-description">
-          Every engagement starts with the $500 AI Opportunity Audit: five business days,
-          your top three operational leaks quantified in writing, and a full refund if we
-          cannot find at least $5,000 in annual savings.
+          Engagements begin with an operational review and continue into implementation
+          where the review identifies work worth automating.
         </p>
       </div>
     </section>
@@ -95,10 +94,10 @@ onMounted(() => {
     <section class="approach-section">
       <div class="container">
         <div class="approach-content">
-          <h2>The 5-Day Precision Delivery Schedule</h2>
+          <h2>How the review runs</h2>
           <p>
-            An owner-operator cannot disappear into a discovery phase. The audit goes from
-            tool inventory to ROI sizing in a single business week, on-site, with you present.
+            One business week, on-site, from tool inventory through to opportunity sizing.
+            The owner-operator is present on the first day.
           </p>
 
           <div class="process-steps">
@@ -106,7 +105,7 @@ onMounted(() => {
               <div class="step-number">1</div>
               <div class="step-content">
                 <h3>Discovery</h3>
-                <p>Workflow walks and tool inventory, on-site. We watch the work actually move rather than reading a diagram of it.</p>
+                <p>Workflow walks and tool inventory, on-site, with the owner-operator present.</p>
               </div>
             </div>
 
@@ -114,7 +113,7 @@ onMounted(() => {
               <div class="step-number">2</div>
               <div class="step-content">
                 <h3>Analysis</h3>
-                <p>Bottleneck scoring and internal logic review — where does a task stop and wait for a human who is already busy?</p>
+                <p>Bottleneck scoring and review of the internal logic each process depends on.</p>
               </div>
             </div>
 
@@ -122,7 +121,7 @@ onMounted(() => {
               <div class="step-number">3</div>
               <div class="step-content">
                 <h3>Sizing</h3>
-                <p>ROI opportunity sizing and cost projections, using standard labor and time assumptions you can verify yourself.</p>
+                <p>Opportunity sizing and cost projections against stated labour and time assumptions.</p>
               </div>
             </div>
 
@@ -130,7 +129,7 @@ onMounted(() => {
               <div class="step-number">4</div>
               <div class="step-content">
                 <h3>Strategy</h3>
-                <p>Drafting the 90-day roadmap: what ships first, what it plugs into, and what it is measured against.</p>
+                <p>Drafting the 90-day roadmap: sequence, integration points, and measures.</p>
               </div>
             </div>
 
@@ -138,7 +137,7 @@ onMounted(() => {
               <div class="step-number">5</div>
               <div class="step-content">
                 <h3>Delivery</h3>
-                <p>Your Readiness Score, the top three bottlenecks, and the roadmap — in writing, with the math shown.</p>
+                <p>Written delivery of the readiness assessment, the three bottlenecks, and the roadmap.</p>
               </div>
             </div>
           </div>
@@ -149,14 +148,10 @@ onMounted(() => {
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
-        <h2>Identify Your $5,000 in Savings</h2>
-        <p>
-          Thirty-minute discovery session, then the five-day schedule. Flat $500 — credited
-          in full toward your build, or refunded if the numbers are not there.
-        </p>
+        <h2>Enquiries</h2>
+        <p>Scoping starts with a short conversation about how the practice currently runs.</p>
         <div class="cta-buttons">
-          <router-link to="/contact" class="primary-button">Book the $500 Audit</router-link>
-          <router-link to="/blog" class="secondary-button">Read the Leak Diagnostics</router-link>
+          <router-link to="/contact" class="primary-button">Contact</router-link>
         </div>
       </div>
     </section>

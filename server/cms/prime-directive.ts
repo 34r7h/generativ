@@ -1,15 +1,15 @@
 /**
  * PRIME DIRECTIVE
  *
- * The canonical, code-owned content that defines what Generativ Consulting Company
- * sells and how it talks about it:
+ * The canonical, code-owned content describing what Generativ Consulting Company does:
  *
- *   The AI Opportunity Audit — flat $500, 5 business days, on-site.
- *   We map the top 3 operational leaks with quantified savings.
- *   If we don't find at least $5,000 in verifiable annual savings, we refund the $500.
- *   If we build, the $500 is credited 100% toward the implementation.
+ *   The AI Opportunity Audit — a five-day, on-site operational review, flat $500.
+ *   It documents the three bottlenecks costing the practice the most, with the
+ *   arithmetic behind each. The fee is credited against an implementation, or
+ *   refunded if the review does not find at least $5,000 in annual savings.
  *
- * Everything else on the site — pages, services, blog — is arranged to support that offer.
+ * Pages, services and blog are arranged around that work. Copy here is plain and
+ * factual by policy: no superlatives, no repeated calls to action, no sales framing.
  *
  * This module is an IDEMPOTENT upsert-by-slug. Running it twice is a no-op beyond
  * refreshing `updatedAt`; it never duplicates a page, service, or post. The LMDB
@@ -47,12 +47,10 @@ export const PRIME_DIRECTIVE = {
   offer: 'AI Opportunity Audit',
   price: '$500 flat fee',
   duration: '5 business days',
-  guarantee:
-    "If the audit does not identify at least $5,000 in verifiable annual savings, we refund the $500. If you build with us, the $500 is credited 100% toward the implementation.",
-  promise: 'Find the leak. Prove the savings. Ship the agent.'
+  terms:
+    'The fee is credited against an implementation if you proceed, or refunded if the review does not identify at least $5,000 in annual savings.',
+  summary: 'Operational review, automation build, and the practice behind both.'
 };
-
-const AUDIT_CTA = { text: 'Book the $500 Audit', url: '/contact' };
 
 // The measured factors behind the offer. Sourced from the 2026 Uptown NYC
 // engagement research; each figure is attributed where it is rendered.
@@ -60,7 +58,7 @@ const LEAK_STATS = [
   {
     value: '42%',
     label: 'of local businesses lose money to missed calls',
-    detail: 'Over $500 a month walks out the door on calls nobody picked up.'
+    detail: 'Typically over $500 a month in attributable revenue.'
   },
   {
     value: '$12–$20',
@@ -70,86 +68,36 @@ const LEAK_STATS = [
   {
     value: '12 min',
     label: 'industry-standard first response to an inbound lead',
-    detail: 'Automated matching answers in 12 seconds — before the competitor does.'
+    detail: 'Automated qualification and routing responds in roughly 12 seconds.'
   },
   {
     value: '85%',
     label: 'of failed AI projects trace back to data quality',
-    detail: 'Not the model. The spreadsheets, the duplicates, the unreconciled records.'
-  }
-];
-
-const IMPACT_STATS = [
-  {
-    value: '5 hrs/wk',
-    label: 'saved per doctor',
-    detail: 'Multi-channel scheduling and pre-appointment agents, medical and dental.'
-  },
-  {
-    value: '8–12 hrs/wk',
-    label: 'reclaimed for front-desk staff',
-    detail: 'Automated patient and client intake across clinics and brokerages.'
-  },
-  {
-    value: '$2.36',
-    label: 'new cost per form entry',
-    detail: 'Down from $12–$20 with document intelligence — an ~80% reduction.'
-  },
-  {
-    value: '14–15%',
-    label: 'average staff productivity gain',
-    detail: 'What happens when the repetitive work stops reaching human hands.'
+    detail: 'Duplicate records and unreconciled systems, not model capability.'
   }
 ];
 
 const VERTICALS = [
   {
-    icon: '🏠',
-    title: 'Real Estate & Property Management',
-    leak: 'The speed-to-lead gap. Inquiries that arrive after hours or on weekends go cold.',
-    before: 'Hours of manual sorting; 12-minute average first response',
-    after: 'Qualified and routed in under 60 seconds — a 12-second first touch',
-    proof: 'Payback in 2 to 3 weeks for teams with steady inbound.'
+    title: 'Real estate and property management',
+    leak: 'Inbound enquiries arriving after hours or at weekends are answered late, if at all.',
+    before: 'Manual sorting; around 12 minutes to first response',
+    after: 'Qualified and routed in under 60 seconds',
+    proof: 'Reported payback in two to three weeks where inbound volume is steady.'
   },
   {
-    icon: '🦷',
-    title: 'Dental & Medical Clinics',
-    leak: 'No-shows and manual intake. Staff lose 8–15 hours a week to phone tag and retyping forms.',
-    before: 'Constant phone tag, paper intake retyped into the EHR',
-    after: 'Instant patient booking, validated intake, automatic reminders',
-    proof: 'Over 5 hours back per doctor per week; 20%+ lift in patient engagement.'
+    title: 'Dental and medical practices',
+    leak: 'Appointment reminders and paper intake consume 8 to 15 front-desk hours a week.',
+    before: 'Phone reminders; paper intake retyped into the EHR',
+    after: 'Text-based scheduling with validated intake written as structured data',
+    proof: 'Around 5 hours per clinician per week; 8 to 12 staff hours recovered.'
   },
   {
-    icon: '⚖️',
-    title: 'Law & Tax Offices',
-    leak: 'Document processing. The same standard fields, extracted by hand, at $12–$20 a form.',
+    title: 'Law and tax offices',
+    leak: 'Standard fields extracted by hand from client documents, at $12 to $20 per form.',
     before: 'Manual review of contracts, referral packets and tax documents',
-    after: 'Secure extraction in 1–2 seconds with human-in-the-loop approval gates',
-    proof: 'Built for AI-disclosure regimes such as the 15th Judicial Circuit AO 2.109-4/26.'
-  }
-];
-
-const OFFER_LADDER = [
-  {
-    name: 'The Gateway: AI Opportunity Audit',
-    price: '$500 flat',
-    timeline: '5 business days',
-    objective:
-      'Map three high-ROI operational leaks with quantified savings. Fully credited toward the build.'
-  },
-  {
-    name: 'The Hook: Quick-Win Sprint',
-    price: '$1,500 – $3,500',
-    timeline: '7 to 14 days',
-    objective:
-      'Deploy one automated system end to end — lead capture, intake, or document extraction — wired into the tools you already use.'
-  },
-  {
-    name: 'The Scale-Up: Managed Operations',
-    price: '$1,500 – $5,000 / month',
-    timeline: 'Ongoing partnership',
-    objective:
-      'Continuous monitoring, model versioning, retraining and retrieval-pipeline tuning so the agents survive the next model shift.'
+    after: 'Extraction in 1 to 2 seconds behind a human approval gate',
+    proof: 'Designed for AI-disclosure requirements such as 15th Judicial Circuit AO 2.109-4/26.'
   }
 ];
 
@@ -157,60 +105,55 @@ const FIVE_DAY_SCHEDULE = [
   {
     title: 'Day 1 — Discovery',
     description:
-      'Workflow walks and tool inventory, on-site, with the owner-operator present. We watch the work actually move.'
+      'Workflow walks and tool inventory, on-site, with the owner-operator present.'
   },
   {
     title: 'Day 2 — Analysis',
     description:
-      'Bottleneck scoring and internal logic review. Where does a task stop and wait for a human who is busy?'
+      'Bottleneck scoring and review of the internal logic each process depends on.'
   },
   {
     title: 'Day 3 — Sizing',
     description:
-      'ROI opportunity sizing and cost projections, using standard labor and time assumptions you can check yourself.'
+      'Opportunity sizing and cost projections against stated labor and time assumptions.'
   },
   {
     title: 'Day 4 — Strategy',
     description:
-      'Drafting the 90-day roadmap: what ships first, what it plugs into, and what it is measured against.'
+      'Drafting the 90-day roadmap: sequence, integration points, and measures.'
   },
   {
     title: 'Day 5 — Delivery',
     description:
-      'Delivery of the Readiness Score, the top 3 bottlenecks, and the roadmap — in writing, with the math shown.'
+      'Written delivery of the readiness assessment, the three bottlenecks, and the roadmap.'
   }
 ];
 
 const FIVE_TESTS = [
   {
-    icon: '🔁',
     title: 'Orchestration',
     description:
-      'Beyond a single model call: planning loops, retries, and state that survives a failure mid-task.'
+      'Planning loops, retries, and state that survives a failure partway through a task.'
   },
   {
-    icon: '🛡️',
     title: 'Governance',
     description:
-      'PII handling and evaluation pipelines that survive a professional audit cycle, not just a demo.'
+      'PII handling and evaluation pipelines that hold up under a professional audit cycle.'
   },
   {
-    icon: '🔌',
     title: 'Integration',
     description:
-      'Agents wired into your actual CRM, EHR or order pipeline — the connector layer most setups are missing.'
+      'Connection into the existing CRM, EHR or order pipeline rather than alongside it.'
   },
   {
-    icon: '🔎',
     title: 'Observability',
     description:
-      'Every non-deterministic decision traceable back to the specific inputs that produced it.'
+      'Each non-deterministic decision traceable to the inputs that produced it.'
   },
   {
-    icon: '🎯',
     title: 'Outcomes',
     description:
-      'Success denominated in resolution time and revenue uplift — never in "agents shipped".'
+      'Measured in resolution time and revenue, not in the number of agents deployed.'
   }
 ];
 
@@ -229,135 +172,70 @@ const homePage: PageSeed = {
     {
       id: 'hero',
       type: 'hero',
-      title: 'Find the Leak. Prove the Savings. Ship the Agent.',
+      title: 'AI Opportunity Audit',
       content:
-        'A flat $500, five-day AI Opportunity Audit that maps the three operational leaks costing you the most — with the math written down. If we cannot find $5,000 in annual savings, you get the $500 back.',
+        'A five-day, on-site review of how work moves through a practice. It ends in a written report: the three bottlenecks costing the most, each with its annual cost and the assumptions behind it.',
       sortOrder: 1,
       settings: {
-        ctaPrimary: AUDIT_CTA,
-        ctaSecondary: { text: 'See How the Audit Works', url: '/services/ai-opportunity-audit' }
+        ctaPrimary: { text: 'What the audit covers', url: '/services/ai-opportunity-audit' }
       }
     },
     {
-      id: 'silent-leak',
+      id: 'method',
       type: 'content',
-      title: 'The Silent Leak',
+      title: 'How the audit runs',
       content:
-        '<p>Nothing on your P&amp;L is labelled "invisible overhead". It shows up as a call nobody returned, a form retyped for the third time, a renter who booked with someone faster. The money leaves quietly, every week, in amounts too small to trigger an alarm.</p>',
+        '<p>One business week, on-site, with the owner-operator present on the first day. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.</p>',
       sortOrder: 2,
+      settings: { steps: FIVE_DAY_SCHEDULE }
+    },
+    {
+      id: 'verticals',
+      type: 'content',
+      title: 'Where the time goes',
+      content:
+        '<p>Three operational patterns we have measured in real estate, clinical and legal practices.</p>',
+      sortOrder: 3,
+      settings: { verticals: VERTICALS }
+    },
+    {
+      id: 'evidence',
+      type: 'content',
+      title: 'Reference figures',
+      content:
+        '<p>Baselines we start from. The audit recalculates each against your own numbers rather than assuming them.</p>',
+      sortOrder: 4,
       settings: {
         stats: LEAK_STATS,
         statsNote:
-          'Figures from 2026 small-business automation research; data-quality figure from published AI project post-mortems.'
+          'Missed-call and form-processing figures from 2026 small-business automation research; lead-response benchmark from industry reporting; data-quality figure from published AI project post-mortems.'
       }
     },
     {
       id: 'services-overview',
       type: 'services',
-      title: 'How We Work',
-      content:
-        'One low-friction way in, two ways forward. Every engagement starts with the audit.',
-      sortOrder: 3,
-      settings: {}
-    },
-    {
-      id: 'verticals',
-      type: 'content',
-      title: 'Three Leaks We Close Every Week',
-      content:
-        '<p>General AI advice is a liability. These are the specific failure paths we have measured in real estate, clinical, and legal storefront operations — and what closing them looks like.</p>',
-      sortOrder: 4,
-      settings: { verticals: VERTICALS }
-    },
-    {
-      id: 'offer-ladder',
-      type: 'content',
-      title: 'The Path to Production',
-      content:
-        '<p>Discovery, then deployment, then keeping it alive. Fixed prices at every step, and no hourly meter anywhere.</p>',
+      title: 'Services',
+      content: 'What follows an audit, and the practice behind it.',
       sortOrder: 5,
-      settings: {
-        tiers: OFFER_LADDER,
-        ctaText: 'Start with the audit',
-        ctaUrl: '/services/ai-opportunity-audit'
-      }
-    },
-    {
-      id: 'five-day',
-      type: 'content',
-      title: 'The 5-Day Precision Delivery Schedule',
-      content:
-        '<p>An owner-operator cannot disappear into a discovery phase. We go from tool inventory to ROI sizing in a single business week.</p>',
-      sortOrder: 6,
-      settings: { steps: FIVE_DAY_SCHEDULE }
-    },
-    {
-      id: 'impact',
-      type: 'content',
-      title: 'Real Local Impact',
-      content:
-        '<p>What the reclaimed hours look like once the repetitive work stops reaching human hands.</p>',
-      sortOrder: 7,
-      settings: { stats: IMPACT_STATS }
-    },
-    {
-      id: 'value-prop',
-      type: 'content',
-      title: 'Why the Audit Comes First',
-      content:
-        '<p>Over 40% of agentic AI projects are expected to be cancelled by the end of 2027 (Gartner). Almost none of those failures are caused by the models. They are caused by escalating cost, unclear business value, and missing risk controls in non-deterministic systems. The audit exists to catch exactly that, before you spend anything on a build.</p>',
-      sortOrder: 8,
-      settings: {
-        valuePoints: [
-          {
-            title: 'Quantified, not aspirational',
-            description:
-              'Every opportunity is scored by feasibility and return, with labor and time assumptions you can verify yourself.'
-          },
-          {
-            title: 'Observational, not invasive',
-            description:
-              'We do not copy, duplicate or store your customer records. NDA signed before day one; your data never leaves your premises.'
-          },
-          {
-            title: 'Human-in-the-loop by default',
-            description:
-              'Critical actions are drafted, queued and held until a person approves them. That is a compliance requirement, not a feature toggle.'
-          }
-        ],
-        ctaText: 'The discipline behind the audit',
-        ctaUrl: '/about'
-      }
+      settings: {}
     },
     {
       id: 'team-overview',
       type: 'team',
-      title: 'Who Runs the Audit',
-      content: 'Twenty-five years of software leadership, pointed at your front desk.',
-      sortOrder: 9,
-      settings: { showMembers: 3, ctaText: 'Meet the Full Team', ctaUrl: '/team' }
-    },
-    {
-      id: 'home-cta',
-      type: 'cta',
-      title: 'Identify Your $5,000 in Savings',
-      content:
-        'Book a 30-minute discovery session to start the five-day schedule. Flat $500, credited to your build — or refunded if the numbers are not there.',
-      sortOrder: 10,
-      settings: {
-        ctaPrimary: AUDIT_CTA,
-        ctaSecondary: { text: 'Read the Leak Diagnostics', url: '/blog' }
-      }
+      title: 'Team',
+      content: '',
+      sortOrder: 6,
+      settings: { showMembers: 3, ctaText: 'Full team', ctaUrl: '/team' }
     }
   ],
   seo: {
-    title: 'AI Opportunity Audit — $500, 5 Days | Generativ Consulting Company',
+    title: 'Generativ Consulting Company',
     description:
-      'A flat $500, five-day AI Opportunity Audit that maps your top three operational leaks with quantified savings. Backed by a $5,000 ROI guarantee.',
+      'Operational review and automation implementation for professional practices. A five-day, on-site assessment documenting where process time and margin are lost.',
     keywords: [
       'AI opportunity audit',
-      'small business automation',
-      'speed to lead',
+      'operational assessment',
+      'workflow automation',
       'document intelligence',
       'agentic AI',
       'AI consulting'
@@ -376,36 +254,36 @@ const aboutPage: PageSeed = {
     {
       id: 'about-hero',
       type: 'hero',
-      title: 'Audit-Grade, Not Boardroom-Grade',
+      title: 'About',
       content:
-        'We build automated pipelines that run in the background and handle the repetitive work. We do not sell generic software, and we do not write strategy decks.',
+        'We build automated processes that handle repetitive administrative work inside professional practices, and we assess where that work is worth automating before building anything.',
       sortOrder: 1,
       settings: {}
     },
     {
       id: 'about-mission',
       type: 'content',
-      title: 'Our Mission',
+      title: 'What we do',
       content:
-        '<p>Generativ Consulting Company exists to close the gap between what AI is said to do and what it actually does inside a working business. We start every relationship the same way: a flat $500, five-day AI Opportunity Audit that names the three leaks costing you the most and shows the arithmetic behind each one.</p><p>Our deeper practice — safety testing, parallelization, and critical-thinking education — is the capability that makes the audit trustworthy. It is not a separate menu. It is why the roadmap survives contact with production.</p>',
+        '<p>Generativ Consulting Company assesses and automates administrative processes inside professional practices — real estate, clinical, and legal. Engagements begin with a five-day operational review that identifies the three processes costing the practice the most and documents the arithmetic behind each.</p><p>The wider practice — safety testing, throughput engineering, and staff training — is what makes those findings dependable in production rather than only on paper.</p>',
       sortOrder: 2,
       settings: {}
     },
     {
       id: 'about-five-tests',
       type: 'content',
-      title: 'The 5 Tests of Audit-Grade Discipline',
+      title: 'Five tests applied to any proposed automation',
       content:
-        '<p>To separate real agentic potential from vendor noise, every opportunity we score has to pass five tests. An agent is not a single prompt call wrapped in a UI.</p>',
+        '<p>Each opportunity identified in a review is assessed against the same five criteria before it is recommended.</p>',
       sortOrder: 3,
       settings: { values: FIVE_TESTS }
     },
     {
       id: 'about-market',
       type: 'content',
-      title: 'The Reality of Agentic AI in 2026',
+      title: 'Market conditions',
       content:
-        '<p>The landscape is a jarring disconnect between boardroom hype and the architectural reality of storefront operations. Both things are true at once: adoption is accelerating hard, and most projects still fail.</p>',
+        '<p>Adoption is accelerating while cancellation rates remain high. Both figures matter when deciding what to build.</p>',
       sortOrder: 4,
       settings: {
         stats: [
@@ -435,43 +313,39 @@ const aboutPage: PageSeed = {
     {
       id: 'about-approach',
       type: 'content',
-      title: 'Our Approach',
+      title: 'How the review runs',
       content:
-        '<p>The audit is a compressed, high-impact week. We require the owner-operator present on Day 1 — the diagnostic only works if it captures the scars of your specific operation.</p>',
+        '<p>The review runs over one business week. The owner-operator is present on the first day; the diagnostic is only accurate if it reflects how the office actually works.</p>',
       sortOrder: 5,
       settings: { steps: FIVE_DAY_SCHEDULE }
     },
     {
       id: 'about-values',
       type: 'content',
-      title: 'Our Core Values',
-      content: '<p>What holds regardless of which engine is underneath.</p>',
+      title: 'How we work',
+      content: '',
       sortOrder: 6,
       settings: {
         values: [
           {
-            title: 'Rigor',
+            title: 'Measurement',
             description:
-              'If we cannot measure the hours or the cash saved, we do not build it. Every claim gets its arithmetic shown.',
-            icon: '🔍'
+              'Work that cannot be measured in hours or cash is not proposed. Each figure is shown with the assumptions behind it.'
           },
           {
-            title: 'Discretion',
+            title: 'Confidentiality',
             description:
-              'Audits are observational. NDA from day one, no copy-access to your files, and your data never used to train public models.',
-            icon: '🔒'
+              'Reviews are observational. An NDA is signed before the first day, no client files are copied, and client data is not used to train public models.'
           },
           {
-            title: 'Partnership',
+            title: 'Scope',
             description:
-              'Agents support the team behind the work. We automate the tedium and hand the reclaimed hours back to your staff.',
-            icon: '🤝'
+              'Automation is applied to repetitive, high-volume processes with clear rules. Judgement stays with the practice.'
           },
           {
-            title: 'Education',
+            title: 'Handover',
             description:
-              'Two-week handover with runbooks and video training. You should not need us on retainer to keep the lights on.',
-            icon: '🧠'
+              'Each implementation ends with runbooks and training so the system can be operated without us.'
           }
         ]
       }
@@ -479,21 +353,20 @@ const aboutPage: PageSeed = {
     {
       id: 'about-cta',
       type: 'cta',
-      title: 'Start With the Diagnosis',
+      title: 'Enquiries',
       content:
-        'Thirty-minute discovery session, then the five-day schedule. Flat $500, backed by the $5,000 ROI guarantee.',
+        'Scoping starts with a short conversation about how the practice currently runs.',
       sortOrder: 7,
       settings: {
-        ctaPrimary: AUDIT_CTA,
-        ctaSecondary: { text: 'See the Offer Ladder', url: '/services' }
+        ctaPrimary: { text: 'Contact', url: '/contact' }
       }
     }
   ],
   seo: {
-    title: 'About | Audit-Grade AI for Working Businesses | Generativ Consulting',
+    title: 'About — Generativ Consulting Company',
     description:
-      'The 5 Tests of Audit-Grade Discipline, the 5-day delivery schedule, and why over 40% of agentic AI projects are expected to be cancelled by 2027.',
-    keywords: ['about', 'agentic AI', 'AI governance', 'AI observability', 'audit-grade AI']
+      'How the operational review is conducted, the five tests applied to any proposed automation, and the market conditions behind them.',
+    keywords: ['about', 'agentic AI', 'AI governance', 'AI observability', 'operational review']
   }
 };
 
@@ -506,86 +379,84 @@ const services: ServiceSeed[] = [
     slug: 'ai-opportunity-audit',
     title: 'AI Opportunity Audit',
     shortDescription:
-      'Flat $500. Five business days. Your top three operational leaks, quantified in writing — or your money back.',
+      'A five-day, on-site review documenting the three processes costing the practice the most, with the arithmetic for each.',
     fullDescription: `
-<p>The Audit is the way in. For a flat <strong>$500</strong> we spend <strong>five business days</strong> mapping how work actually moves through your operation, then hand you a written roadmap ranking the three bottlenecks costing you the most.</p>
+<p>A five-day, on-site review of how work moves through a practice, delivered as a written report.</p>
 
-<h3>What you receive</h3>
+<h3>Deliverables</h3>
 <ul>
-  <li><strong>The Readiness Score:</strong> a technical assessment of your infrastructure, data quality, and team capability.</li>
-  <li><strong>The Top 3 Bottlenecks:</strong> a diagnostic of the three failure paths currently burning the most manual labor, each with its annual cost.</li>
-  <li><strong>The 90-Day ROI Roadmap:</strong> a tactical deployment plan against measurable financial targets — what ships first, what it plugs into, how it is measured.</li>
+  <li><strong>Readiness assessment:</strong> the state of the existing systems, the quality of the underlying data, and what the team can realistically operate.</li>
+  <li><strong>Three bottlenecks:</strong> the processes consuming the most manual labour, each with its annual cost and the assumptions used to reach it.</li>
+  <li><strong>90-day roadmap:</strong> what to implement first, what it integrates with, and how the result is measured.</li>
 </ul>
 
-<h3>The five-day schedule</h3>
+<h3>Schedule</h3>
 <ol>
-  <li><strong>Day 1 — Discovery:</strong> workflow walks and tool inventory, on-site, with you present.</li>
-  <li><strong>Day 2 — Analysis:</strong> bottleneck scoring and internal logic review.</li>
-  <li><strong>Day 3 — Sizing:</strong> ROI opportunity sizing and cost projections.</li>
-  <li><strong>Day 4 — Strategy:</strong> drafting the 90-day roadmap.</li>
-  <li><strong>Day 5 — Delivery:</strong> Readiness Score and final roadmap, in writing.</li>
+  <li><strong>Day 1:</strong> workflow walks and tool inventory, on-site, with the owner-operator present.</li>
+  <li><strong>Day 2:</strong> bottleneck scoring and review of the internal logic each process depends on.</li>
+  <li><strong>Day 3:</strong> opportunity sizing and cost projections.</li>
+  <li><strong>Day 4:</strong> drafting the roadmap.</li>
+  <li><strong>Day 5:</strong> written delivery.</li>
 </ol>
 
-<h3>The two-way guarantee</h3>
-<p>If we identify more than $5,000 in verifiable annual savings and you build with us, <strong>100% of the $500 is credited</strong> toward your Quick-Win Sprint. If we fail to identify at least $5,000 in verifiable annual savings — denominated in resolution time and revenue uplift — you get a <strong>100% refund</strong>.</p>
+<h3>Terms</h3>
+<p>The fee is credited in full against an implementation if the practice proceeds. If the review does not identify at least $5,000 in annual savings, it is refunded.</p>
 
-<h3>How we handle your data</h3>
-<p>The audit is purely observational. We do not duplicate, store or copy live customer records or transaction databases. NDA is signed before Day 1, and every conversation, metric and process is covered by it.</p>
+<h3>Data handling</h3>
+<p>The review is observational. Live customer records and transaction databases are not copied, duplicated or stored. An NDA is signed before the first day and covers every process, metric and conversation involved.</p>
     `,
-    icon: '🔎',
     benefits: [
-      'Flat $500 — no hourly meter, no obligation to build',
-      'Written roadmap with three quantified opportunities in five business days',
-      '$5,000 annual-savings guarantee, or a full refund',
-      '100% credited toward implementation if you proceed',
-      'Observational only — NDA signed before day one'
+      'Fixed fee, no hourly billing and no obligation to implement',
+      'Written report with three costed opportunities within five business days',
+      'Refunded if annual savings of at least $5,000 are not identified',
+      'Credited in full against an implementation',
+      'Observational; NDA signed before the first day'
     ],
-    pricing: '$500 flat fee (up to $3,500 for complex multi-site operations)',
+    pricing: '$500 (to $3,500 for multi-site operations)',
     isPublished: true,
     sortOrder: 1,
     seo: {
-      title: 'AI Opportunity Audit — $500, 5 Days | Generativ Consulting Company',
+      title: 'AI Opportunity Audit — Generativ Consulting Company',
       description:
-        'Flat $500, five-day on-site AI Opportunity Audit. Top three operational leaks quantified in writing, backed by a $5,000 annual-savings guarantee.',
+        'A five-day, on-site operational review documenting the three processes costing a practice the most, each with its annual cost and assumptions.',
       keywords: ['AI audit', 'AI opportunity audit', 'automation assessment', 'ROI guarantee']
     }
   },
   {
     slug: 'quick-win-sprint',
-    title: 'Quick-Win Automation Sprint',
+    title: 'Implementation Sprint',
     shortDescription:
-      'One automated system, shipped end to end in 7 to 14 days, wired into the tools your team already uses.',
+      'One automated process built end to end in 7 to 14 days and integrated with the systems already in use.',
     fullDescription: `
-<p>The Sprint turns the first item on your roadmap into a working system. Fixed price, fixed scope, shipped in days rather than quarters.</p>
+<p>An implementation of the first item on the roadmap: fixed price, fixed scope, delivered as a working system.</p>
 
-<h3>What a sprint typically ships</h3>
+<h3>Typical scopes</h3>
 <ul>
-  <li><strong>Speed-to-Lead intake (real estate):</strong> a 24/7 agent that monitors listing portals and web forms, qualifies move-in date and budget, and books straight onto an agent's calendar. Target: first response from 12 minutes to under 60 seconds. <em>~$1,500, 7 to 10 days.</em></li>
-  <li><strong>Clinical intake &amp; scheduling (medical/dental):</strong> mobile intake forms texted to patients, validated and auto-populated, plus a text-based appointment manager. Target: 8 to 12 staff hours back per week and a sharp drop in no-shows. <em>~$2,500, 10 to 14 days, HIPAA-ready.</em></li>
-  <li><strong>Secure document intelligence (law/tax):</strong> a pipeline that parses client packets and case files, extracts the standard fields, and drafts initial memos behind an approval gate. Target: 80% reduction in intake processing time. <em>~$2,000, 10 days.</em></li>
+  <li><strong>Lead intake, real estate:</strong> continuous monitoring of listing portals and web forms, qualification against stated criteria, and calendar booking. Target: first response under 60 seconds. Around $1,500, 7 to 10 days.</li>
+  <li><strong>Patient intake and scheduling, medical and dental:</strong> mobile intake forms, validation, structured write-back, and text-based appointment management. Target: 8 to 12 staff hours recovered weekly. Around $2,500, 10 to 14 days, HIPAA-ready.</li>
+  <li><strong>Document extraction, law and tax:</strong> parsing of client packets and case files, field extraction, and drafting behind an approval gate. Target: 80% reduction in intake processing time. Around $2,000, 10 days.</li>
 </ul>
 
-<h3>The connector layer</h3>
-<p>Most failed deployments stall because nothing connects the model to the business. We build the connector layer — CRM, EHR, Airtable, billing, Slack, email — so the agent completes tasks rather than describing them.</p>
+<h3>Integration</h3>
+<p>The work includes the connection into the systems of record — CRM, EHR, billing, email — so the process completes rather than producing output for someone to re-enter.</p>
 
 <h3>Handover</h3>
-<p>Two-week handover with full runbooks and video training. There is no new software for your team to learn; the automation lives inside the tools they already open every morning.</p>
+<p>Two weeks of handover with runbooks and training. The automation runs inside the tools the practice already uses; there is no separate application for staff to learn.</p>
     `,
-    icon: '⚡',
     benefits: [
-      'Fixed price, $1,500 – $3,500 — 50% upfront',
-      'Working system in 7 to 14 days, not a prototype',
-      'Integrated into your existing CRM, EHR or billing stack',
-      'Human-in-the-loop approval gates on every critical action',
-      'Two-week handover with runbooks and video training'
+      'Fixed price, 50% on commencement',
+      'Working system within 7 to 14 days',
+      'Integrated with the existing CRM, EHR or billing systems',
+      'Human approval gates on every critical action',
+      'Two-week handover with runbooks and training'
     ],
     pricing: '$1,500 – $3,500 fixed price (50% upfront)',
     isPublished: true,
     sortOrder: 2,
     seo: {
-      title: 'Quick-Win Automation Sprint | Generativ Consulting Company',
+      title: 'Implementation Sprint — Generativ Consulting Company',
       description:
-        'One automated system shipped end to end in 7 to 14 days for a fixed $1,500 to $3,500, integrated into the tools your team already uses.',
+        'One automated process built end to end in 7 to 14 days at a fixed price and integrated with existing systems.',
       keywords: ['automation sprint', 'AI implementation', 'speed to lead', 'patient intake automation']
     }
   },
@@ -593,9 +464,9 @@ const services: ServiceSeed[] = [
     slug: 'managed-operations',
     title: 'Managed Operations Retainer',
     shortDescription:
-      'Continuous monitoring, model versioning and pipeline tuning so your agents keep working as the models shift underneath them.',
+      'Monitoring, model versioning and pipeline tuning for deployed systems as the underlying models change.',
     fullDescription: `
-<p>Foundation models move fast. An agent that was correct in March can be subtly wrong in September, and nothing will announce it. The retainer is the maintenance layer that keeps deployed systems trustworthy.</p>
+<p>Foundation models change frequently. A process that was correct in March can be subtly wrong in September without anything failing visibly. The retainer covers the maintenance required to detect that.</p>
 
 <h3>What is included</h3>
 <ul>
@@ -605,9 +476,7 @@ const services: ServiceSeed[] = [
   <li><strong>Evaluation cycles:</strong> the eval pipelines that let a professional practice survive an audit or a disclosure requirement.</li>
 </ul>
 
-<p>This is the difference between an automation that works and an automation that keeps working.</p>
     `,
-    icon: '📈',
     benefits: [
       'Model versioning and staged upgrades',
       'Full decision traceability and observability',
@@ -629,13 +498,11 @@ const services: ServiceSeed[] = [
     slug: 'safety-testing',
     title: 'AI Safety Testing',
     shortDescription:
-      'The governance and evaluation practice behind the audit — red teaming, output validation and compliance controls for non-deterministic systems.',
+      'Red teaming, output validation and compliance controls for systems whose output is not deterministic.',
     fullDescription: `
-<p>Safety Testing is the capability that makes an audit finding trustworthy. Before we tell you an automation will save $18,000 a year, we have to be able to say what it does when it is wrong.</p>
+<p>Before an automation is recommended on the basis of what it saves, its behaviour when it is wrong has to be characterised. That work is included in every implementation and available separately for teams already running systems in production.</p>
 
-<p>It is available as a standalone engagement for teams already running AI in production, and it is folded into every Sprint and Retainer by default.</p>
-
-<h3>The Agent See Safety Protocol</h3>
+<h3>Scope</h3>
 <ul>
   <li><strong>Red Team Testing:</strong> adversarial prompting to uncover vulnerabilities before a client does.</li>
   <li><strong>Output Validation:</strong> systematic verification of AI-generated content and code.</li>
@@ -647,15 +514,13 @@ const services: ServiceSeed[] = [
 <h3>Human-in-the-loop gates</h3>
 <p>For any critical action — sending a client email, modifying a legal document, processing a transaction — the agent drafts, queues, and alerts. A person verifies and approves before anything goes live.</p>
     `,
-    icon: '🔒',
     benefits: [
-      'Identify and mitigate hallucination risk before deployment',
-      'Reduce security and disclosure exposure',
-      'Human-in-the-loop approval gates on critical actions',
-      'Evidence trails that survive a professional audit cycle',
-      'Prevent costly errors and reputational damage'
+      'Hallucination risk characterised before deployment',
+      'Reduced security and disclosure exposure',
+      'Human approval gates on critical actions',
+      'Evidence trails that hold up under a professional audit cycle'
     ],
-    pricing: 'Included in Sprint and Retainer engagements; standalone assessments from $15,000',
+    pricing: 'Included in implementation and retainer engagements; standalone assessments from $15,000',
     isPublished: true,
     sortOrder: 4,
     seo: {
@@ -669,9 +534,9 @@ const services: ServiceSeed[] = [
     slug: 'parallelization',
     title: 'Parallelization Infrastructure',
     shortDescription:
-      'The throughput engineering that lets a document or intake pipeline run at volume instead of one file at a time.',
+      'Throughput engineering for document and intake pipelines that need to run at volume.',
     fullDescription: `
-<p>Extraction that takes 1–2 seconds per document is only useful if it can run across every document you have. Parallelization is what turns a working automation into one that clears a backlog.</p>
+<p>Extraction measured in seconds per document is only useful if it can be run across the full archive. This is the engineering required to clear a backlog rather than process a queue.</p>
 
 <h3>Where it shows up in an engagement</h3>
 <ul>
@@ -681,9 +546,8 @@ const services: ServiceSeed[] = [
   <li><strong>Performance monitoring:</strong> continuous evaluation and tuning as load changes.</li>
 </ul>
 
-<p>Available standalone for teams running their own AI workloads, and applied wherever a Sprint deliverable has to operate at scale.</p>
+<p>Available separately for teams running their own workloads, and applied wherever an implementation has to operate at scale.</p>
     `,
-    icon: '⚙️',
     benefits: [
       'Clear document and record backlogs in a single pass',
       'Reduce infrastructure cost through orchestration',
@@ -705,11 +569,9 @@ const services: ServiceSeed[] = [
     slug: 'critical-thinking',
     title: 'Critical Thinking Education',
     shortDescription:
-      'The two-week handover, made durable — the judgment your team needs to run automated systems without us.',
+      'Training so that staff can operate and supervise automated processes without external support.',
     fullDescription: `
-<p>Every Sprint ends with a handover: runbooks, video training, and the working knowledge to operate what we built. This service is that handover extended into a standing capability.</p>
-
-<p>The goal is explicit: reduce your dependence on outside consultants, including us.</p>
+<p>Every implementation ends with a handover: runbooks, training, and the working knowledge to operate what was built. This service extends that into a standing capability, with the explicit aim of reducing dependence on outside consultants.</p>
 
 <h3>What the programs cover</h3>
 <ul>
@@ -720,15 +582,13 @@ const services: ServiceSeed[] = [
   <li><strong>Ethics and disclosure:</strong> what has to be told to a client, a patient, or a court.</li>
 </ul>
     `,
-    icon: '🧠',
     benefits: [
-      'Staff who can operate approval gates with confidence',
-      'Faster, more reliable error recognition',
+      'Staff able to operate approval gates without escalation',
+      'Faster and more reliable error recognition',
       'Reduced dependence on external consultants',
-      'A culture of responsible, disclosed AI use',
-      'Included as a two-week handover with every Sprint'
+      'Documented practice for disclosure obligations'
     ],
-    pricing: 'Included with Sprint handover; standalone workshop packages from $5,000',
+    pricing: 'Included with implementation handover; standalone workshops from $5,000',
     isPublished: true,
     sortOrder: 6,
     seo: {
@@ -749,7 +609,7 @@ const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000).to
 const blogPosts: BlogSeed[] = [
   {
     slug: 'the-silent-leak-invisible-overhead',
-    title: 'The Silent Leak: What Invisible Overhead Actually Costs a Storefront',
+    title: 'What administrative overhead costs a small practice',
     content: `
 <p>No line on a P&amp;L is labelled "invisible overhead". That is precisely what makes it expensive. The money leaves in amounts too small to trigger an alarm, on a schedule too regular to notice.</p>
 
@@ -765,25 +625,25 @@ const blogPosts: BlogSeed[] = [
 <h2>Why this is worth auditing rather than guessing</h2>
 <p>Each of these is individually small enough to rationalize and collectively large enough to matter. The purpose of a five-day, on-site audit is to convert them from a feeling into arithmetic: how many calls, how many forms, how many minutes, at what loaded labor rate. Once it is written down with assumptions you can check, it stops being overhead you tolerate and becomes a number you can decide about.</p>
 
-<p><em>Every figure above is one we will recalculate against your actual operation during the audit — and if the total does not clear $5,000 a year, you get the $500 back.</em></p>
+<p>Each figure above is a published benchmark rather than a measurement of any particular practice. The point of costing them locally is that the local numbers are frequently different.</p>
     `,
     excerpt:
-      'Missed calls at $500+/month, $12–$20 per manually processed form, and a 12-minute lead response. Three leaks small enough to ignore and large enough to matter.',
+      'Missed calls, manual form processing, and lead response time, costed against published benchmarks.',
     author: 'Generativ Consulting Company',
     categories: ['Profit Leak', 'Operations'],
     tags: ['missed calls', 'document processing', 'speed to lead', 'overhead'],
     isPublished: true,
     publishedAt: daysAgo(2),
     seo: {
-      title: 'The Silent Leak: What Invisible Overhead Costs a Storefront',
+      title: 'What administrative overhead costs a small practice',
       description:
-        '42% of local businesses lose over $500 a month to missed calls, and manual forms cost $12–$20 each. A breakdown of where small-business margin quietly goes.',
+        'A costing of three common administrative losses: unanswered calls, manual form processing, and slow response to inbound enquiries.',
       keywords: ['profit leak', 'missed calls', 'manual data entry cost', 'small business overhead']
     }
   },
   {
     slug: 'speed-to-lead-12-minutes-to-12-seconds',
-    title: 'Speed-to-Lead: From 12 Minutes to 12 Seconds',
+    title: 'Response time and lost enquiries in property management',
     content: `
 <p>In a dense rental market, lead loss is a 24/7 threat, and it is almost never a pricing problem. Inquiries arrive at 9pm on a Sunday from a listing portal. By Monday at 10am, the prospect has toured two other apartments.</p>
 
@@ -799,29 +659,29 @@ const blogPosts: BlogSeed[] = [
 </ol>
 <p>In real-world pilots this pattern has been used to match against portfolios exceeding £18B in property value. The mechanism is not exotic; it is the connector layer between the portal and the calendar, which most brokerages simply do not have.</p>
 
-<h2>What it is worth</h2>
-<p>A brokerage losing even a handful of fee-earning inquiries a month to slow follow-up is losing more than the entire cost of building the system. Teams with steady inbound typically see payback in <strong>two to three weeks</strong>, with booking rates up roughly 20% within the first month.</p>
+<h2>Whether it is worth building</h2>
+<p>It depends entirely on inbound volume. A brokerage losing several fee-earning enquiries a month to slow follow-up recovers the build cost quickly; one with light or highly qualified inbound may not. Where volume is steady, reported payback is two to three weeks, with booking rates up around 20% in the first month.</p>
 
-<h2>The part that is not automation</h2>
-<p>Speed only helps if the qualification logic reflects how your agents actually work. That is what Day 1 of the audit is for: walking the real intake path with the person who runs it, including the exceptions nobody wrote down.</p>
+<h2>The limiting factor</h2>
+<p>Response speed only helps if the qualification logic reflects how the agents actually work. That is the purpose of walking the real intake path with the person who runs it, including the exceptions that were never written down.</p>
     `,
     excerpt:
-      'The industry standard first response to a property inquiry is 12 minutes. An automated intake agent answers in 12 seconds — and books the tour while your team sleeps.',
+      'The industry benchmark for first response to a property enquiry is around 12 minutes. What automated qualification changes, and what it does not.',
     author: 'Generativ Consulting Company',
     categories: ['Real Estate', 'Automation'],
     tags: ['speed to lead', 'real estate', 'lead qualification', 'CRM integration'],
     isPublished: true,
     publishedAt: daysAgo(5),
     seo: {
-      title: 'Speed-to-Lead: From 12 Minutes to 12 Seconds | Generativ Consulting',
+      title: 'Response time and lost enquiries in property management',
       description:
-        'How a 24/7 lead intake agent qualifies renters and buyers in under 60 seconds, cutting first response from 12 minutes to 12 seconds.',
+        'How continuous enquiry intake and qualification affects response time, and the conditions under which it is worth building.',
       keywords: ['speed to lead', 'real estate automation', 'lead response time', 'StreetEasy automation']
     }
   },
   {
     slug: 'clinic-intake-and-the-no-show-problem',
-    title: 'Clinic Intake and the No-Show Problem: Reclaiming 8 to 12 Hours a Week',
+    title: 'Where front-desk hours go in a small clinic',
     content: `
 <p>A neighbourhood clinic does not lose money dramatically. It loses it in eight to fifteen hours a week of front-desk time spent on phone tag, retyping paper intake forms into the EHR, and chasing past-due invoices.</p>
 
@@ -838,26 +698,26 @@ const blogPosts: BlogSeed[] = [
 <h2>The measured outcome</h2>
 <p>Practices running this pattern reclaim <strong>8 to 12 staff hours per week</strong>, with <strong>over 5 hours saved per doctor</strong> through multi-channel scheduling and pre-appointment assistants, and patient engagement up more than <strong>20%</strong>. No-show rates fall sharply — the reminder that gets read is the one that arrives as a text.</p>
 
-<h2>Compliance is the first constraint, not the last</h2>
-<p>Everything here touches PHI, so the architecture starts there: HIPAA-ready handling, isolated storage, role-based access, and no patient data used to train public models. The audit inventories what you have before anything is designed, because a workflow that cannot pass review is not a saving — it is a liability with a stopwatch on it.</p>
+<h2>Compliance is the first constraint</h2>
+<p>All of this touches PHI, so the architecture begins there: HIPAA-ready handling, isolated storage, role-based access, and no patient data used to train public models. A workflow that cannot pass review is not a saving.</p>
     `,
     excerpt:
-      'Front-desk staff lose 8–15 hours a week to phone tag and retyping intake forms. Automated intake and text-based scheduling give most of it back.',
+      'Reminder calls, paper intake, and billing follow-up account for 8 to 15 hours a week in a typical practice. A breakdown of each.',
     author: 'Generativ Consulting Company',
     categories: ['Medical & Dental', 'Automation'],
     tags: ['patient intake', 'no-shows', 'HIPAA', 'scheduling automation'],
     isPublished: true,
     publishedAt: daysAgo(8),
     seo: {
-      title: 'Clinic Intake and the No-Show Problem | Generativ Consulting',
+      title: 'Where front-desk hours go in a small clinic',
       description:
-        'Automated patient intake and text-based scheduling reclaim 8 to 12 staff hours a week and cut no-shows in neighbourhood clinics.',
+        'A breakdown of administrative time in a small practice, and the compliance constraints on automating any of it.',
       keywords: ['patient intake automation', 'no-show reduction', 'HIPAA automation', 'dental practice automation']
     }
   },
   {
     slug: 'document-intelligence-from-20-dollars-to-2-36',
-    title: 'Document Intelligence: From $20 a Form to $2.36',
+    title: 'The cost of manual document processing',
     content: `
 <p>Paperwork-dense practices — immigration and personal injury law, tax preparation, notary services — run on the same operation repeated thousands of times: read an incoming document, find the standard fields, type them somewhere else.</p>
 
@@ -875,26 +735,26 @@ const blogPosts: BlogSeed[] = [
 <h2>Disclosure is now part of the design</h2>
 <p>AI-disclosure rules such as the 15th Judicial Circuit's AO 2.109-4/26 make traceability a filing requirement, not an engineering preference. Every automated action has to be attributable, reviewable, and disclosable. Systems built without that from the start get retrofitted expensively or abandoned.</p>
 
-<h2>The realistic target</h2>
-<p>Practices deploying this typically cut case intake processing time by around <strong>80%</strong> and free roughly <strong>10 hours a week</strong> of administrative time — while improving accuracy, because validated extraction beats a person retyping an address at 4:45pm.</p>
+<h2>Realistic outcome</h2>
+<p>Practices deploying this typically reduce case intake processing time by around <strong>80%</strong> and free roughly <strong>10 hours a week</strong> of administrative time, with fewer transcription errors than manual entry produces.</p>
     `,
     excerpt:
-      'Manual extraction costs $12–$20 per form and takes 10–30 minutes. Secure document intelligence does it in 1–2 seconds at $2.36 — with disclosure controls built in.',
+      'Manual extraction costs $12 to $20 per form and takes 10 to 30 minutes. What an automated pipeline changes, and what disclosure rules require of it.',
     author: 'Generativ Consulting Company',
     categories: ['Legal & Professional', 'Automation'],
     tags: ['document intelligence', 'legal automation', 'data extraction', 'AI disclosure'],
     isPublished: true,
     publishedAt: daysAgo(11),
     seo: {
-      title: 'Document Intelligence: From $20 a Form to $2.36 | Generativ Consulting',
+      title: 'The cost of manual document processing',
       description:
-        'Secure document extraction in 1–2 seconds at $2.36 per form, with human-in-the-loop approval gates and AI-disclosure readiness.',
+        'Per-form processing costs in paperwork-dense practices, and the disclosure requirements that now shape any automated alternative.',
       keywords: ['document intelligence', 'legal AI', 'data extraction cost', 'AO 2.109-4/26']
     }
   },
   {
     slug: 'why-40-percent-of-agentic-ai-projects-get-cancelled',
-    title: 'Why Over 40% of Agentic AI Projects Are Expected to Be Cancelled',
+    title: 'Why agentic AI projects are cancelled',
     content: `
 <p>Gartner's forecast is blunt: <strong>more than 40% of agentic AI projects are expected to be cancelled by the end of 2027</strong>. Read alongside the adoption numbers, it is a stranger picture than it first appears.</p>
 
@@ -913,8 +773,8 @@ const blogPosts: BlogSeed[] = [
 <h2>The pattern behind the failures</h2>
 <p>Most cancelled projects are a rebranded chatbot with an agent label. An agent is not a single model call wrapped in a UI. Real deployments need planning loops with retries, state that survives failure, a connector layer into the systems of record, and traces from every decision back to its inputs.</p>
 
-<h2>What we do about it</h2>
-<p>Every opportunity in an audit has to pass five tests before it makes the roadmap: <strong>Orchestration</strong>, <strong>Governance</strong>, <strong>Integration</strong>, <strong>Observability</strong>, and <strong>Outcomes</strong> — with success denominated in resolution time and revenue uplift rather than agents shipped. Anything that fails a test does not get built. That is the cheapest possible place to cancel a project: before it starts, for $500, with the reasons written down.</p>
+<h2>Applying it</h2>
+<p>Each opportunity identified in a review is assessed against five criteria before it is recommended: orchestration, governance, integration, observability, and outcomes — the last measured in resolution time and revenue rather than in systems deployed. An opportunity that fails one is not proposed. Cancelling at that stage costs a week and a fixed fee rather than a quarter.</p>
     `,
     excerpt:
       'Gartner expects over 40% of agentic AI projects to be cancelled by 2027 — from cost, unclear value and missing risk controls. The five tests that catch it early.',
@@ -924,15 +784,15 @@ const blogPosts: BlogSeed[] = [
     isPublished: true,
     publishedAt: daysAgo(14),
     seo: {
-      title: 'Why Over 40% of Agentic AI Projects Get Cancelled | Generativ Consulting',
+      title: 'Why agentic AI projects are cancelled',
       description:
-        'Gartner forecasts over 40% of agentic AI projects cancelled by end of 2027. The causes are cost, unclear value and risk controls — not the models.',
+        'Gartner forecasts over 40% of agentic AI projects cancelled by end of 2027. The recurring causes are cost, undefined value, and inadequate risk controls.',
       keywords: ['agentic AI failure', 'Gartner agentic AI', 'AI project cancellation', 'AI governance']
     }
   },
   {
     slug: 'data-quality-is-85-percent-of-the-problem',
-    title: 'The Reconciliation Gap: Data Quality Is 85% of the Problem',
+    title: 'Data quality as a precondition for automation',
     content: `
 <p>When an agent invents a fact, the instinct is to blame the model. Usually the model is reporting faithfully on bad inputs. <strong>Data quality issues are implicated in roughly 85% of failed AI projects.</strong></p>
 
@@ -948,10 +808,10 @@ const blogPosts: BlogSeed[] = [
 <h2>Deduplicate before you automate</h2>
 <p>Before autonomous agents touch anything, the underlying data has to be audited, deduplicated and unified. That is why the AI Opportunity Audit inventories every SaaS platform, spreadsheet and database in the operation — not to criticize the stack, but to establish what an agent could safely treat as fact.</p>
 
-<h2>Why this is the cheapest thing to fix first</h2>
-<p>Cleaning up reconciliation is unglamorous and it is the highest-leverage work available. It makes the automation reliable, it makes the reporting true, and it usually surfaces a few thousand dollars of billing that quietly fell between two systems. Most operations find the cleanup pays for itself before the first agent ships.</p>
+<h2>Sequencing</h2>
+<p>Reconciliation is unglamorous and it is the highest-leverage work available: it makes the automation reliable, it makes the reporting accurate, and it commonly surfaces billing that fell between two systems. In most practices the cleanup pays for itself before the first automated process is deployed.</p>
 
-<p><em>The audit's Readiness Score exists specifically to grade this: infrastructure, data quality, and team capability, scored before anyone writes a line of code.</em></p>
+<p>This is why the readiness assessment grades infrastructure, data quality, and team capability before any implementation is scoped.</p>
     `,
     excerpt:
       'Roughly 85% of failed AI projects trace back to data quality. Duplicate records and unreconciled systems make agents hallucinate for entirely ordinary reasons.',
@@ -961,9 +821,9 @@ const blogPosts: BlogSeed[] = [
     isPublished: true,
     publishedAt: daysAgo(17),
     seo: {
-      title: 'The Reconciliation Gap: Data Quality Is 85% of the Problem',
+      title: 'Data quality as a precondition for automation',
       description:
-        'Data quality issues are responsible for around 85% of failed AI projects. Why deduplication and reconciliation have to come before autonomous agents.',
+        'Data quality issues are implicated in around 85% of failed AI projects. Why reconciliation has to precede any automated process.',
       keywords: ['data quality', 'AI project failure', 'data reconciliation', 'hallucination prevention']
     }
   }
@@ -1065,7 +925,7 @@ async function upsertSiteSettings(): Promise<void> {
 
   const next: Omit<SiteSettings, 'updatedAt'> = {
     siteName: 'Generativ Consulting Company',
-    tagline: PRIME_DIRECTIVE.promise,
+    tagline: PRIME_DIRECTIVE.summary,
     contactEmail: current?.contactEmail || 'info@generativ.cc',
     contactPhone: current?.contactPhone,
     address: current?.address,
@@ -1081,15 +941,15 @@ async function upsertSiteSettings(): Promise<void> {
       showLogo: true,
       columns: [
         {
-          title: 'The Offer',
+          title: 'Engagements',
           links: [
-            { text: 'AI Opportunity Audit — $500', url: '/services/ai-opportunity-audit' },
-            { text: 'Quick-Win Sprint', url: '/services/quick-win-sprint' },
+            { text: 'AI Opportunity Audit', url: '/services/ai-opportunity-audit' },
+            { text: 'Implementation Sprint', url: '/services/quick-win-sprint' },
             { text: 'Managed Operations', url: '/services/managed-operations' }
           ]
         },
         {
-          title: 'Capability',
+          title: 'Practice',
           links: [
             { text: 'AI Safety Testing', url: '/services/safety-testing' },
             { text: 'Parallelization', url: '/services/parallelization' },
@@ -1099,26 +959,26 @@ async function upsertSiteSettings(): Promise<void> {
         {
           title: 'Company',
           links: [
-            { text: 'About Us', url: '/about' },
-            { text: 'Our Team', url: '/team' },
-            { text: 'Leak Diagnostics', url: '/blog' },
-            { text: 'Book the Audit', url: '/contact' }
+            { text: 'About', url: '/about' },
+            { text: 'Team', url: '/team' },
+            { text: 'Writing', url: '/blog' },
+            { text: 'Contact', url: '/contact' }
           ]
         }
       ]
     },
     analytics: current?.analytics || { enableCookieBanner: true },
     globalSEO: {
-      title: 'Generativ Consulting Company | AI Opportunity Audit — $500, 5 Days',
+      title: 'Generativ Consulting Company',
       description:
-        'A flat $500, five-day AI Opportunity Audit that maps your top three operational leaks with quantified savings. Backed by a $5,000 annual-savings guarantee.',
+        'Operational review and automation implementation for professional practices in real estate, healthcare and law.',
       keywords: [
         'AI opportunity audit',
-        'small business AI',
-        'automation audit',
-        'speed to lead',
+        'operational review',
+        'workflow automation',
         'document intelligence',
-        'agentic AI'
+        'agentic AI',
+        'AI consulting'
       ]
     }
   };

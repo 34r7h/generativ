@@ -39,10 +39,10 @@ onMounted(() => {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Leak Diagnostics</h1>
+        <h1>Writing</h1>
         <p class="hero-description">
-          The factors behind the audit: where operational margin actually goes, what closing
-          each leak is worth, and why most agentic AI projects never ship.
+          Notes on where administrative time and margin go in professional practices, and on
+          the conditions under which automating that work is worth doing.
         </p>
       </div>
     </section>
