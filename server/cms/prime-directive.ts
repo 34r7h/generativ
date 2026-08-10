@@ -28,8 +28,10 @@ import {
   updatePage,
   createService,
   updateService,
+  deleteService,
   createBlogPost,
   updateBlogPost,
+  deleteBlogPost,
   getSiteSettings,
   saveSiteSettings
 } from './db.js';
@@ -423,7 +425,7 @@ const services: ServiceSeed[] = [
     }
   },
   {
-    slug: 'quick-win-sprint',
+    slug: 'implementation-sprint',
     title: 'Implementation Sprint',
     shortDescription:
       'One automated process built end to end in 7 to 14 days and integrated with the systems already in use.',
@@ -604,11 +606,25 @@ const services: ServiceSeed[] = [
 // Blog — one post per factor behind the offer.
 // ---------------------------------------------------------------------------
 
+const RETIRED_SERVICE_SLUGS = ['quick-win-sprint'];
+
+// Slugs this module previously published and has since renamed. They are deleted
+// on sync so a rename does not leave an orphaned copy behind at the old URL.
+const RETIRED_BLOG_SLUGS = [
+  'the-silent-leak-invisible-overhead',
+  'speed-to-lead-12-minutes-to-12-seconds',
+  'clinic-intake-and-the-no-show-problem',
+  'document-intelligence-from-20-dollars-to-2-36',
+  'why-40-percent-of-agentic-ai-projects-get-cancelled',
+  'why-40-percent-of-agentic-ai-projects-get-canceled',
+  'data-quality-is-85-percent-of-the-problem'
+];
+
 const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000).toISOString();
 
 const blogPosts: BlogSeed[] = [
   {
-    slug: 'the-silent-leak-invisible-overhead',
+    slug: 'administrative-overhead-cost',
     title: 'What administrative overhead costs a small practice',
     content: `
 <p>No line on a P&amp;L is labelled "invisible overhead". That is precisely what makes it expensive. The money leaves in amounts too small to trigger an alarm, on a schedule too regular to notice.</p>
@@ -642,7 +658,7 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'speed-to-lead-12-minutes-to-12-seconds',
+    slug: 'response-time-and-lost-inquiries',
     title: 'Response time and lost inquiries in property management',
     content: `
 <p>In a dense rental market, lead loss is a 24/7 threat, and it is almost never a pricing problem. Inquiries arrive at 9pm on a Sunday from a listing portal. By Monday at 10am, the prospect has toured two other apartments.</p>
@@ -680,7 +696,7 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'clinic-intake-and-the-no-show-problem',
+    slug: 'front-desk-hours-in-a-clinic',
     title: 'Where front-desk hours go in a small clinic',
     content: `
 <p>A neighborhood clinic does not lose money dramatically. It loses it in eight to fifteen hours a week of front-desk time spent on phone tag, retyping paper intake forms into the EHR, and chasing past-due invoices.</p>
@@ -716,7 +732,7 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'document-intelligence-from-20-dollars-to-2-36',
+    slug: 'cost-of-manual-document-processing',
     title: 'The cost of manual document processing',
     content: `
 <p>Paperwork-dense practices — immigration and personal injury law, tax preparation, notary services — run on the same operation repeated thousands of times: read an incoming document, find the standard fields, type them somewhere else.</p>
@@ -753,7 +769,7 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'why-40-percent-of-agentic-ai-projects-get-canceled',
+    slug: 'why-agentic-ai-projects-are-canceled',
     title: 'Why agentic AI projects are canceled',
     content: `
 <p>Gartner's forecast is blunt: <strong>more than 40% of agentic AI projects are expected to be canceled by the end of 2027</strong>. Read alongside the adoption numbers, it is a stranger picture than it first appears.</p>
@@ -791,7 +807,7 @@ const blogPosts: BlogSeed[] = [
     }
   },
   {
-    slug: 'data-quality-is-85-percent-of-the-problem',
+    slug: 'data-quality-and-automation',
     title: 'Data quality as a precondition for automation',
     content: `
 <p>When an agent invents a fact, the instinct is to blame the model. Usually the model is reporting faithfully on bad inputs. <strong>Data quality issues are implicated in roughly 85% of failed AI projects.</strong></p>
@@ -903,6 +919,34 @@ async function upsertBlogPosts(): Promise<{ created: number; updated: number }> 
   return { created, updated };
 }
 
+async function deleteRetiredServices(): Promise<number> {
+  const existing = await getAllServices();
+  let removed = 0;
+
+  for (const service of existing) {
+    if (RETIRED_SERVICE_SLUGS.includes(service.slug)) {
+      await deleteService(service.id);
+      removed++;
+    }
+  }
+
+  return removed;
+}
+
+async function deleteRetiredBlogPosts(): Promise<number> {
+  const posts = await getAllBlogPosts();
+  let removed = 0;
+
+  for (const post of posts) {
+    if (RETIRED_BLOG_SLUGS.includes(post.slug)) {
+      await deleteBlogPost(post.id);
+      removed++;
+    }
+  }
+
+  return removed;
+}
+
 /**
  * Earlier seed data stored unresolved placeholder ids (`team_1`, `team_2`, ...) in
  * BlogPost.author. Both BlogPage and BlogPostPage render that field verbatim, so
@@ -946,7 +990,7 @@ async function upsertSiteSettings(): Promise<void> {
           title: 'Engagements',
           links: [
             { text: 'AI Opportunity Audit', url: '/services/ai-opportunity-audit' },
-            { text: 'Implementation Sprint', url: '/services/quick-win-sprint' },
+            { text: 'Implementation Sprint', url: '/services/implementation-sprint' },
             { text: 'Managed Operations', url: '/services/managed-operations' }
           ]
         },
@@ -1005,6 +1049,10 @@ export async function syncPrimeDirective() {
 
   const blogResult = await upsertBlogPosts();
   console.log(`  blog posts: ${blogResult.created} created, ${blogResult.updated} updated`);
+
+  const removedServices = await deleteRetiredServices();
+  const removedPosts = await deleteRetiredBlogPosts();
+  console.log(`  retired entries removed: ${removedServices} services, ${removedPosts} posts`);
 
   const repaired = await repairBlogBylines();
   console.log(`  placeholder bylines repaired: ${repaired}`);
