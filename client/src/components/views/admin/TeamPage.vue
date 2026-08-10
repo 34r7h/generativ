@@ -453,8 +453,8 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--primary-dark);
+  color: var(--white, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
