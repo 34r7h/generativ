@@ -341,10 +341,11 @@ onMounted(() => {
 }
 
 .hero-section .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
+  display: block;
+}
+
+.hero-content {
+  max-width: 760px;
 }
 
 .hero-content h1 {
