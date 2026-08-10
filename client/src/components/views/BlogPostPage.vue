@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { cmsAPI } from '../../api/client';
 
@@ -11,96 +11,8 @@ const error = ref(null);
 const blogPost = ref(null);
 const relatedPosts = ref([]);
 
-// Get blog post slug/ID from route
-const postId = computed(() => route.params.id);
-const blogPosts = {
-  1: {
-    id: 1,
-    title: 'Understanding AI Safety: A Primer',
-    content: `
-      <p>Artificial Intelligence systems are becoming increasingly powerful and ubiquitous in our daily lives. As organizations adopt these technologies, ensuring their safe and reliable operation becomes paramount. This post serves as a primer on AI safety concepts that every organization should understand.</p>
-
-      <h2>What is AI Safety?</h2>
-      
-      <p>AI safety encompasses the research and engineering practices aimed at ensuring that artificial intelligence systems behave as intended and do not cause harm. This includes preventing unintended consequences, aligning AI goals with human values, and building systems that are robust against manipulation or failure.</p>
-      
-      <h2>Key AI Safety Challenges</h2>
-      
-      <p>Several challenges make AI safety a complex field:</p>
-      
-      <ul>
-        <li><strong>Alignment Problem:</strong> Ensuring AI systems pursue goals that align with human intentions and values.</li>
-        <li><strong>Robustness:</strong> Building AI that performs well even under unexpected or adversarial conditions.</li>
-        <li><strong>Monitoring and Control:</strong> Developing mechanisms to monitor AI behavior and intervene when necessary.</li>
-        <li><strong>Transparency:</strong> Creating systems whose decisions can be understood and explained.</li>
-        <li><strong>Value Specification:</strong> Clearly defining what we want AI systems to optimize for.</li>
-      </ul>
-      
-      <p>Organizations implementing AI systems should consider each of these challenges and develop strategies to address them.</p>
-    `,
-    date: '2023-09-15',
-    author: 'Alex Rodriguez',
-    category: 'AI Safety',
-    tags: ['safety', 'alignment', 'robustness', 'AI ethics']
-  },
-  2: {
-    id: 2,
-    title: 'Parallelization Techniques for Modern AI Workloads',
-    content: `
-      <p>As AI models grow in size and complexity, efficient parallelization becomes critical for organizations looking to maximize performance and minimize costs. This post explores key techniques for parallelizing AI workloads.</p>
-
-      <h2>The Need for Parallelization</h2>
-      
-      <p>Modern AI workloads, particularly large language models and computer vision systems, demand enormous computational resources. Effective parallelization can reduce training time from weeks to days or even hours, dramatically improving development cycles and reducing costs.</p>
-      
-      <h2>Key Parallelization Strategies</h2>
-      
-      <p>Several strategies can be employed to parallelize AI workloads:</p>
-      
-      <ul>
-        <li><strong>Data Parallelism:</strong> Dividing data across multiple processors, each running the same model.</li>
-        <li><strong>Model Parallelism:</strong> Splitting a model across multiple devices when it's too large for a single device.</li>
-        <li><strong>Pipeline Parallelism:</strong> Breaking the model into stages that can be processed in parallel.</li>
-        <li><strong>Hybrid Approaches:</strong> Combining multiple parallelization strategies for optimal performance.</li>
-      </ul>
-      
-      <p>The right approach depends on your specific model architecture, hardware constraints, and performance requirements.</p>
-    `,
-    date: '2023-08-22',
-    author: 'Jamie Lee',
-    category: 'Performance',
-    tags: ['parallelization', 'performance', 'optimization', 'distributed computing']
-  },
-  3: {
-    id: 3,
-    title: 'Critical Thinking: The Human Edge in an AI World',
-    content: `
-      <p>As AI systems become more capable, the value of human critical thinking increases rather than decreases. This post explores how organizations can foster critical thinking skills to complement AI capabilities.</p>
-
-      <h2>The Continued Relevance of Human Thinking</h2>
-      
-      <p>While AI excels at pattern recognition and processing vast amounts of data, humans still maintain an edge in areas such as contextual understanding, ethical reasoning, and creative problem-solving. These skills become more valuable, not less, in an AI-augmented workplace.</p>
-      
-      <h2>Critical Thinking Skills for the AI Age</h2>
-      
-      <p>Organizations should focus on developing these key critical thinking skills:</p>
-      
-      <ul>
-        <li><strong>AI Output Evaluation:</strong> The ability to assess AI-generated content for accuracy, relevance, and potential biases.</li>
-        <li><strong>Prompt Engineering:</strong> Crafting effective prompts to guide AI systems toward desired outcomes.</li>
-        <li><strong>Contextual Intelligence:</strong> Understanding when to rely on AI and when human judgment is necessary.</li>
-        <li><strong>Ethical Reasoning:</strong> Identifying and addressing ethical implications of AI applications.</li>
-        <li><strong>Systems Thinking:</strong> Comprehending how AI fits into larger organizational and societal systems.</li>
-      </ul>
-      
-      <p>By fostering these skills, organizations can leverage AI as a powerful tool while maintaining human judgment and values at the core of decision-making processes.</p>
-    `,
-    date: '2023-07-10',
-    author: 'Morgan Chen',
-    category: 'Education',
-    tags: ['critical thinking', 'education', 'AI literacy', 'prompt engineering']
-  }
-};
+// Get blog post slug from route (/blog/:slug)
+const postSlug = computed(() => route.params.slug);
 
 
 
@@ -111,20 +23,24 @@ async function loadBlogPost() {
     loading.value = true;
     error.value = null;
     
-    // Try to get blog post by slug first, then by ID
+    // Try to get blog post by slug first, then fall back to an ID lookup
     let response;
-    if (isNaN(postId.value)) {
-      // It's a slug
-      response = await cmsAPI.getBlogPostBySlug(postId.value);
-    } else {
-      // It's an ID - get all posts and find by ID
-      const allPosts = await cmsAPI.getBlogPosts();
-      if (allPosts.success) {
-        const post = allPosts.posts.find(p => p.id === postId.value);
-        response = post ? { success: true, post } : { success: false, error: 'Post not found' };
+    if (postSlug.value) {
+      try {
+        response = await cmsAPI.getBlogPostBySlug(postSlug.value);
+      } catch (slugErr) {
+        response = null;
+      }
+
+      if (!response || !response.success || !response.post) {
+        const allPosts = await cmsAPI.getBlogPosts();
+        if (allPosts.success) {
+          const post = allPosts.posts.find(p => p.id === postSlug.value);
+          response = post ? { success: true, post } : { success: false, error: 'Post not found' };
+        }
       }
     }
-    
+
     if (response && response.success && response.post) {
       blogPost.value = response.post;
       
@@ -148,12 +64,23 @@ async function loadBlogPost() {
 
 
 
+function formatDate(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? '' : date.toLocaleDateString();
+}
+
 function goBack() {
   router.push('/blog');
 }
 
 onMounted(() => {
   loadBlogPost();
+});
+
+// Navigating between posts reuses this component, so reload on slug change
+watch(postSlug, (slug) => {
+  if (slug) loadBlogPost();
 });
 </script>
 
@@ -177,8 +104,8 @@ onMounted(() => {
       <section class="post-header">
         <div class="container">
           <div class="post-meta">
-            <span class="post-category">{{ blogPost.category }}</span>
-            <span class="post-date">{{ blogPost.date }}</span>
+            <span class="post-category">{{ blogPost.categories?.[0] || 'Uncategorized' }}</span>
+            <span class="post-date">{{ formatDate(blogPost.publishedAt) }}</span>
           </div>
           <h1>{{ blogPost.title }}</h1>
           <p class="post-author">By {{ blogPost.author }}</p>
@@ -222,13 +149,13 @@ onMounted(() => {
               :key="post.id" 
               class="related-post-card"
             >
-              <div class="post-category">{{ post.category }}</div>
+              <div class="post-category">{{ post.categories?.[0] || 'Uncategorized' }}</div>
               <h3>{{ post.title }}</h3>
               <div class="post-meta">
-                <span class="post-date">{{ post.date }}</span>
+                <span class="post-date">{{ formatDate(post.publishedAt) }}</span>
                 <span class="post-author">by {{ post.author }}</span>
               </div>
-              <router-link :to="`/blog/${post.id}`" class="post-link">
+              <router-link :to="`/blog/${post.slug}`" class="post-link">
                 Read Article
               </router-link>
             </div>
