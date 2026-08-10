@@ -1,66 +1,72 @@
 <script setup>
 /**
- * The hero graphic: the gap between promise and productivity, animated.
+ * The hero graphic: promised versus measured.
  *
- * Left: scattered, faint marks drifting — capability that has not been aimed
- * at anything. Middle: three channels carrying it across. Right: solid, evenly
- * stacked bars — work that actually comes out.
+ * Left column — dashed, unlabelled bars: the claims made about this technology,
+ * which have no units. Right column — solid cards carrying figures the site
+ * cites elsewhere: what an engagement actually produces. Each row crosses once,
+ * left to right, and stays put.
  *
- * All motion is CSS on SVG nodes: no JavaScript, no rAF loop, nothing to clean
- * up on unmount. The moving parts are dash offsets and opacity, both of which
- * the compositor handles cheaply, and everything stops under
- * prefers-reduced-motion, which leaves a composition that still reads.
+ * The figures are the benchmarks published on the blog and the reports, not
+ * promised gains, which is the whole distinction the graphic is drawing.
+ *
+ * Motion runs ONCE and rests on the finished state — `animation-iteration-count: 1`
+ * with `fill-mode: both`. Nothing loops beside the copy while it is being read.
+ * All of it is CSS on SVG nodes: no JavaScript, no rAF, nothing to unmount.
  */
 </script>
 
 <template>
   <svg
     class="hero-anim"
-    viewBox="0 0 460 320"
+    viewBox="0 0 480 300"
     xmlns="http://www.w3.org/2000/svg"
     role="img"
-    aria-label="Scattered signals resolving into steady output"
+    aria-label="Unmeasured promises on the left, resolving into measured figures on the right"
   >
-    <!-- Promise: unaimed capability -->
-    <g class="scatter">
-      <circle cx="34" cy="58" r="4" />
-      <circle cx="74" cy="36" r="3" />
-      <circle cx="26" cy="122" r="3" />
-      <circle cx="68" cy="104" r="5" />
-      <circle cx="38" cy="186" r="3" />
-      <circle cx="80" cy="168" r="4" />
-      <circle cx="30" cy="248" r="4" />
-      <circle cx="76" cy="238" r="3" />
-      <circle cx="52" cy="292" r="3" />
-      <circle cx="92" cy="272" r="4" />
+    <text class="col-label" x="16" y="26">PROMISED</text>
+    <text class="col-label measured" x="268" y="26">MEASURED</text>
+
+    <!-- Row 1 -->
+    <g class="row row-1">
+      <rect class="claim" x="16" y="56" width="176" height="46" rx="10" />
+      <text class="claim-text" x="30" y="83">“10× productivity”</text>
+      <g class="result">
+        <rect x="268" y="56" width="196" height="46" rx="10" />
+        <text class="figure" x="286" y="79">8–15 hrs<tspan class="unit" dx="9">per week</tspan></text>
+      </g>
     </g>
 
-    <!-- The channels across -->
-    <g class="channels">
-      <path d="M104 70 C 180 70, 190 108, 268 108" />
-      <path d="M104 160 C 180 160, 190 160, 268 160" />
-      <path d="M104 254 C 180 254, 190 212, 268 212" />
+    <!-- Row 2 -->
+    <g class="row row-2">
+      <rect class="claim" x="16" y="128" width="150" height="46" rx="10" />
+      <text class="claim-text" x="30" y="155">“AI-powered”</text>
+      <g class="result">
+        <rect x="268" y="128" width="196" height="46" rx="10" />
+        <text class="figure" x="286" y="151">$12–20<tspan class="unit" dx="9">per form</tspan></text>
+      </g>
     </g>
 
-    <!-- What is carried, moving left to right -->
-    <g class="flow">
-      <path d="M104 70 C 180 70, 190 108, 268 108" />
-      <path d="M104 160 C 180 160, 190 160, 268 160" />
-      <path d="M104 254 C 180 254, 190 212, 268 212" />
+    <!-- Row 3 -->
+    <g class="row row-3">
+      <rect class="claim" x="16" y="200" width="192" height="46" rx="10" />
+      <text class="claim-text" x="30" y="227">“transformational”</text>
+      <g class="result">
+        <rect x="268" y="200" width="196" height="46" rx="10" />
+        <text class="figure" x="286" y="223">12 min<tspan class="unit" dx="9">to first reply</tspan></text>
+      </g>
     </g>
 
-    <!-- Productivity: steady, aligned output -->
-    <g class="output">
-      <rect x="286" y="88" width="132" height="34" rx="8" />
-      <rect x="286" y="136" width="132" height="34" rx="8" />
-      <rect x="286" y="184" width="132" height="34" rx="8" />
+    <!-- The crossing -->
+    <g class="cross">
+      <path d="M204 79 H 260" />
+      <path d="M178 151 H 260" />
+      <path d="M220 223 H 260" />
     </g>
-
-    <!-- A measured result, the last thing to arrive -->
-    <g class="ticks">
-      <path d="M302 105 l7 7 14 -14" />
-      <path d="M302 153 l7 7 14 -14" />
-      <path d="M302 201 l7 7 14 -14" />
+    <g class="head">
+      <path d="M250 73 l7 6 -7 6" />
+      <path d="M250 145 l7 6 -7 6" />
+      <path d="M250 217 l7 6 -7 6" />
     </g>
   </svg>
 </template>
@@ -71,99 +77,166 @@
   width: 100%;
   height: auto;
   max-width: 520px;
-  overflow: visible;
+  font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
 }
 
-/* Left-hand marks: present, quiet, breathing slightly out of step. */
-.scatter circle {
+.col-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  fill: var(--light-text, #718096);
+}
+
+.col-label.measured {
   fill: var(--primary-color, #4c6fff);
-  opacity: 0.22;
-  animation: drift 7s ease-in-out infinite;
 }
 
-.scatter circle:nth-child(2n) { animation-duration: 9s; animation-delay: -1.4s; }
-.scatter circle:nth-child(3n) { animation-duration: 11s; animation-delay: -3.1s; }
-.scatter circle:nth-child(5n) { animation-duration: 8s; animation-delay: -2.2s; }
-
-@keyframes drift {
-  0%, 100% { transform: translate(0, 0); opacity: 0.18; }
-  50%      { transform: translate(3px, -6px); opacity: 0.42; }
+/* A claim with no units: dashed, hollow, and it does not stay. */
+.claim {
+  fill: none;
+  stroke: var(--light-text, #718096);
+  stroke-width: 2;
+  stroke-dasharray: 7 6;
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
 }
 
-/* The channels themselves stay still and faint — they are the structure. */
-.channels path {
+.claim-text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--light-text, #718096);
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
+}
+
+.result rect {
+  fill: var(--primary-color, #4c6fff);
+  transform-box: fill-box;
+  transform-origin: left center;
+  transform: scaleX(0.24);
+  opacity: 0;
+  animation: land 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.figure {
+  font-size: 21px;
+  font-weight: 700;
+  fill: #ffffff;
+  opacity: 0;
+  animation: text-in 0.4s ease-out both;
+}
+
+.unit {
+  font-size: 12.5px;
+  font-weight: 500;
+  fill: rgba(255, 255, 255, 0.82);
+  opacity: 0;
+  animation: text-in 0.4s ease-out both;
+}
+
+.cross path,
+.head path {
   fill: none;
   stroke: var(--primary-color, #4c6fff);
   stroke-width: 2;
-  opacity: 0.16;
-}
-
-/* A short dash travelling each channel: the work moving across. */
-.flow path {
-  fill: none;
-  stroke: var(--primary-color, #4c6fff);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-dasharray: 26 340;
-  animation: carry 4.6s cubic-bezier(0.45, 0, 0.35, 1) infinite;
-}
-
-.flow path:nth-child(2) { animation-delay: -1.5s; }
-.flow path:nth-child(3) { animation-delay: -3s; }
-
-@keyframes carry {
-  0%   { stroke-dashoffset: 366; opacity: 0; }
-  12%  { opacity: 0.85; }
-  78%  { opacity: 0.85; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-/* Output bars settle in sequence, then hold. */
-.output rect {
-  fill: var(--primary-color, #4c6fff);
-  opacity: 0.9;
-  transform-box: fill-box;
-  transform-origin: left center;
-  animation: settle 4.6s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.output rect:nth-child(2) { animation-delay: -1.5s; }
-.output rect:nth-child(3) { animation-delay: -3s; }
-
-@keyframes settle {
-  0%, 30%   { transform: scaleX(0.82); opacity: 0.5; }
-  46%, 100% { transform: scaleX(1); opacity: 0.9; }
-}
-
-.ticks path {
-  fill: none;
-  stroke: #ffffff;
-  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 30;
-  animation: mark 4.6s ease-out infinite;
+  opacity: 0.55;
 }
 
-.ticks path:nth-child(2) { animation-delay: -1.5s; }
-.ticks path:nth-child(3) { animation-delay: -3s; }
-
-@keyframes mark {
-  0%, 34%  { stroke-dashoffset: 30; }
-  52%, 100% { stroke-dashoffset: 0; }
+.cross path {
+  stroke-dasharray: 90;
+  stroke-dashoffset: 90;
+  animation: draw 0.5s ease-out both;
 }
 
-/* Motion is decoration here; the still composition carries the same meaning. */
+.head path {
+  opacity: 0;
+  animation: text-in 0.3s ease-out both;
+}
+
+/* Each row runs a beat after the one above it. */
+.row-1 .claim, .row-1 .claim-text { animation-delay: 0.25s, 0.95s; }
+.row-2 .claim, .row-2 .claim-text { animation-delay: 0.55s, 1.25s; }
+.row-3 .claim, .row-3 .claim-text { animation-delay: 0.85s, 1.55s; }
+
+.cross path:nth-child(1) { animation-delay: 0.95s; }
+.cross path:nth-child(2) { animation-delay: 1.25s; }
+.cross path:nth-child(3) { animation-delay: 1.55s; }
+
+.head path:nth-child(1) { animation-delay: 1.35s; }
+.head path:nth-child(2) { animation-delay: 1.65s; }
+.head path:nth-child(3) { animation-delay: 1.95s; }
+
+.row-1 .claim-text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--light-text, #718096);
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
+}
+
+.result rect { animation-delay: 1.3s; }
+.row-2 .claim-text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--light-text, #718096);
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
+}
+
+.result rect { animation-delay: 1.6s; }
+.row-3 .claim-text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--light-text, #718096);
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
+}
+
+.result rect { animation-delay: 1.9s; }
+
+.row-1 .figure, .row-1 .unit { animation-delay: 1.62s; }
+.row-2 .figure, .row-2 .unit { animation-delay: 1.92s; }
+.row-3 .figure, .row-3 .unit { animation-delay: 2.22s; }
+
+@keyframes claim-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 0.85; transform: translateX(0); }
+}
+
+@keyframes claim-out {
+  from { opacity: 0.85; transform: translateX(0); }
+  to   { opacity: 0.3; transform: translateX(12px); }
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes land {
+  from { transform: scaleX(0.24); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes text-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* No motion: land on the finished state immediately. */
 @media (prefers-reduced-motion: reduce) {
-  .scatter circle,
-  .flow path,
-  .output rect,
-  .ticks path {
-    animation: none;
-  }
+  .claim, .claim-text { animation: none; opacity: 0.3; }
+  .claim-text {
+  font-size: 14px;
+  font-weight: 500;
+  fill: var(--light-text, #718096);
+  opacity: 0;
+  animation: claim-in 0.5s ease-out both, claim-out 0.55s ease-in both;
+}
 
-  .scatter circle { opacity: 0.3; }
-  .flow path { stroke-dashoffset: 0; stroke-dasharray: none; opacity: 0.5; }
-  .ticks path { stroke-dashoffset: 0; }
+.result rect { animation: none; opacity: 1; transform: scaleX(1); }
+  .figure, .unit, .head path { animation: none; opacity: 1; }
+  .cross path { animation: none; stroke-dashoffset: 0; }
 }
 </style>
