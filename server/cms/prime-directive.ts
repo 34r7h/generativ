@@ -1031,6 +1031,51 @@ async function upsertSiteSettings(): Promise<void> {
 
 const teamMembers: TeamSeed[] = [
   {
+    name: '34r7h',
+    position: 'Engineering Lead',
+    bio:
+      'Fifteen years building generators — systems that write systems, from code and content ' +
+      'pipelines through to the tooling that produces them. Works the full depth of the stack: ' +
+      'memory layout, protocol and runtime behavior at the bottom; interfaces, orchestration and ' +
+      'deployment at the top; and the judgment about which layer a problem actually belongs to, ' +
+      'which is usually lower than it first appears.',
+    expertise: [
+      'Programming',
+      'Generative Systems',
+      'Systems Programming',
+      'Full-Stack Architecture',
+      'Developer Tooling'
+    ],
+    email: '',
+    linkedIn: '',
+    userId: '',
+    sortOrder: 3,
+    isActive: true
+  },
+  {
+    name: 'Empyrean',
+    position: 'Visual Lead',
+    bio:
+      'Storyboards for film and advertising: sequence, framing and pacing worked out on paper ' +
+      'before anything is produced. Builds the generative pipelines that carry those boards into ' +
+      'finished assets — ComfyUI graphs and related tooling, with controlled conditioning, ' +
+      'consistent characters and reproducible output rather than one good result nobody can ' +
+      'repeat. The board sets the shot; the pipeline is only there to render it faithfully.',
+    expertise: [
+      'Multimedia Generation',
+      'Storyboarding',
+      'Film and Advertising',
+      'ComfyUI Workflows',
+      'Generative Asset Pipelines',
+      'Art Direction'
+    ],
+    email: '',
+    linkedIn: '',
+    userId: '',
+    sortOrder: 4,
+    isActive: true
+  },
+  {
     name: 'Jayesh',
     position: 'Enterprise Automation Lead',
     bio:
