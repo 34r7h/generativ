@@ -1,4 +1,5 @@
 <script setup>
+import BrandMark from './BrandMark.vue';
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 
@@ -31,9 +32,7 @@ onMounted(() => {
           <div class="footer-brand">
             <div class="footer-logo">
               <img v-if="siteSettings?.logo?.filePath" :src="siteSettings.logo.filePath" alt="Generativ Consulting" />
-              <span v-else class="logo-text">
-                <span class="gradient-text">Generativ</span>
-              </span>
+              <BrandMark v-else size="md" tone="dark" />
             </div>
             <p class="footer-tagline">{{ siteSettings?.tagline || 'Where AI speed meets human trust' }}</p>
             <div class="footer-social">
