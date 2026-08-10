@@ -1,23 +1,42 @@
 <script setup>
 /**
- * The Generativ mark and wordmark lockup.
+ * The Generativ mark.
  *
- * The mark reads as generative building: one solid seed square at the origin,
- * then the same square reproduced outward at increasing scale and decreasing
- * weight — a rule applied repeatedly rather than a drawing of a thing. The
- * final unit closes back into solid form, because the output of the process is
- * something built, not a diagram of it.
+ * A G assembled from identical square units on a 5x5 grid — the letterform is
+ * not drawn, it is built out of one repeated part, which is the whole claim of
+ * the name. The two units forming the crossbar are emerald: the piece the
+ * process produces, distinguished from the structure that produced it.
  *
- * Flat fills and strokes only; the mark inherits `currentColor` for the
- * wordmark, so it works on light and dark surfaces without a second asset.
+ * Modular construction survives scale. At 16px it reads as a solid blocky G;
+ * at 120px the grid is legible and the crossbar reads as a separate act.
  */
+import { computed } from 'vue';
+
 defineProps({
   // 'full' — mark plus wordmark. 'mark' — the glyph alone, for tight spaces.
   variant: { type: String, default: 'full' },
   size: { type: [Number, String], default: 34 },
-  // 'dark' inverts the mark's ink for placement on dark surfaces.
+  // 'dark' inverts the structural ink for placement on dark surfaces.
   tone: { type: String, default: 'light' }
 });
+
+// Column/row coordinates on the 5x5 grid, read top-left to bottom-right.
+const STRUCTURE = [
+  [1, 0], [2, 0], [3, 0],
+  [0, 1],
+  [0, 2],
+  [0, 3], [3, 3],
+  [1, 4], [2, 4], [3, 4]
+];
+
+// The crossbar — what the structure generates.
+const OUTPUT = [[2, 2], [3, 2]];
+
+const STEP = 8;
+const UNIT = 7;
+
+const structure = computed(() => STRUCTURE.map(([x, y]) => ({ x: x * STEP, y: y * STEP })));
+const output = computed(() => OUTPUT.map(([x, y]) => ({ x: x * STEP, y: y * STEP })));
 </script>
 
 <template>
@@ -26,19 +45,32 @@ defineProps({
       class="brand-mark"
       :width="size"
       :height="size"
-      viewBox="0 0 40 40"
+      viewBox="0 0 39 39"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Generativ"
     >
-      <!-- the seed -->
-      <rect x="4" y="24" width="12" height="12" rx="2.5" class="m-seed" />
-      <!-- the rule, applied twice -->
-      <rect x="19" y="14" width="17" height="17" rx="3" class="m-step" />
-      <rect x="14" y="4" width="22" height="22" rx="3.5" class="m-step m-step-far" />
-      <!-- the built result -->
-      <rect x="24" y="14" width="12" height="12" rx="2.5" class="m-built" />
+      <rect
+        v-for="(cell, i) in structure"
+        :key="`s${i}`"
+        :x="cell.x"
+        :y="cell.y"
+        :width="UNIT"
+        :height="UNIT"
+        rx="1.6"
+        class="m-unit"
+      />
+      <rect
+        v-for="(cell, i) in output"
+        :key="`o${i}`"
+        :x="cell.x"
+        :y="cell.y"
+        :width="UNIT"
+        :height="UNIT"
+        rx="1.6"
+        class="m-output"
+      />
     </svg>
     <span v-if="variant === 'full'" class="brand-word">Generativ</span>
   </span>
@@ -48,8 +80,12 @@ defineProps({
 .brand-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   line-height: 1;
+}
+
+.brand-mark {
+  flex-shrink: 0;
 }
 
 .brand-word {
@@ -57,29 +93,13 @@ defineProps({
   font-weight: 700;
   font-size: 1.6rem;
   letter-spacing: -0.03em;
-  color: var(--primary, #3b82f6);
+  color: var(--dark-blue, #1e3a8a);
 }
 
-.brand-mark {
-  flex-shrink: 0;
-}
+.m-unit { fill: #1e3a8a; }
+.m-output { fill: #10b981; }
 
-.m-seed { fill: #3b82f6; }
-.m-built { fill: #10b981; }
-.m-step {
-  fill: none;
-  stroke: #1e3a8a;
-  stroke-width: 2.5;
-}
-
-.m-step-far {
-  stroke: #93b4fb;
-}
-
-/* On dark surfaces the outline steps need to lift off the ground, and the
-   wordmark takes the surrounding foreground rather than brand blue. */
-.tone-dark .m-step { stroke: #ffffff; }
-.tone-dark .m-step-far { stroke: rgba(255, 255, 255, 0.45); }
+.tone-dark .m-unit { fill: #ffffff; }
 .tone-dark .brand-word { color: #ffffff; }
 
 @media (max-width: 480px) {
