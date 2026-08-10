@@ -125,7 +125,7 @@ onMounted(() => {
                 </div>
               </div>
               <div class="hero-image">
-                <img :src="heroImage" alt="AI Safety and Performance" />
+                <img :src="heroImage" alt="The $500 AI Opportunity Audit" />
               </div>
             </div>
           </section>
@@ -340,7 +340,7 @@ onMounted(() => {
 /* Hero Section */
 .hero-section {
   padding: 80px 0;
-  background: linear-gradient(135deg, var(--light-blue), #f0f7ff);
+  background-color: var(--light-blue);
 }
 
 .hero-section .container {

@@ -170,7 +170,7 @@ function togglePasswordVisibility() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: var(--gradient-dark);
+  background-color: var(--dark);
   position: relative;
   overflow: hidden;
 }
@@ -183,8 +183,7 @@ function togglePasswordVisibility() {
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.3) 0%, transparent 30%),
-    radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.3) 0%, transparent 30%);
+    none;
   z-index: 0;
 }
 

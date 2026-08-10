@@ -548,15 +548,15 @@ onMounted(() => {
 
 /* Service-specific styling */
 .service-safety-testing-hero {
-  background: linear-gradient(135deg, #edf2f7, #e2e8f0);
+  background-color: #edf2f7;
 }
 
 .service-parallelization-hero {
-  background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+  background-color: #ebf8ff;
 }
 
 .service-critical-thinking-hero {
-  background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+  background-color: #f0fff4;
 }
 
 /* Responsive */

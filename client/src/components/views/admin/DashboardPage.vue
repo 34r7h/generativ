@@ -324,7 +324,7 @@ onMounted(() => {
   width: 50px;
   height: 50px;
   border-radius: var(--border-radius-md);
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-color: #f0f0f0;
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   margin-right: var(--spacing-md);
@@ -336,7 +336,7 @@ onMounted(() => {
 
 .skeleton-line {
   height: 12px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-color: #f0f0f0;
   background-size: 200% 100%;
   animation: loading 1.5s infinite;
   border-radius: 6px;
@@ -401,7 +401,7 @@ onMounted(() => {
   align-items: center;
   padding: var(--spacing-xl);
   border-radius: var(--border-radius-lg);
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+  background-color: rgba(59, 130, 246, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: var(--shadow-lg);
@@ -414,7 +414,7 @@ onMounted(() => {
 .welcome-content h2 {
   margin-bottom: var(--spacing-sm);
   font-size: 1.75rem;
-  background: var(--gradient-primary);
+  background-color: var(--primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

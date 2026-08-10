@@ -26,10 +26,10 @@
   --success: #10b981;          /* Green */
   --info: #3b82f6;             /* Blue */
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--primary), var(--accent));
-  --gradient-dark: linear-gradient(135deg, var(--dark), var(--dark-blue));
-  --gradient-light: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+  /* Flat brand surfaces (no gradients — solid colour only) */
+  --surface-primary: var(--primary);
+  --surface-dark: var(--dark);
+  --surface-light: var(--gray-50);
 
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -330,9 +330,9 @@ a:hover {
 .bg-accent { background-color: var(--accent); }
 .bg-dark { background-color: var(--dark); }
 .bg-light { background-color: var(--light); }
-.bg-gradient-primary { background-image: var(--gradient-primary); }
-.bg-gradient-dark { background-image: var(--gradient-dark); }
-.bg-gradient-light { background-image: var(--gradient-light); }
+.bg-surface-primary { background-color: var(--surface-primary); }
+.bg-surface-dark { background-color: var(--surface-dark); }
+.bg-surface-light { background-color: var(--surface-light); }
 
 .rounded-sm { border-radius: var(--border-radius-sm); }
 .rounded-md { border-radius: var(--border-radius-md); }
@@ -400,23 +400,12 @@ a:hover {
 }
 
 .gradient-text {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+  color: var(--primary);
 }
 
-.grid-pattern {
-  background-image: 
-    linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
-}
-
+.grid-pattern,
 .dot-pattern {
-  background-image: radial-gradient(rgba(59, 130, 246, 0.2) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-color: var(--gray-50);
 }
 
 /* Responsive Utilities */

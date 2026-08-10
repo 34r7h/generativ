@@ -1,4 +1,16 @@
-<svg width="500" height="400" xmlns="http://www.w3.org/2000/svg">
-  <rect width="500" height="400" fill="#EDF2F7" />
-  <text x="120" y="200" font-family="Arial" font-size="30" fill="#4C6FFF">AI Safety & Performance</text>
+<svg width="520" height="360" viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A pipe leaking, closed by a valve">
+  <rect width="520" height="360" rx="8" fill="#F1F5FB" />
+
+  <!-- pipe -->
+  <rect x="60" y="150" width="400" height="26" rx="4" fill="#C3D0E8" />
+
+  <!-- valve -->
+  <rect x="232" y="132" width="56" height="62" rx="4" fill="#4C6FFF" />
+  <rect x="252" y="104" width="16" height="34" rx="4" fill="#4C6FFF" />
+  <circle cx="260" cy="100" r="20" fill="none" stroke="#4C6FFF" stroke-width="8" />
+
+  <!-- the leak -->
+  <path d="M260 200 c-11 15 -16 24 -16 31 a16 16 0 0 0 32 0 c0 -7 -5 -16 -16 -31 z" fill="#E5484D" />
+
+  <text x="260" y="300" text-anchor="middle" font-family="Inter, Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#0B1B3F">$500. Five days.</text>
 </svg>

@@ -238,7 +238,7 @@ onMounted(() => {
   transform: translateX(-50%);
   width: 0;
   height: 2px;
-  background: var(--gradient-primary);
+  background-color: var(--primary);
   transition: width var(--transition-normal);
 }
 

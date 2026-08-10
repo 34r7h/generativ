@@ -147,7 +147,7 @@ onMounted(() => {
 
 <style scoped>
 .admin-sidebar {
-  background: linear-gradient(180deg, var(--dark) 0%, var(--dark-blue) 100%);
+  background-color: var(--dark);
   color: var(--light);
   height: 100vh;
   width: 280px;
@@ -207,7 +207,7 @@ onMounted(() => {
 .logo-icon {
   width: 40px;
   height: 40px;
-  background: var(--gradient-primary);
+  background-color: var(--primary);
   border-radius: var(--border-radius-full);
   display: flex;
   align-items: center;
@@ -320,7 +320,7 @@ onMounted(() => {
 .user-avatar {
   width: 40px;
   height: 40px;
-  background: linear-gradient(45deg, var(--primary), var(--accent));
+  background-color: var(--primary);
   border-radius: var(--border-radius-full);
   display: flex;
   align-items: center;
