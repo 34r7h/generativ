@@ -64,7 +64,7 @@ function checkAuthentication() {
 
 <style>
 /* Import fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200..900&display=swap');
 @import url('https://fonts.cdnfonts.com/css/clash-display');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
 

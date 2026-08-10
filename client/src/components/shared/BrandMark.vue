@@ -2,42 +2,57 @@
 /**
  * The Generativ wordmark.
  *
- * No symbol. The name is set in one typeface and shifts from light to heavy
- * across itself — thin input on the left, dense output on the right — so the
- * idea is carried by the letterforms rather than by a glyph sitting next to
- * them. Nothing here can render badly at small size, and there is no second
- * asset to keep in sync.
+ * No symbol. The weight ramps letter by letter — thin input on the left,
+ * dense output on the right — so the idea is carried by the letterforms
+ * themselves. It is a per-character ramp rather than two blocks of weight:
+ * with only two spans it read as a mistake, as though half the word had been
+ * bolded by accident.
  *
- * `tone="dark"` inverts it for dark surfaces.
+ * This requires Inter's variable axis (wght@200..900, loaded in App.vue). With
+ * a static weight list every step would snap to the nearest of five, which
+ * collapses the ramp back into blocks.
  */
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   size: { type: String, default: 'md' },
-  tone: { type: String, default: 'light' }
+  tone: { type: String, default: 'light' },
+  from: { type: Number, default: 250 },
+  to: { type: Number, default: 800 }
 });
+
+const NAME = 'Generativ';
+
+const letters = computed(() =>
+  NAME.split('').map((char, i) => ({
+    char,
+    key: `${char}-${i}`,
+    weight: Math.round(props.from + (props.to - props.from) * (i / (NAME.length - 1)))
+  }))
+);
 </script>
 
 <template>
-  <span class="brand-word" :class="[`tone-${tone}`, `size-${size}`]">
-    <span class="w-light">Gener</span><span class="w-heavy">ativ</span>
+  <span class="brand-word" :class="[`tone-${tone}`, `size-${size}`]" :aria-label="NAME" role="img">
+    <span
+      v-for="letter in letters"
+      :key="letter.key"
+      aria-hidden="true"
+      :style="{ fontWeight: letter.weight, fontVariationSettings: `'wght' ${letter.weight}` }"
+    >{{ letter.char }}</span>
   </span>
 </template>
 
 <style scoped>
 .brand-word {
   display: inline-block;
-  font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
-  letter-spacing: -0.04em;
+  font-family: 'Inter', var(--font-sans, system-ui, sans-serif);
+  letter-spacing: -0.035em;
   line-height: 1;
   white-space: nowrap;
   color: var(--dark-blue, #1e3a8a);
-}
-
-.w-light {
-  font-weight: 300;
-}
-
-.w-heavy {
-  font-weight: 800;
+  /* Optical sizing keeps the light letters from thinning out at small sizes. */
+  font-optical-sizing: auto;
 }
 
 .size-sm { font-size: 1.35rem; }
