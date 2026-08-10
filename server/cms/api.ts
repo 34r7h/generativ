@@ -93,26 +93,38 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
     }
   }
   
-  // Authenticate user for protected operations
-  if (requiresAuth && token) {
+  // Authenticate user for protected operations.
+  //
+  // The absence of a token has to fail here. This condition was previously
+  // `requiresAuth && token`, so a request that simply omitted the Authorization
+  // header skipped the whole block and fell through to the switch — every
+  // protected operation, including updateSiteSettings and the admin-user
+  // operations, was answerable by anyone who could reach the endpoint.
+  if (requiresAuth) {
+    if (!token) {
+      return {
+        success: false,
+        error: 'Authentication required'
+      };
+    }
+
     userId = await authenticateUser(token);
-    
-    // Check if user is authorized for this operation
-    if (userId) {
-      const authorized = requiredPermission ? 
-        await hasPermission(userId, requiredPermission) : 
-        await isAdminUser(userId);
-      
-      if (!authorized) {
-        return { 
-          success: false, 
-          error: 'You do not have permission to perform this operation' 
-        };
-      }
-    } else {
-      return { 
-        success: false, 
-        error: 'Authentication required' 
+
+    if (!userId) {
+      return {
+        success: false,
+        error: 'Authentication required'
+      };
+    }
+
+    const authorized = requiredPermission
+      ? await hasPermission(userId, requiredPermission)
+      : await isAdminUser(userId);
+
+    if (!authorized) {
+      return {
+        success: false,
+        error: 'You do not have permission to perform this operation'
       };
     }
   }
