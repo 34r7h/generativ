@@ -9,7 +9,11 @@ import { memberSlug } from '../../config/people';
 // Cards carry the opening paragraph; the full bio lives on the profile page.
 function bioLead(bio) {
   const first = (bio || '').split(/\n\s*\n/)[0].trim();
-  return first.length > 260 ? `${first.slice(0, 257).trimEnd()}…` : first;
+  if (first.length <= 300) return first;
+  // Cut on a sentence boundary — a lead clipped mid-clause reads as a bug.
+  const cut = first.slice(0, 300);
+  const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '), cut.lastIndexOf('! '));
+  return stop > 60 ? cut.slice(0, stop + 1) : cut.slice(0, cut.lastIndexOf(' ')).trimEnd() + '\u2026';
 }
 
 const loading = ref(true);

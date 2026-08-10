@@ -53,9 +53,9 @@ const variant = computed(() => (KNOWN.includes(props.slug) ? props.slug : 'gener
       <path d="M54 100V88a46 46 0 0 1 92 0v12" class="a-band" />
       <rect x="44" y="94" width="16" height="28" rx="7" class="a-cup" />
       <rect x="140" y="94" width="16" height="28" rx="7" class="a-cup" />
-      <!-- terminal -->
-      <rect x="112" y="164" width="52" height="34" rx="5" class="a-screen" />
-      <path d="M120 176l7 6-7 6M132 188h16" class="a-prompt" />
+      <!-- terminal, kept inside the circular crop -->
+      <rect x="22" y="140" width="50" height="34" rx="5" class="a-screen" />
+      <path d="M30 152l7 6-7 6M43 164h18" class="a-prompt" />
     </g>
 
     <!-- Empyrean — visual. Sharp bob, statement frames, storyboard panels. -->
@@ -72,11 +72,11 @@ const variant = computed(() => (KNOWN.includes(props.slug) ? props.slug : 'gener
         <rect x="106" y="92" width="28" height="18" rx="9" />
         <path d="M94 101h12" />
       </g>
-      <!-- storyboard panels -->
-      <rect x="34" y="160" width="34" height="24" rx="3" class="a-panel" />
-      <rect x="72" y="160" width="34" height="24" rx="3" class="a-panel" />
-      <path d="M40 178l8-9 6 6 5-5 7 8" class="a-panel-line" />
-      <path d="M78 172h22M78 178h14" class="a-panel-line" />
+      <!-- storyboard panels, kept inside the circular crop -->
+      <rect x="20" y="142" width="32" height="24" rx="3" class="a-panel" />
+      <rect x="56" y="142" width="32" height="24" rx="3" class="a-panel" />
+      <path d="M26 160l7-8 5 5 5-5 6 8" class="a-panel-line" />
+      <path d="M62 152h20M62 159h13" class="a-panel-line" />
     </g>
 
     <!-- Jayesh — enterprise automation. Collared shirt, connected systems. -->
@@ -88,14 +88,14 @@ const variant = computed(() => (KNOWN.includes(props.slug) ? props.slug : 'gener
       <path d="M59 94V86a41 41 0 0 1 82 0v8c-5-19-14-30-25-26-9 3-16 6-28 4S64 76 59 94Z" class="a-hair-black" />
       <!-- trimmed beard -->
       <path d="M70 112c2 20 14 34 30 34s28-14 30-34c-4 18-16 26-30 26s-26-8-30-26Z" class="a-hair-black" />
-      <!-- systems reconciled into one -->
+      <!-- systems reconciled into one, kept inside the circular crop -->
       <g class="a-wire">
-        <path d="M40 170h16a8 8 0 0 1 8 8v4" />
-        <path d="M40 190h24" />
+        <path d="M36 146h10a7 7 0 0 1 7 7v3" />
+        <path d="M36 168h10a7 7 0 0 0 7-7v-3" />
       </g>
-      <rect x="24" y="162" width="16" height="16" rx="3" class="a-node" />
-      <rect x="24" y="182" width="16" height="16" rx="3" class="a-node" />
-      <rect x="64" y="176" width="20" height="20" rx="4" class="a-node-out" />
+      <rect x="18" y="138" width="18" height="16" rx="3" class="a-node" />
+      <rect x="18" y="160" width="18" height="16" rx="3" class="a-node" />
+      <rect x="53" y="147" width="20" height="20" rx="4" class="a-node-out" />
     </g>
 
     <!-- Helen — data science. Tied-back hair, plotted distribution. -->
@@ -107,10 +107,10 @@ const variant = computed(() => (KNOWN.includes(props.slug) ? props.slug : 'gener
       <path d="M60 100V86a40 40 0 0 1 80 0v14c-6-16-10-24-40-24s-34 8-40 24Z" class="a-hair-auburn" />
       <circle cx="152" cy="74" r="14" class="a-hair-auburn" />
       <path d="M138 78c6-4 10-4 14-4" class="a-hair-line" />
-      <!-- distribution plot -->
-      <path d="M30 194h56" class="a-axis" />
-      <path d="M30 190c10 0 12-30 28-30s18 30 28 30" class="a-curve" />
-      <path d="M58 160v30" class="a-mean" />
+      <!-- distribution plot, kept inside the circular crop -->
+      <path d="M22 172h58" class="a-axis" />
+      <path d="M22 169c10 0 13-28 29-28s19 28 29 28" class="a-curve" />
+      <path d="M51 141v28" class="a-mean" />
     </g>
 
     <!-- Anyone else — the same construction, no distinguishing detail. -->

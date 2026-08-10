@@ -7,7 +7,11 @@ import { memberSlug } from '../../config/people';
 // Summary cards carry the opening sentences only.
 function bioLead(bio) {
   const first = (bio || '').split(/\n\s*\n/)[0].trim();
-  return first.length > 180 ? `${first.slice(0, 177).trimEnd()}…` : first;
+  if (first.length <= 210) return first;
+  // Cut on a sentence boundary — a lead clipped mid-clause reads as a bug.
+  const cut = first.slice(0, 210);
+  const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '), cut.lastIndexOf('! '));
+  return stop > 60 ? cut.slice(0, stop + 1) : cut.slice(0, cut.lastIndexOf(' ')).trimEnd() + '\u2026';
 }
 import BrandGraphic from '../shared/BrandGraphic.vue';
 
