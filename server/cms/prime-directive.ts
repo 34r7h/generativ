@@ -189,7 +189,7 @@ const homePage: PageSeed = {
       title: 'How the audit runs',
       content:
         '<p>Two days, on-site, with the owner-operator present on the first morning. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.</p>',
-      sortOrder: 2,
+      sortOrder: 5,
       settings: { steps: ONSITE_SCHEDULE }
     },
     {
@@ -198,7 +198,7 @@ const homePage: PageSeed = {
       title: 'Where the time goes',
       content:
         '<p>Three operational patterns we have measured in real estate, clinical and legal practices.</p>',
-      sortOrder: 3,
+      sortOrder: 2,
       settings: { verticals: VERTICALS }
     },
     {
@@ -207,7 +207,7 @@ const homePage: PageSeed = {
       title: 'Reference figures',
       content:
         '<p>Baselines we start from. The audit recalculates each against your own numbers rather than assuming them.</p>',
-      sortOrder: 4,
+      sortOrder: 3,
       settings: {
         stats: LEAK_STATS,
         statsNote:
@@ -219,8 +219,21 @@ const homePage: PageSeed = {
       type: 'services',
       title: 'Services',
       content: 'What follows an audit, and the practice behind it.',
-      sortOrder: 5,
+      sortOrder: 4,
       settings: {}
+    },
+    {
+      id: 'closing-cta',
+      type: 'cta',
+      title: 'Start with the review',
+      content:
+        'Two days on site, $500. Credited in full against an implementation if you proceed, ' +
+        'or refunded if it does not identify at least $5,000 in annual savings.',
+      sortOrder: 7,
+      settings: {
+        ctaPrimary: { text: 'Book the audit', url: '/contact' },
+        ctaSecondary: { text: 'What it covers', url: '/services/ai-opportunity-audit' }
+      }
     },
     {
       id: 'team-overview',
@@ -622,10 +635,10 @@ const services: ServiceSeed[] = [
     pricing: 'Included with implementation handover; standalone workshops from $5,000',
     pricingDetail: {
       model: 'one_time',
-      amount: 240000,
+      amount: 500000,
       currency: 'usd',
       purchasable: true,
-      note: 'Per cohort of up to twelve people, delivered on site.'
+      note: 'Standalone cohort of up to twelve people, on site. Included with an implementation handover.'
     },
     isPublished: true,
     sortOrder: 6,
@@ -664,13 +677,9 @@ const services: ServiceSeed[] = [
       'Monthly re-measurement against the same question set'
     ],
     pricingDetail: {
-      model: 'subscription',
-      amount: 120000,
-      currency: 'usd',
-      interval: 'month',
-      intervalCount: 1,
-      purchasable: true,
-      note: 'Includes monthly re-measurement and transcripts. Three-month minimum to see movement.'
+      model: 'quote',
+      purchasable: false,
+      note: 'Scoped on the size of the question set and the number of locations.'
     },
     isPublished: true,
     sortOrder: 7,
@@ -709,13 +718,9 @@ const services: ServiceSeed[] = [
       'Cost per qualified lead reported against the prior period'
     ],
     pricingDetail: {
-      model: 'subscription',
-      amount: 180000,
-      currency: 'usd',
-      interval: 'month',
-      intervalCount: 1,
-      purchasable: true,
-      note: 'Management fee. Ad spend is paid directly to the platform and is not marked up.'
+      model: 'quote',
+      purchasable: false,
+      note: 'Scoped on account size and ad spend. Spend is paid to the platform and not marked up.'
     },
     isPublished: true,
     sortOrder: 8,
@@ -754,11 +759,9 @@ const services: ServiceSeed[] = [
       'Analytics configured to attribute enquiries to pages'
     ],
     pricingDetail: {
-      model: 'one_time',
-      amount: 420000,
-      currency: 'usd',
-      purchasable: true,
-      note: 'Fixed fee. Ends in a prioritised list and the implemented fixes — no ongoing retainer.'
+      model: 'quote',
+      purchasable: false,
+      note: 'Scoped on the size of the site and the number of service and location pages.'
     },
     isPublished: true,
     sortOrder: 9,
@@ -797,11 +800,9 @@ const services: ServiceSeed[] = [
       'Every enquiry attributed to the campaign or page behind it'
     ],
     pricingDetail: {
-      model: 'one_time',
-      amount: 650000,
-      currency: 'usd',
-      purchasable: true,
-      note: 'Build fee. Runs inside the tools you already use; ongoing monitoring is available separately.'
+      model: 'quote',
+      purchasable: false,
+      note: 'Scoped on channels covered and the systems it books into.'
     },
     isPublished: true,
     sortOrder: 10,

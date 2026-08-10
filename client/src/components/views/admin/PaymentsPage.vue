@@ -55,6 +55,15 @@ const readyToEnable = computed(
   () => !!(form.value.publishableKey && (form.value.secretKey || stored.value.hasSecretKey))
 );
 
+// Payments can be live and taking money while the site never learns that a
+// charge succeeded: without the signing secret every webhook is rejected and
+// orders sit at "created" forever. That state has to be visible here.
+const settlementBroken = computed(
+  () => !!stored.value.enabled && !!stored.value.hasSecretKey && !stored.value.hasWebhookSecret
+);
+
+const strandedOrders = computed(() => orders.value.filter((o) => o.status === 'created').length);
+
 const paidTotal = computed(() =>
   orders.value
     .filter((o) => o.status === 'paid')
@@ -172,6 +181,19 @@ onMounted(() => {
         <div v-if="notice" class="banner success">
           <AppIcon name="check" :size="20" />
           <p>{{ notice }}</p>
+        </div>
+
+        <div v-if="settlementBroken" class="banner warn">
+          <AppIcon name="alert" :size="20" />
+          <div>
+            <p><strong>Payments are live, but nothing will be marked paid.</strong></p>
+            <p>
+              No webhook signing secret is set, so every notification Stripe sends is rejected.
+              Customers will be charged and receipted; orders here stay at “created”.
+              <template v-if="strandedOrders">{{ strandedOrders }} order<template v-if="strandedOrders !== 1">s</template> currently in that state.</template>
+              Add the endpoint below in Stripe, then paste its signing secret above.
+            </p>
+          </div>
         </div>
 
         <form class="panel" @submit.prevent="save">
@@ -364,6 +386,9 @@ onMounted(() => {
 
 .banner p { margin: 0; }
 .banner.danger { background-color: var(--danger); }
+.banner.warn { background-color: var(--warning); color: var(--gray-900); align-items: flex-start; }
+.banner.warn p { margin: 0 0 4px; }
+.banner.warn p:last-child { margin: 0; font-size: 0.9375rem; }
 .banner.success { background-color: var(--success); }
 
 .panel {

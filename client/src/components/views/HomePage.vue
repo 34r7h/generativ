@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import BrandGraphic from '../shared/BrandGraphic.vue';
@@ -24,6 +24,13 @@ const pageData = ref(null);
 const services = ref([]);
 const teamMembers = ref([]);
 const siteSettings = ref(null);
+
+// Sections carry a sortOrder that the admin edits; the page has to honour it
+// rather than rendering whatever order the records happen to be stored in.
+const orderedSections = computed(() =>
+  [...(pageData.value?.sections || [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+);
+
 
 // Fetch page data
 async function fetchPageData() {
@@ -114,7 +121,7 @@ onMounted(() => {
       <!-- Dynamic Page Content -->
       <div v-if="pageData">
         <!-- Render page sections dynamically -->
-        <div v-for="section in pageData.sections" :key="section.id" class="page-section">
+        <div v-for="section in orderedSections" :key="section.id" class="page-section">
           
           <!-- Hero Section -->
           <section v-if="section.type === 'hero'" class="hero-section">
