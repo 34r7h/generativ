@@ -165,12 +165,22 @@ const homePage: PageSeed = {
     {
       id: 'hero',
       type: 'hero',
-      title: 'AI Opportunity Audit',
+      title: 'AI and agentic consulting for growing businesses',
       content:
-        'A two-day, on-site review of how work moves through a practice. It ends in a written report: the three bottlenecks costing the most, each with its annual cost and the assumptions behind it.',
+        'Generativ is at the forefront of AI and agentic consulting. We bridge the gap between ' +
+        'promise and productivity for our clients. Technology is changing at a rapid pace — we are ' +
+        'here to help small and mid-sized businesses not just keep up, but outperform the competition.',
       sortOrder: 1,
       settings: {
-        ctaPrimary: { text: 'What the audit covers', url: '/services/ai-opportunity-audit' }
+        eyebrow: 'AI and agentic consulting',
+        // The first screen has to answer "who is this for" without scrolling.
+        serves: [
+          'Real estate and property',
+          'Clinical practices',
+          'Law and professional services'
+        ],
+        ctaPrimary: { text: 'Start with an audit', url: '/services/ai-opportunity-audit' },
+        ctaSecondary: { text: 'See all services', url: '/services' }
       }
     },
     {
@@ -624,6 +634,182 @@ const services: ServiceSeed[] = [
       description:
         'Training that lets your team operate automated systems confidently — approval-gate judgment, error recognition, and disclosure practice.',
       keywords: ['AI education', 'critical thinking', 'AI literacy', 'human in the loop training']
+    }
+  },
+  {
+    slug: 'answer-engine-optimization',
+    title: 'Answer Engine Optimization',
+    shortDescription:
+      'Being the source an AI assistant cites when someone asks it for a provider like you.',
+    fullDescription: `
+<p>A growing share of buying questions never reach a results page. They are asked of an assistant, which answers in a paragraph and names two or three providers. If you are not in that paragraph, the search happened without you.</p>
+
+<h3>What the work is</h3>
+<ul>
+  <li><strong>Baseline:</strong> we ask the major assistants the questions your buyers actually ask, record who gets named, and keep the transcripts. That is the number this work moves.</li>
+  <li><strong>Extractable answers:</strong> the specific claims a model can lift — services, coverage area, credentials, prices, constraints — stated plainly on pages that are cheap to parse.</li>
+  <li><strong>Structured data:</strong> schema for organization, services and locations, so the facts are machine-readable rather than inferred from prose.</li>
+  <li><strong>Corroboration:</strong> the third-party sources assistants lean on — directories, professional registries, review platforms — reconciled so they agree with each other and with you.</li>
+  <li><strong>Re-measurement:</strong> the same question set re-run monthly, with transcripts, so you can see whether citation is rising.</li>
+</ul>
+
+<h3>What it does not do</h3>
+<p>Nobody can guarantee placement in a generated answer, and anyone who does is selling something else. What is controllable is whether the facts about you are present, consistent and easy to extract. That is the whole mechanism.</p>
+    `,
+    benefits: [
+      'A measured baseline of who assistants name today',
+      'Facts stated so a model can extract them without inference',
+      'Structured data for organization, services and locations',
+      'Third-party sources reconciled against each other',
+      'Monthly re-measurement against the same question set'
+    ],
+    pricingDetail: {
+      model: 'subscription',
+      amount: 120000,
+      currency: 'usd',
+      interval: 'month',
+      intervalCount: 1,
+      purchasable: true,
+      note: 'Includes monthly re-measurement and transcripts. Three-month minimum to see movement.'
+    },
+    isPublished: true,
+    sortOrder: 7,
+    seo: {
+      title: 'Answer Engine Optimization (AEO) | Generativ Consulting Company',
+      description:
+        'Getting named by AI assistants when buyers ask for a provider: measured baselines, extractable facts, structured data and monthly re-measurement.',
+      keywords: ['answer engine optimization', 'AEO', 'AI search visibility', 'LLM citation']
+    }
+  },
+  {
+    slug: 'agentic-sem',
+    title: 'Agentic Search Marketing',
+    shortDescription:
+      'Paid search run as a monitored loop — hypotheses, tests and reallocation — rather than a monthly report.',
+    fullDescription: `
+<p>Most small accounts are managed in bursts: someone looks at them when performance drops, changes several things at once, and cannot tell afterwards which change mattered. The alternative is not more hours; it is a loop that runs continuously and records what it did.</p>
+
+<h3>How it runs</h3>
+<ul>
+  <li><strong>Query mining:</strong> search terms read daily, waste negated, and genuinely new intent promoted into its own group rather than left to fight for budget.</li>
+  <li><strong>Creative iteration:</strong> a queue of headline and description variants tested against a defined success metric, one variable at a time, with the losers retired.</li>
+  <li><strong>Budget reallocation:</strong> spend moved toward what is converting, within bands you set, with every move logged and reversible.</li>
+  <li><strong>Landing-page pairing:</strong> the page a click lands on matched to the intent behind the query, because the ad is rarely where the loss is.</li>
+  <li><strong>Approval gates:</strong> anything expensive to reverse — new campaigns, increases beyond your band, brand-term changes — waits for a person.</li>
+</ul>
+
+<h3>What you get monthly</h3>
+<p>The log of every change with the reason, the tests that ran and what they settled, cost per qualified lead against the previous period, and the specific things that did not work. Reporting is a byproduct of the log, not a document assembled afterwards.</p>
+    `,
+    benefits: [
+      'Search terms mined daily, not monthly',
+      'One variable at a time, so results attribute to a cause',
+      'Budget moved within bands you set, every move logged',
+      'Approval gates on anything expensive to reverse',
+      'Cost per qualified lead reported against the prior period'
+    ],
+    pricingDetail: {
+      model: 'subscription',
+      amount: 180000,
+      currency: 'usd',
+      interval: 'month',
+      intervalCount: 1,
+      purchasable: true,
+      note: 'Management fee. Ad spend is paid directly to the platform and is not marked up.'
+    },
+    isPublished: true,
+    sortOrder: 8,
+    seo: {
+      title: 'Agentic Search Marketing (SEM) | Generativ Consulting Company',
+      description:
+        'Paid search run as a continuous monitored loop: daily query mining, single-variable creative tests, logged budget reallocation and approval gates.',
+      keywords: ['agentic SEM', 'paid search management', 'PPC automation', 'search marketing']
+    }
+  },
+  {
+    slug: 'technical-seo-foundation',
+    title: 'Technical SEO Foundation',
+    shortDescription:
+      'The one-time fixes that decide whether anything else you publish can rank at all.',
+    fullDescription: `
+<p>Content strategy is not usually the constraint for a business this size. The constraint is a site that is slow, duplicated across two domains, missing its own service pages, or invisible to the crawlers that feed both search and AI assistants.</p>
+
+<h3>The pass</h3>
+<ul>
+  <li><strong>Crawl and index:</strong> what is actually indexed versus what you think is, duplicates resolved to one canonical address, redirect chains flattened.</li>
+  <li><strong>Core Web Vitals:</strong> the specific render-blocking work, image weight and layout shift costing you, measured on real page loads rather than a lab score.</li>
+  <li><strong>Structure:</strong> a page per service and per location that answers one question completely, internally linked so authority reaches it.</li>
+  <li><strong>Local surfaces:</strong> business profile, categories, hours, service area and citations made consistent — the cheapest ranking work that exists for a local business.</li>
+  <li><strong>Measurement:</strong> analytics and search console configured to answer which pages produce enquiries, which most installations cannot.</li>
+</ul>
+
+<h3>Delivered as</h3>
+<p>A prioritised list with the effort and expected effect of each item, the fixes we implement directly, and a short document your own developer can follow for anything left. It is a foundation, not a retainer — the point is that it ends.</p>
+    `,
+    benefits: [
+      'Indexation and duplication resolved to one canonical site',
+      'Core Web Vitals measured on real loads, then fixed',
+      'A page per service and location, internally linked',
+      'Local profile and citations made consistent',
+      'Analytics configured to attribute enquiries to pages'
+    ],
+    pricingDetail: {
+      model: 'one_time',
+      amount: 420000,
+      currency: 'usd',
+      purchasable: true,
+      note: 'Fixed fee. Ends in a prioritised list and the implemented fixes — no ongoing retainer.'
+    },
+    isPublished: true,
+    sortOrder: 9,
+    seo: {
+      title: 'Technical SEO Foundation | Generativ Consulting Company',
+      description:
+        'A one-time technical SEO pass: indexation, duplication, Core Web Vitals, service and location pages, local citations and analytics attribution.',
+      keywords: ['technical SEO', 'core web vitals', 'local SEO', 'site audit']
+    }
+  },
+  {
+    slug: 'inbound-response-automation',
+    title: 'Inbound Response Automation',
+    shortDescription:
+      'Answering, qualifying and booking inbound enquiries in minutes rather than hours — the cheapest win most practices have.',
+    fullDescription: `
+<p>The industry-standard first response to an inbound enquiry is around twelve minutes, and 42% of local businesses lose money to calls nobody answered. Marketing spend that generates enquiries a practice cannot answer quickly is spend converted into someone else's client.</p>
+
+<h3>What gets built</h3>
+<ul>
+  <li><strong>Continuous intake:</strong> web forms, calls and listing enquiries captured into one place, out of hours included.</li>
+  <li><strong>Qualification:</strong> the questions you would ask first, asked immediately, with the answers attached to the record before anyone picks it up.</li>
+  <li><strong>Booking:</strong> qualified enquiries offered real availability from your calendar rather than a promise to call back.</li>
+  <li><strong>Routing and escalation:</strong> anything unusual handed to a person with the transcript, not dropped into a queue.</li>
+  <li><strong>Attribution:</strong> each enquiry tied back to the campaign or page that produced it, which is what makes the marketing spend above measurable.</li>
+</ul>
+
+<h3>Why it is listed with marketing</h3>
+<p>It is the lowest-hanging fruit on this page. Doubling the enquiries you generate is expensive; answering the ones you already get is not, and the second reliably beats the first for a practice under fifty people.</p>
+    `,
+    benefits: [
+      'Enquiries captured out of hours and at weekends',
+      'Qualification answers attached before a person picks it up',
+      'Real calendar availability offered, not a callback promise',
+      'Unusual cases escalated with the transcript attached',
+      'Every enquiry attributed to the campaign or page behind it'
+    ],
+    pricingDetail: {
+      model: 'one_time',
+      amount: 650000,
+      currency: 'usd',
+      purchasable: true,
+      note: 'Build fee. Runs inside the tools you already use; ongoing monitoring is available separately.'
+    },
+    isPublished: true,
+    sortOrder: 10,
+    seo: {
+      title: 'Inbound Response Automation | Generativ Consulting Company',
+      description:
+        'Capture, qualify and book inbound enquiries in minutes: continuous intake, qualification, calendar booking, escalation and campaign attribution.',
+      keywords: ['speed to lead', 'lead response automation', 'inbound enquiries', 'lead qualification']
     }
   }
 ];

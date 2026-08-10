@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import BrandGraphic from '../shared/BrandGraphic.vue';
+import HeroAnimation from '../shared/HeroAnimation.vue';
 import AvatarPortrait from '../shared/AvatarPortrait.vue';
 import { iconFor, verticalIcon } from '../../config/icons';
 import { memberSlug } from '../../config/people';
@@ -119,8 +120,17 @@ onMounted(() => {
           <section v-if="section.type === 'hero'" class="hero-section">
             <div class="container">
               <div class="hero-content">
+                <p class="hero-eyebrow" v-if="section.settings?.eyebrow">
+                  {{ section.settings.eyebrow }}
+                </p>
                 <h1>{{ section.title }}</h1>
-                <p>{{ section.content }}</p>
+                <p class="hero-lede">{{ section.content }}</p>
+                <ul class="hero-serves" v-if="section.settings?.serves">
+                  <li v-for="item in section.settings.serves" :key="item">
+                    <AppIcon name="check" :size="15" />
+                    <span>{{ item }}</span>
+                  </li>
+                </ul>
                 <div class="hero-cta" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
                   <router-link 
                     v-if="section.settings?.ctaPrimary" 
@@ -139,7 +149,7 @@ onMounted(() => {
                 </div>
               </div>
               <div class="hero-graphic">
-                <BrandGraphic name="audit" />
+                <HeroAnimation />
               </div>
             </div>
           </section>
@@ -360,8 +370,50 @@ onMounted(() => {
 <style scoped>
 /* Hero Section */
 .hero-section {
-  padding: 80px 0;
+  padding: 72px 0 76px;
   background-color: var(--light-blue);
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 6px 13px;
+  border-radius: var(--border-radius-full, 999px);
+  background-color: var(--white);
+  color: var(--primary-color);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hero-lede {
+  font-size: 1.2rem;
+  line-height: 1.65;
+  color: var(--text-color);
+  max-width: 620px;
+  margin-bottom: 26px;
+}
+
+.hero-serves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 30px;
+}
+
+.hero-serves li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--dark-blue);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.hero-serves svg {
+  color: var(--primary-color);
 }
 
 .hero-section .container {
@@ -381,10 +433,11 @@ onMounted(() => {
 }
 
 .hero-content h1 {
-  font-size: 3rem;
-  line-height: 1.2;
-  margin-bottom: 24px;
+  font-size: 3.1rem;
+  line-height: 1.14;
+  margin-bottom: 18px;
   color: var(--dark-blue);
+  max-width: 15ch;
 }
 
 .hero-content p {
