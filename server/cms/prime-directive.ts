@@ -165,14 +165,13 @@ const homePage: PageSeed = {
     {
       id: 'hero',
       type: 'hero',
-      title: 'AI and automation consulting for professional practices',
+      title: 'AI and Agentic Consulting',
       content:
-        'We review how the work actually runs, cost what it is losing, and build the automations ' +
-        'worth building — then run them. We also handle the search and answer-engine visibility ' +
-        'that brings new work in.',
+        'Most practices lose 8 to 15 hours a week to work software should already be doing. ' +
+        'We find it, cost it, and build the fix.',
       sortOrder: 1,
       settings: {
-        eyebrow: 'AI and agentic consulting',
+        subhead: 'For professional practices',
         // Who the work is for, stated on the first screen.
         serves: [
           'Real estate and property',

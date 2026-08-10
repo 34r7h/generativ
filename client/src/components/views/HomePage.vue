@@ -120,10 +120,10 @@ onMounted(() => {
           <section v-if="section.type === 'hero'" class="hero-section">
             <div class="container">
               <div class="hero-content">
-                <p class="hero-eyebrow" v-if="section.settings?.eyebrow">
-                  {{ section.settings.eyebrow }}
-                </p>
                 <h1>{{ section.title }}</h1>
+                <p class="hero-subhead" v-if="section.settings?.subhead">
+                  {{ section.settings.subhead }}
+                </p>
                 <p class="hero-lede">{{ section.content }}</p>
                 <ul class="hero-serves" v-if="section.settings?.serves">
                   <li v-for="item in section.settings.serves" :key="item">
@@ -374,16 +374,11 @@ onMounted(() => {
   background-color: var(--light-blue);
 }
 
-.hero-eyebrow {
-  display: inline-block;
-  margin-bottom: 18px;
-  padding: 6px 13px;
-  border-radius: var(--border-radius-full, 999px);
-  background-color: var(--white);
+.hero-subhead {
+  font-size: 1.45rem;
+  font-weight: 500;
   color: var(--primary-color);
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  margin-bottom: 22px;
 }
 
 .hero-lede {
@@ -433,9 +428,9 @@ onMounted(() => {
 }
 
 .hero-content h1 {
-  font-size: 3.1rem;
-  line-height: 1.14;
-  margin-bottom: 18px;
+  font-size: 3.4rem;
+  line-height: 1.1;
+  margin-bottom: 10px;
   color: var(--dark-blue);
   max-width: 15ch;
 }
@@ -1114,10 +1109,9 @@ onMounted(() => {
     padding: 40px 0 44px;
   }
 
-  .hero-eyebrow {
-    margin-bottom: 14px;
-    font-size: 0.76rem;
-    padding: 5px 11px;
+  .hero-subhead {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
   }
 
   .hero-content h1 {
