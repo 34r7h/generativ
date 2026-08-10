@@ -769,7 +769,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'Missed calls at $500+/month, $12–$20 per manually processed form, and a 12-minute lead response. Three leaks small enough to ignore and large enough to matter.',
-    author: 'team_1',
+    author: 'Generativ Consulting Company',
     categories: ['Profit Leak', 'Operations'],
     tags: ['missed calls', 'document processing', 'speed to lead', 'overhead'],
     isPublished: true,
@@ -807,7 +807,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'The industry standard first response to a property inquiry is 12 minutes. An automated intake agent answers in 12 seconds — and books the tour while your team sleeps.',
-    author: 'team_2',
+    author: 'Generativ Consulting Company',
     categories: ['Real Estate', 'Automation'],
     tags: ['speed to lead', 'real estate', 'lead qualification', 'CRM integration'],
     isPublished: true,
@@ -843,7 +843,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'Front-desk staff lose 8–15 hours a week to phone tag and retyping intake forms. Automated intake and text-based scheduling give most of it back.',
-    author: 'team_1',
+    author: 'Generativ Consulting Company',
     categories: ['Medical & Dental', 'Automation'],
     tags: ['patient intake', 'no-shows', 'HIPAA', 'scheduling automation'],
     isPublished: true,
@@ -880,7 +880,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'Manual extraction costs $12–$20 per form and takes 10–30 minutes. Secure document intelligence does it in 1–2 seconds at $2.36 — with disclosure controls built in.',
-    author: 'team_3',
+    author: 'Generativ Consulting Company',
     categories: ['Legal & Professional', 'Automation'],
     tags: ['document intelligence', 'legal automation', 'data extraction', 'AI disclosure'],
     isPublished: true,
@@ -918,7 +918,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'Gartner expects over 40% of agentic AI projects to be cancelled by 2027 — from cost, unclear value and missing risk controls. The five tests that catch it early.',
-    author: 'team_1',
+    author: 'Generativ Consulting Company',
     categories: ['Agentic AI', 'Strategy'],
     tags: ['Gartner', 'agentic AI', 'project failure', 'governance', 'observability'],
     isPublished: true,
@@ -955,7 +955,7 @@ const blogPosts: BlogSeed[] = [
     `,
     excerpt:
       'Roughly 85% of failed AI projects trace back to data quality. Duplicate records and unreconciled systems make agents hallucinate for entirely ordinary reasons.',
-    author: 'team_2',
+    author: 'Generativ Consulting Company',
     categories: ['Data Quality', 'Strategy'],
     tags: ['data quality', 'reconciliation', 'hallucination', 'readiness score'],
     isPublished: true,
@@ -985,8 +985,10 @@ async function upsertPages(): Promise<{ created: number; updated: number }> {
       created++;
     } else {
       // Update every record carrying this slug so no stale duplicate can win a lookup.
+      // Preserve the original publication date on re-sync.
+      const { publishedAt, ...rest } = seed;
       for (const match of matches) {
-        await updatePage(match.id, seed);
+        await updatePage(match.id, rest);
         updated++;
       }
     }
