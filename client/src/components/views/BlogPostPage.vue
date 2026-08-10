@@ -50,6 +50,7 @@ async function loadBlogPost() {
       if (allPostsResponse.success) {
         relatedPosts.value = allPostsResponse.posts
           .filter(p => p.id !== blogPost.value.id && p.isPublished)
+          .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
           .slice(0, 3);
       }
     } else {

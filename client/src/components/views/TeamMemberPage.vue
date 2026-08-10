@@ -5,7 +5,6 @@ import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import AvatarPortrait from '../shared/AvatarPortrait.vue';
 import { memberSlug, findMemberBySlug } from '../../config/people';
-import { iconFor } from '../../config/icons';
 
 const route = useRoute();
 const router = useRouter();
@@ -110,6 +109,9 @@ watch(slug, (value) => {
                   <span>LinkedIn</span>
                 </a>
               </div>
+              <ul class="identity-tags" v-if="member.expertise && member.expertise.length">
+                <li v-for="skill in member.expertise" :key="skill">{{ skill }}</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -138,15 +140,6 @@ watch(slug, (value) => {
               </div>
             </div>
 
-            <aside class="member-aside" v-if="member.expertise && member.expertise.length">
-              <h2>Focus</h2>
-              <ul class="expertise-list">
-                <li v-for="skill in member.expertise" :key="skill">
-                  <AppIcon :name="iconFor(skill)" :size="18" class="expertise-icon" />
-                  <span>{{ skill }}</span>
-                </li>
-              </ul>
-            </aside>
           </div>
         </div>
       </section>
@@ -166,8 +159,10 @@ watch(slug, (value) => {
                 <img v-if="colleague.photo?.filePath" :src="colleague.photo.filePath" :alt="colleague.name" />
                 <AvatarPortrait v-else :slug="memberSlug(colleague)" :name="colleague.name" />
               </div>
-              <h3>{{ colleague.name }}</h3>
-              <p>{{ colleague.position }}</p>
+              <div class="colleague-text">
+                <h3>{{ colleague.name }}</h3>
+                <p>{{ colleague.position }}</p>
+              </div>
             </router-link>
           </div>
         </div>
@@ -188,10 +183,30 @@ watch(slug, (value) => {
 }
 
 .member-identity {
-  display: flex;
+  max-width: 820px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 32px;
+}
+
+.identity-tags {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+
+.identity-tags li {
+  background-color: var(--white);
+  color: var(--primary-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 15px;
 }
 
 .member-photo {
@@ -249,14 +264,11 @@ watch(slug, (value) => {
 }
 
 .member-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 48px;
-  align-items: start;
+  max-width: 820px;
+  margin: 0 auto;
 }
 
-.member-main h2,
-.member-aside h2 {
+.member-main h2 {
   font-size: 1.4rem;
   color: var(--dark-blue);
   margin-bottom: 16px;
@@ -275,29 +287,6 @@ watch(slug, (value) => {
 
 .member-bio.muted {
   color: var(--light-text);
-}
-
-.expertise-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.expertise-list li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  color: var(--text-color);
-}
-
-.expertise-list li:last-child {
-  border-bottom: none;
-}
-
-.expertise-icon {
-  color: var(--primary-color);
 }
 
 .member-navigation {
@@ -328,24 +317,28 @@ watch(slug, (value) => {
 }
 
 .colleagues h2 {
+  max-width: 820px;
+  margin: 0 auto 30px;
   font-size: 1.8rem;
   color: var(--dark-blue);
-  margin-bottom: 30px;
 }
 
 .colleagues-grid {
+  max-width: 820px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
-  justify-content: start;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
 }
 
 .colleague-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  padding: 26px;
-  text-align: center;
+  padding: 18px 20px;
   color: var(--text-color);
   transition: transform 0.3s;
 }
@@ -355,9 +348,9 @@ watch(slug, (value) => {
 }
 
 .colleague-photo {
-  width: 84px;
-  height: 84px;
-  margin: 0 auto 14px;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -368,10 +361,14 @@ watch(slug, (value) => {
   object-fit: cover;
 }
 
+.colleague-text {
+  min-width: 0;
+}
+
 .colleague-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: var(--dark-blue);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .colleague-card p {
@@ -411,17 +408,15 @@ watch(slug, (value) => {
   cursor: pointer;
 }
 
-@media (max-width: 900px) {
-  .member-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
 @media (max-width: 640px) {
   .member-identity {
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    justify-items: center;
     text-align: center;
+  }
+
+  .identity-tags {
+    justify-content: center;
   }
 
   .member-contact {

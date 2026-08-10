@@ -39,6 +39,7 @@ watch(slug, () => {
       <!-- Header -->
       <section class="resource-hero">
         <div class="container">
+          <div class="resource-hero-text">
           <div class="resource-meta">
             <span class="resource-type">{{ report.type }}</span>
             <span class="resource-date">{{ report.date }}</span>
@@ -55,6 +56,7 @@ watch(slug, () => {
             <span v-if="downloaded" class="download-note">
               Saved as {{ report.slug }}.html — opens in any browser, prints to PDF.
             </span>
+          </div>
           </div>
         </div>
       </section>
@@ -75,6 +77,13 @@ watch(slug, () => {
       <!-- Body -->
       <section class="resource-body">
         <div class="container">
+          <aside class="report-rail">
+            <h2>In this report</h2>
+            <ol class="rail-list">
+              <li v-for="section in report.sections" :key="section.heading">{{ section.heading }}</li>
+            </ol>
+          </aside>
+
           <article class="report-content">
             <section v-for="section in report.sections" :key="section.heading">
               <h2>{{ section.heading }}</h2>
@@ -144,6 +153,11 @@ watch(slug, () => {
 .resource-hero {
   padding: 70px 0;
   background-color: var(--light-blue);
+}
+
+.resource-hero-text {
+  max-width: 820px;
+  margin: 0 auto;
 }
 
 .resource-meta {
@@ -217,6 +231,8 @@ watch(slug, () => {
 }
 
 .figures-grid {
+  max-width: 820px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 24px;
@@ -254,6 +270,37 @@ watch(slug, () => {
 
 .report-content {
   max-width: 820px;
+  margin: 0 auto;
+}
+
+.report-rail {
+  max-width: 820px;
+  margin: 0 auto 44px;
+  background-color: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 22px 26px;
+}
+
+.report-rail h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--light-text);
+  margin-bottom: 14px;
+}
+
+.rail-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 8px 28px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-color);
+}
+
+.rail-list li {
+  line-height: 1.5;
 }
 
 .report-content h2 {
@@ -293,6 +340,9 @@ watch(slug, () => {
 }
 
 .body-actions {
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -325,18 +375,24 @@ watch(slug, () => {
 }
 
 .other-reports h2 {
+  max-width: 820px;
+  margin: 0 auto 28px;
   font-size: 1.8rem;
   color: var(--dark-blue);
-  margin-bottom: 28px;
 }
 
 .other-grid {
+  max-width: 820px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
 }
 
 .other-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);

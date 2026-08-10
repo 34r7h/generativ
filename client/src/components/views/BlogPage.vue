@@ -14,7 +14,9 @@ async function fetchBlogPosts() {
     
     const response = await cmsAPI.getBlogPosts();
     if (response.success) {
-      posts.value = response.posts || [];
+      posts.value = [...(response.posts || [])].sort(
+        (a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0)
+      );
     } else {
       console.error('Failed to load blog posts:', response.error);
       error.value = 'Failed to load blog posts';
@@ -92,7 +94,6 @@ onMounted(() => {
 .page-hero {
   padding: 80px 0;
   background-color: var(--light-blue);
-  text-align: center;
 }
 
 .page-hero h1 {
@@ -102,8 +103,8 @@ onMounted(() => {
 }
 
 .hero-description {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 0;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -115,11 +116,13 @@ onMounted(() => {
 
 .blog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 30px;
 }
 
 .blog-card {
+  display: flex;
+  flex-direction: column;
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -133,6 +136,7 @@ onMounted(() => {
 
 .blog-category {
   display: inline-block;
+  align-self: flex-start;
   background-color: var(--light-blue);
   color: var(--primary-color);
   font-size: 0.8rem;
@@ -143,6 +147,7 @@ onMounted(() => {
 }
 
 .blog-card h2 {
+  min-height: 3.9em;
   font-size: 1.5rem;
   color: var(--dark-blue);
   margin-bottom: 15px;
@@ -152,6 +157,7 @@ onMounted(() => {
   color: var(--light-text);
   margin-bottom: 20px;
   line-height: 1.6;
+  flex-grow: 1;
 }
 
 .blog-meta {
@@ -166,6 +172,7 @@ onMounted(() => {
   color: var(--primary-color);
   font-weight: 500;
   display: inline-block;
+  align-self: flex-start;
 }
 
 .blog-link:hover {

@@ -2,33 +2,10 @@
 import { computed } from 'vue';
 import AppIcon from '../shared/AppIcon.vue';
 import BrandGraphic from '../shared/BrandGraphic.vue';
-import { REPORTS, reportsByCategory, downloadReport } from '../../config/reports';
+import { REPORTS, downloadReport } from '../../config/reports';
 
-// Reports are code-owned documents, versioned with the site.
-const groups = computed(() => [
-  {
-    key: 'reports',
-    title: 'Benchmarks',
-    description:
-      'Published figures behind the operational review, with the arithmetic that turns each one into an annual number.',
-    items: reportsByCategory('reports')
-  },
-  {
-    key: 'playbooks',
-    title: 'Checklists',
-    description:
-      'The tests applied before an implementation is scoped, written so a practice can run them without us.',
-    items: reportsByCategory('playbooks')
-  },
-  {
-    key: 'caseStudies',
-    title: 'Field Notes',
-    description:
-      'What goes wrong in automation programmes, and the checks that surface each failure mode early.',
-    items: reportsByCategory('caseStudies')
-  }
-].filter((group) => group.items.length));
-
+// Reports are code-owned documents, versioned with the site. They render as
+// one grid: three sections of one card each left two empty columns apiece.
 const total = computed(() => REPORTS.length);
 </script>
 
@@ -52,21 +29,19 @@ const total = computed(() => REPORTS.length);
       </div>
     </section>
 
-    <!-- Groups -->
-    <section
-      v-for="(group, index) in groups"
-      :key="group.key"
-      class="resources-section"
-      :class="{ 'alt-bg': index % 2 === 1 }"
-    >
+    <!-- Documents -->
+    <section class="resources-section">
       <div class="container">
         <div class="section-header">
-          <h2>{{ group.title }}</h2>
-          <p class="section-description">{{ group.description }}</p>
+          <h2>Documents</h2>
+          <p class="section-description">
+            Benchmarks the review costs against, the checks it applies before an implementation is
+            scoped, and field notes on what those checks catch.
+          </p>
         </div>
 
         <div class="resources-grid">
-          <article v-for="report in group.items" :key="report.slug" class="resource-card">
+          <article v-for="report in REPORTS" :key="report.slug" class="resource-card">
             <div class="resource-head">
               <div class="resource-icon">
                 <AppIcon :name="report.icon" :size="22" />
@@ -133,6 +108,23 @@ const total = computed(() => REPORTS.length);
   justify-content: flex-end;
 }
 
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 12px 22px;
+  border-radius: var(--border-radius);
+  font-weight: 500;
+}
+
+.hero-button:hover {
+  background-color: #3a5ad9;
+  color: var(--white);
+}
+
 .page-hero h1 {
   font-size: 3rem;
   color: var(--dark-blue);
@@ -140,7 +132,7 @@ const total = computed(() => REPORTS.length);
 }
 
 .hero-description {
-  max-width: 700px;
+  max-width: 760px;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -155,7 +147,6 @@ const total = computed(() => REPORTS.length);
 }
 
 .section-header {
-  text-align: center;
   margin-bottom: 40px;
 }
 
@@ -166,15 +157,15 @@ const total = computed(() => REPORTS.length);
 }
 
 .section-description {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 0;
   font-size: 1.1rem;
   color: var(--light-text);
 }
 
 .resources-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
 
@@ -225,6 +216,7 @@ const total = computed(() => REPORTS.length);
   color: var(--dark-blue);
   margin-bottom: 15px;
   line-height: 1.3;
+  min-height: 2.6em;
 }
 
 .resource-description {
@@ -330,7 +322,7 @@ const total = computed(() => REPORTS.length);
   }
 
   .hero-description {
-    margin: 0 auto;
+    margin: 0;
   }
 }
 
@@ -343,5 +335,17 @@ const total = computed(() => REPORTS.length);
   .section-header h2 {
     font-size: 1.8rem;
   }
+}
+
+.cta-section .primary-button,
+.request-section .primary-button {
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.cta-section .primary-button:hover,
+.request-section .primary-button:hover {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
 }
 </style>

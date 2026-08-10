@@ -294,8 +294,8 @@ onMounted(() => {
 }
 
 .hero-description {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 0;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -308,13 +308,12 @@ onMounted(() => {
 .content-section h2 {
   font-size: 2.5rem;
   color: var(--dark-blue);
-  text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .content-text {
-  max-width: 800px;
-  margin: 0 auto 40px;
+  max-width: 760px;
+  margin: 0 0 40px;
   font-size: 1.1rem;
   color: var(--text-color);
   line-height: 1.6;
@@ -373,13 +372,12 @@ onMounted(() => {
   font-size: 0.82rem;
   color: var(--text-color);
   opacity: 0.7;
-  text-align: center;
 }
 
 /* Values Grid */
 .values-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
   gap: 30px;
   margin-top: 40px;
 }
@@ -389,7 +387,6 @@ onMounted(() => {
   border-radius: var(--border-radius);
   padding: 30px;
   box-shadow: var(--box-shadow);
-  text-align: center;
   transition: transform 0.3s;
 }
 
@@ -414,8 +411,8 @@ onMounted(() => {
 
 /* Approach Steps */
 .approach-steps {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 820px;
+  margin: 0;
 }
 
 .approach-step {
@@ -471,21 +468,19 @@ onMounted(() => {
 .leadership-section h2 {
   font-size: 2.5rem;
   color: var(--dark-blue);
-  text-align: center;
   margin-bottom: 20px;
 }
 
 .section-intro {
-  max-width: 700px;
-  margin: 0 auto 50px;
-  text-align: center;
+  max-width: 760px;
+  margin: 0 0 50px;
   font-size: 1.2rem;
   color: var(--light-text);
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
   gap: 30px;
   margin-top: 40px;
 }
@@ -495,13 +490,12 @@ onMounted(() => {
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
-  text-align: center;
 }
 
 .member-photo {
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 20px;
+  width: 110px;
+  height: 110px;
+  margin: 0 0 20px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -610,8 +604,8 @@ onMounted(() => {
 }
 
 .page-content {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 820px;
+  margin: 0;
   font-size: 1.1rem;
   color: var(--text-color);
   line-height: 1.6;
@@ -652,5 +646,17 @@ onMounted(() => {
     max-width: 250px;
     margin: 0 auto;
   }
+}
+
+.cta-section .primary-button,
+.request-section .primary-button {
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.cta-section .primary-button:hover,
+.request-section .primary-button:hover {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
 }
 </style>

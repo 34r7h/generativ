@@ -156,7 +156,6 @@ onMounted(() => {
 .page-hero {
   background-color: var(--light-blue);
   padding: 80px 0;
-  text-align: center;
 }
 
 .page-hero h1 {
@@ -166,8 +165,8 @@ onMounted(() => {
 }
 
 .hero-description {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 0;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -179,7 +178,7 @@ onMounted(() => {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
 }
 
@@ -213,18 +212,20 @@ onMounted(() => {
   font-size: 1.5rem;
   color: var(--dark-blue);
   margin-bottom: 15px;
+  min-height: 2.4em;
 }
 
 .service-description {
   color: var(--light-text);
   margin-bottom: 20px;
-  flex-grow: 1;
+  min-height: 8em;
 }
 
 .service-benefits {
   margin-top: 20px;
   margin-bottom: 25px;
 }
+
 
 .service-benefits h3 {
   font-size: 1rem;
@@ -259,6 +260,7 @@ onMounted(() => {
   text-align: center;
   display: inline-block;
   align-self: flex-start;
+  margin-top: auto;
 }
 
 .primary-button:hover {
@@ -273,9 +275,8 @@ onMounted(() => {
 }
 
 .approach-content {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+  max-width: 820px;
+  margin: 0;
 }
 
 .approach-content h2 {
@@ -407,5 +408,17 @@ onMounted(() => {
   .approach-content h2 {
     font-size: 2rem;
   }
+}
+
+.cta-section .primary-button,
+.request-section .primary-button {
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.cta-section .primary-button:hover,
+.request-section .primary-button:hover {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
 }
 </style>

@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import { iconFor } from '../../config/icons';
+import BrandGraphic from '../shared/BrandGraphic.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -15,6 +16,20 @@ const otherServices = ref([]);
 
 // Get service slug from route
 const slug = computed(() => route.params.slug);
+
+// No service carries a featured image, so the hero's second column shows the
+// brand graphic that matches the work rather than sitting empty.
+const HERO_GRAPHICS = [
+  [/audit|review|assess/i, 'audit'],
+  [/implement|sprint|integration|automation|managed|operation/i, 'automation'],
+  [/training|thinking|education|literacy|product/i, 'training'],
+  [/safety|test|red team|compliance|data|report/i, 'report']
+];
+
+const heroGraphic = computed(() => {
+  const match = HERO_GRAPHICS.find(([pattern]) => pattern.test(service.value?.title || ''));
+  return match ? match[1] : 'leak';
+});
 
 // Fallback data for services if CMS has no content yet
 const fallbackServices = {
@@ -197,8 +212,9 @@ onMounted(() => {
             <p class="service-intro">{{ service.shortDescription }}</p>
             <router-link to="/contact" class="primary-button">Request This Service</router-link>
           </div>
-          <div class="service-hero-image" v-if="service.featuredImage">
-            <img :src="service.featuredImage" :alt="service.title" />
+          <div class="service-hero-image">
+            <img v-if="service.featuredImage" :src="service.featuredImage" :alt="service.title" />
+            <BrandGraphic v-else :name="heroGraphic" />
           </div>
         </div>
       </section>
@@ -317,10 +333,16 @@ onMounted(() => {
 
 .service-hero .container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 48px;
   align-items: center;
 }
+
+.service-hero-image {
+  display: flex;
+  justify-content: flex-end;
+}
+
 
 .service-icon {
   width: 60px;
@@ -373,7 +395,8 @@ onMounted(() => {
 }
 
 .service-hero-image img {
-  width: 100%;
+  max-width: 100%;
+  height: auto;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
@@ -463,7 +486,6 @@ onMounted(() => {
 }
 
 .service-cta {
-  text-align: center;
   background-color: var(--light-blue);
   padding: 20px;
   border-radius: var(--border-radius);
@@ -485,7 +507,6 @@ onMounted(() => {
 }
 
 .related-services h2 {
-  text-align: center;
   font-size: 2rem;
   color: var(--dark-blue);
   margin-bottom: 30px;
@@ -612,5 +633,17 @@ onMounted(() => {
     margin-left: auto;
     margin-right: auto;
   }
+}
+
+.cta-section .primary-button,
+.request-section .primary-button {
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.cta-section .primary-button:hover,
+.request-section .primary-button:hover {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
 }
 </style>

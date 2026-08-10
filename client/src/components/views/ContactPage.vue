@@ -328,10 +328,11 @@ function setFormType(type) {
           
           <div class="contact-info">
             <h2>Get in Touch</h2>
-            
+
             <!-- Every value below comes from site settings, editable under
                  Admin → Contact details. A field left blank there is omitted
                  rather than shown as a placeholder. -->
+            <div class="contact-info-grid">
             <div class="info-item" v-if="contactInfo.email">
               <div class="info-icon"><AppIcon name="mail" :size="22" :label="'Email'" /></div>
               <div class="info-content">
@@ -362,6 +363,8 @@ function setFormType(type) {
                 <h3>Business Hours</h3>
                 <p class="preserve-lines">{{ contactInfo.hours }}</p>
               </div>
+            </div>
+
             </div>
 
             <div class="social-links" v-if="socialProfiles.length">
@@ -425,12 +428,6 @@ function setFormType(type) {
     </section>
     
     <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="container">
-        <h2>Ready to Transform Your AI Implementation?</h2>
-        <p>Take the first step towards safer, more efficient AI systems.</p>
-      </div>
-    </section>
   </div>
 </template>
 
@@ -443,7 +440,6 @@ function setFormType(type) {
 .page-hero {
   background-color: var(--light-blue);
   padding: 80px 0;
-  text-align: center;
 }
 
 .page-hero h1 {
@@ -453,8 +449,8 @@ function setFormType(type) {
 }
 
 .hero-description {
-  max-width: 700px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 0;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -465,9 +461,16 @@ function setFormType(type) {
 }
 
 .contact-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
+  flex-direction: column-reverse;
   gap: 40px;
+}
+
+.contact-info-grid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 44px;
 }
 
 /* Form Type Selector */
@@ -603,9 +606,15 @@ input:focus, textarea:focus, select:focus {
 
 /* Contact Info */
 .contact-info {
+  align-self: flex-start;
+  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 48px;
   background-color: var(--dark-blue);
   color: var(--white);
-  padding: 30px;
+  padding: 22px 30px;
   border-radius: var(--border-radius);
 }
 
@@ -619,8 +628,15 @@ input:focus, textarea:focus, select:focus {
   margin-bottom: 30px;
 }
 
+.contact-info h2 {
+  font-size: 1.15rem;
+  margin: 0;
+  white-space: nowrap;
+}
+
 .info-item {
   display: flex;
+  align-items: center;
   margin-bottom: 25px;
   align-items: flex-start;
 }
@@ -736,7 +752,6 @@ input:focus, textarea:focus, select:focus {
 
 .faq-section h2 {
   font-size: 2.5rem;
-  text-align: center;
   color: var(--dark-blue);
   margin-bottom: 50px;
 }

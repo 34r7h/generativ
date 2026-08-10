@@ -384,7 +384,7 @@ onMounted(() => {
   font-size: 3rem;
   line-height: 1.2;
   margin-bottom: 24px;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .hero-content p {
@@ -411,8 +411,8 @@ onMounted(() => {
 }
 
 .content-text {
-  max-width: 800px;
-  margin: 0 auto 40px auto;
+  max-width: 760px;
+  margin: 0 0 40px;
   line-height: 1.7;
   color: var(--text-color);
 }
@@ -424,12 +424,7 @@ onMounted(() => {
 .content-section h2 {
   font-size: 2.5rem;
   margin-bottom: 16px;
-  color: var(--black);
-  text-align: center;
-}
-
-.content-text {
-  text-align: center;
+  color: var(--dark-blue);
 }
 
 /* Alternate content sections so consecutive blocks stay legible */
@@ -456,13 +451,13 @@ onMounted(() => {
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.2;
-  color: var(--black);
+  color: var(--dark-blue);
   margin-bottom: 8px;
 }
 
 .stat-label {
   font-weight: 600;
-  color: var(--black);
+  color: var(--dark-blue);
   margin-bottom: 8px;
 }
 
@@ -474,10 +469,10 @@ onMounted(() => {
 }
 
 .stats-note {
+  text-align: left;
   font-size: 0.82rem;
   color: var(--text-color);
   opacity: 0.7;
-  text-align: center;
   margin: 0;
 }
 
@@ -512,6 +507,7 @@ onMounted(() => {
 
 .vertical-card h3 {
   margin: 0 0 12px;
+  min-height: 2.6em;
   color: var(--dark-blue, #123);
 }
 
@@ -543,7 +539,7 @@ onMounted(() => {
 
 .shift-after {
   font-weight: 600;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .vertical-proof {
@@ -599,7 +595,7 @@ onMounted(() => {
 /* Steps */
 .steps-list {
   max-width: 820px;
-  margin: 40px auto 0;
+  margin: 40px 0 0;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -627,7 +623,7 @@ onMounted(() => {
 .step-content h3 {
   margin: 0 0 6px;
   font-size: 1.1rem;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .step-content p {
@@ -655,13 +651,12 @@ onMounted(() => {
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
 }
 
 .section-intro {
   max-width: 600px;
-  margin: 0 auto;
+  margin: 0;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -670,17 +665,19 @@ onMounted(() => {
 .team-section h2 {
   font-size: 2.5rem;
   margin-bottom: 16px;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
   margin-top: 40px;
 }
 
 .service-card {
+  display: flex;
+  flex-direction: column;
   background-color: var(--white);
   padding: 30px;
   border-radius: var(--border-radius);
@@ -708,15 +705,18 @@ onMounted(() => {
   font-size: 1.5rem;
   margin-bottom: 15px;
   color: var(--dark-blue);
+  min-height: 2.4em;
 }
 
 .service-card p {
   color: var(--light-text);
   margin-bottom: 20px;
+  flex-grow: 1;
 }
 
 .service-link {
   display: inline-block;
+  align-self: flex-start;
   font-weight: 500;
 }
 
@@ -736,7 +736,7 @@ onMounted(() => {
 .value-prop-content h2 {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .value-prop-content > p {
@@ -792,14 +792,13 @@ onMounted(() => {
 
 .team-section h2 {
   font-size: 2.5rem;
-  text-align: center;
   margin-bottom: 16px;
-  color: var(--black);
+  color: var(--dark-blue);
 }
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   margin-top: 40px;
 }
@@ -809,13 +808,12 @@ onMounted(() => {
   padding: 30px;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  text-align: center;
 }
 
 .member-photo {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 20px;
+  width: 110px;
+  height: 110px;
+  margin: 0 0 20px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -846,7 +844,6 @@ onMounted(() => {
 
 .team-cta {
   margin-top: 40px;
-  text-align: center;
 }
 
 /* CTA Section */
@@ -929,7 +926,8 @@ onMounted(() => {
 }
 
 .secondary-button {
-  background-color: rgba(76, 111, 255, 0.1);
+  background-color: transparent;
+  border: 1px solid var(--primary-color);
   color: var(--primary-color);
   padding: 14px 28px;
   border-radius: var(--border-radius);
@@ -970,7 +968,7 @@ onMounted(() => {
 .page-content h4,
 .page-content h5,
 .page-content h6 {
-  color: var(--black);
+  color: var(--dark-blue);
   margin-bottom: 1rem;
   margin-top: 2rem;
 }

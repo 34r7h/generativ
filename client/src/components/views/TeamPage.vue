@@ -309,7 +309,7 @@ onMounted(() => {
 }
 
 .hero-description {
-  max-width: 700px;
+  max-width: 760px;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -377,7 +377,7 @@ onMounted(() => {
 /* Team Grid */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
   gap: 30px;
   align-items: stretch;
 }
@@ -392,7 +392,6 @@ onMounted(() => {
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
-  text-align: center;
   transition: transform 0.3s;
 }
 
@@ -420,9 +419,9 @@ onMounted(() => {
 }
 
 .member-photo {
-  width: 150px;
-  height: 150px;
-  margin: 0 auto 20px;
+  width: 110px;
+  height: 110px;
+  margin: 0 0 20px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -452,13 +451,17 @@ onMounted(() => {
   margin-bottom: 20px;
   line-height: 1.65;
   text-align: left;
-  flex-grow: 1;
+}
+
+/* The tag row and the profile link share a baseline across the row; the slack
+   from bios of different lengths collects here, above the tags. */
+.member-expertise {
+  margin-top: auto;
 }
 
 .member-expertise {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 8px;
   margin-bottom: 20px;
 }
@@ -483,7 +486,6 @@ onMounted(() => {
 
 .member-social {
   display: flex;
-  justify-content: center;
   gap: 15px;
   margin-top: 14px;
 }
@@ -537,14 +539,19 @@ onMounted(() => {
 }
 
 .secondary-button {
-  background-color: rgba(76, 111, 255, 0.1);
+  background-color: transparent;
   color: var(--primary-color);
   padding: 10px 20px;
+  border: 1px solid var(--primary-color);
   border-radius: var(--border-radius);
   font-weight: 500;
-  border: none;
   cursor: pointer;
   display: inline-block;
+}
+
+.secondary-button:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
 }
 
 .secondary-button:hover {
@@ -558,9 +565,8 @@ onMounted(() => {
 }
 
 .join-content {
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+  max-width: 820px;
+  margin: 0;
 }
 
 .join-content h2 {
@@ -603,15 +609,13 @@ onMounted(() => {
 
 .culture-section h2 {
   font-size: 2.5rem;
-  text-align: center;
   color: var(--dark-blue);
   margin-bottom: 20px;
 }
 
 .section-intro {
-  max-width: 700px;
-  margin: 0 auto 50px;
-  text-align: center;
+  max-width: 760px;
+  margin: 0 0 50px;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -623,7 +627,6 @@ onMounted(() => {
 }
 
 .culture-item {
-  text-align: center;
   padding: 30px;
   background-color: var(--white);
   border-radius: var(--border-radius);
@@ -714,5 +717,17 @@ onMounted(() => {
   .tag-filters {
     justify-content: center;
   }
+}
+
+.cta-section .primary-button,
+.request-section .primary-button {
+  background-color: var(--white);
+  color: var(--dark-blue);
+}
+
+.cta-section .primary-button:hover,
+.request-section .primary-button:hover {
+  background-color: var(--light-blue);
+  color: var(--dark-blue);
 }
 </style>

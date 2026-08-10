@@ -126,7 +126,6 @@ onMounted(() => {
 .site-footer {
   background-color: var(--dark);
   color: var(--gray-300);
-  margin-top: var(--spacing-3xl);
 }
 
 .footer-main {
@@ -138,7 +137,7 @@ onMounted(() => {
    into a single 1fr while the fourth track sat empty. */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.3fr 2.4fr 1.5fr;
+  grid-template-columns: 1.2fr 2.6fr 1.4fr;
   gap: var(--spacing-2xl);
   align-items: start;
 }
@@ -194,8 +193,8 @@ onMounted(() => {
 
 .footer-links-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-xl);
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: var(--spacing-lg);
 }
 
 .footer-heading {
