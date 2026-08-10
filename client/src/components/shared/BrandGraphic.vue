@@ -22,7 +22,7 @@ defineProps({
   >
     <title v-if="label">{{ label }}</title>
 
-    <!-- The audit: five working days, three findings, the arithmetic behind each -->
+    <!-- The audit: measured processes, three findings, the arithmetic behind each -->
     <g v-if="name === 'audit'">
       <rect x="24" y="40" width="352" height="220" rx="14" class="g-surface" />
       <rect x="24" y="40" width="352" height="34" rx="14" class="g-primary" />
@@ -31,7 +31,7 @@ defineProps({
       <circle cx="64" cy="57" r="5" class="g-onprimary" />
       <circle cx="82" cy="57" r="5" class="g-onprimary" />
 
-      <!-- five day columns -->
+      <!-- measured processes, ranked by cost -->
       <g>
         <rect x="52" y="196" width="34" height="34" rx="5" class="g-muted" />
         <rect x="102" y="176" width="34" height="54" rx="5" class="g-muted" />

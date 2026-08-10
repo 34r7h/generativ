@@ -3,7 +3,7 @@
  *
  * The canonical, code-owned content describing what Generativ Consulting Company does:
  *
- *   The AI Opportunity Audit — a five-day, on-site operational review, flat $500.
+ *   The AI Opportunity Audit — a two-day, on-site operational review, flat $500.
  *   It documents the three bottlenecks costing the practice the most, with the
  *   arithmetic behind each. The fee is credited against an implementation, or
  *   refunded if the review does not find at least $5,000 in annual savings.
@@ -52,7 +52,7 @@ type TeamSeed = Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>;
 export const PRIME_DIRECTIVE = {
   offer: 'AI Opportunity Audit',
   price: '$500 flat fee',
-  duration: '5 business days',
+  duration: '2 days on-site',
   terms:
     'The fee is credited against an implementation if you proceed, or refunded if the review does not identify at least $5,000 in annual savings.',
   summary: 'Operational review, automation build, and the practice behind both.'
@@ -107,31 +107,18 @@ const VERTICALS = [
   }
 ];
 
-const FIVE_DAY_SCHEDULE = [
+const ONSITE_SCHEDULE = [
   {
-    title: 'Day 1 — Discovery',
+    title: 'Day 1 — Discovery and analysis',
     description:
-      'Workflow walks and tool inventory, on-site, with the owner-operator present.'
+      'Workflow walks and tool inventory with the owner-operator present, then bottleneck ' +
+      'scoring and review of the internal logic each process depends on.'
   },
   {
-    title: 'Day 2 — Analysis',
+    title: 'Day 2 — Sizing, roadmap and delivery',
     description:
-      'Bottleneck scoring and review of the internal logic each process depends on.'
-  },
-  {
-    title: 'Day 3 — Sizing',
-    description:
-      'Opportunity sizing and cost projections against stated labor and time assumptions.'
-  },
-  {
-    title: 'Day 4 — Strategy',
-    description:
-      'Drafting the 90-day roadmap: sequence, integration points, and measures.'
-  },
-  {
-    title: 'Day 5 — Delivery',
-    description:
-      'Written delivery of the readiness assessment, the three bottlenecks, and the roadmap.'
+      'Opportunity sizing against stated labor and time assumptions, the 90-day roadmap, and ' +
+      'written delivery of the readiness assessment and the three bottlenecks before we leave.'
   }
 ];
 
@@ -180,7 +167,7 @@ const homePage: PageSeed = {
       type: 'hero',
       title: 'AI Opportunity Audit',
       content:
-        'A five-day, on-site review of how work moves through a practice. It ends in a written report: the three bottlenecks costing the most, each with its annual cost and the assumptions behind it.',
+        'A two-day, on-site review of how work moves through a practice. It ends in a written report: the three bottlenecks costing the most, each with its annual cost and the assumptions behind it.',
       sortOrder: 1,
       settings: {
         ctaPrimary: { text: 'What the audit covers', url: '/services/ai-opportunity-audit' }
@@ -191,9 +178,9 @@ const homePage: PageSeed = {
       type: 'content',
       title: 'How the audit runs',
       content:
-        '<p>One business week, on-site, with the owner-operator present on the first day. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.</p>',
+        '<p>Two days, on-site, with the owner-operator present on the first morning. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.</p>',
       sortOrder: 2,
-      settings: { steps: FIVE_DAY_SCHEDULE }
+      settings: { steps: ONSITE_SCHEDULE }
     },
     {
       id: 'verticals',
@@ -237,7 +224,7 @@ const homePage: PageSeed = {
   seo: {
     title: 'Generativ Consulting Company',
     description:
-      'Operational review and automation implementation for professional practices. A five-day, on-site assessment documenting where process time and margin are lost.',
+      'Operational review and automation implementation for professional practices. A two-day, on-site assessment documenting where process time and margin are lost.',
     keywords: [
       'AI opportunity audit',
       'operational assessment',
@@ -271,7 +258,7 @@ const aboutPage: PageSeed = {
       type: 'content',
       title: 'What we do',
       content:
-        '<p>Generativ Consulting Company assesses and automates administrative processes inside professional practices — real estate, clinical, and legal. Engagements begin with a five-day operational review that identifies the three processes costing the practice the most and documents the arithmetic behind each.</p><p>The wider practice — safety testing, throughput engineering, and staff training — is what makes those findings dependable in production rather than only on paper.</p>',
+        '<p>Generativ Consulting Company assesses and automates administrative processes inside professional practices — real estate, clinical, and legal. Engagements begin with a two-day, on-site operational review that identifies the three processes costing the practice the most and documents the arithmetic behind each.</p><p>The wider practice — safety testing, throughput engineering, and staff training — is what makes those findings dependable in production rather than only on paper.</p>',
       sortOrder: 2,
       settings: {}
     },
@@ -321,9 +308,9 @@ const aboutPage: PageSeed = {
       type: 'content',
       title: 'How the review runs',
       content:
-        '<p>The review runs over one business week. The owner-operator is present on the first day; the diagnostic is only accurate if it reflects how the office actually works.</p>',
+        '<p>The review runs over two days on-site. The owner-operator is present on the first morning; the diagnostic is only accurate if it reflects how the office actually works.</p>',
       sortOrder: 5,
-      settings: { steps: FIVE_DAY_SCHEDULE }
+      settings: { steps: ONSITE_SCHEDULE }
     },
     {
       id: 'about-values',
@@ -385,9 +372,9 @@ const services: ServiceSeed[] = [
     slug: 'ai-opportunity-audit',
     title: 'AI Opportunity Audit',
     shortDescription:
-      'A five-day, on-site review documenting the three processes costing the practice the most, with the arithmetic for each.',
+      'A two-day, on-site review documenting the three processes costing the practice the most, with the arithmetic for each.',
     fullDescription: `
-<p>A five-day, on-site review of how work moves through a practice, delivered as a written report.</p>
+<p>A two-day, on-site review of how work moves through a practice, delivered as a written report.</p>
 
 <h3>Deliverables</h3>
 <ul>
@@ -398,11 +385,8 @@ const services: ServiceSeed[] = [
 
 <h3>Schedule</h3>
 <ol>
-  <li><strong>Day 1:</strong> workflow walks and tool inventory, on-site, with the owner-operator present.</li>
-  <li><strong>Day 2:</strong> bottleneck scoring and review of the internal logic each process depends on.</li>
-  <li><strong>Day 3:</strong> opportunity sizing and cost projections.</li>
-  <li><strong>Day 4:</strong> drafting the roadmap.</li>
-  <li><strong>Day 5:</strong> written delivery.</li>
+  <li><strong>Day 1:</strong> workflow walks and tool inventory with the owner-operator present, then bottleneck scoring and review of the internal logic each process depends on.</li>
+  <li><strong>Day 2:</strong> opportunity sizing and cost projections, the 90-day roadmap, and written delivery before we leave.</li>
 </ol>
 
 <h3>Terms</h3>
@@ -413,7 +397,7 @@ const services: ServiceSeed[] = [
     `,
     benefits: [
       'Fixed fee, no hourly billing and no obligation to implement',
-      'Written report with three costed opportunities within five business days',
+      'Written report with three costed opportunities, delivered on the second day',
       'Refunded if annual savings of at least $5,000 are not identified',
       'Credited in full against an implementation',
       'Observational; NDA signed before the first day'
@@ -424,7 +408,7 @@ const services: ServiceSeed[] = [
     seo: {
       title: 'AI Opportunity Audit — Generativ Consulting Company',
       description:
-        'A five-day, on-site operational review documenting the three processes costing a practice the most, each with its annual cost and assumptions.',
+        'A two-day, on-site operational review documenting the three processes costing a practice the most, each with its annual cost and assumptions.',
       keywords: ['AI audit', 'AI opportunity audit', 'automation assessment', 'ROI guarantee']
     }
   },
@@ -643,7 +627,7 @@ const blogPosts: BlogSeed[] = [
 <p>The industry-standard first response to an inbound lead is around <strong>12 minutes</strong>. A renter browsing listings does not wait 12 minutes; they click the next result. The lead was never lost to a better offer. It was lost to a faster reply.</p>
 
 <h2>Why this is worth auditing rather than guessing</h2>
-<p>Each of these is individually small enough to rationalize and collectively large enough to matter. The purpose of a five-day, on-site audit is to convert them from a feeling into arithmetic: how many calls, how many forms, how many minutes, at what loaded labor rate. Once it is written down with assumptions you can check, it stops being overhead you tolerate and becomes a number you can decide about.</p>
+<p>Each of these is individually small enough to rationalize and collectively large enough to matter. The purpose of a two-day, on-site audit is to convert them from a feeling into arithmetic: how many calls, how many forms, how many minutes, at what loaded labor rate. Once it is written down with assumptions you can check, it stops being overhead you tolerate and becomes a number you can decide about.</p>
 
 <p>Each figure above is a published benchmark rather than a measurement of any particular practice. The point of costing them locally is that the local numbers are frequently different.</p>
     `,
@@ -794,7 +778,7 @@ const blogPosts: BlogSeed[] = [
 <p>Most canceled projects are a rebranded chatbot with an agent label. An agent is not a single model call wrapped in a UI. Real deployments need planning loops with retries, state that survives failure, a connector layer into the systems of record, and traces from every decision back to its inputs.</p>
 
 <h2>Applying it</h2>
-<p>Each opportunity identified in a review is assessed against five criteria before it is recommended: orchestration, governance, integration, observability, and outcomes — the last measured in resolution time and revenue rather than in systems deployed. An opportunity that fails one is not proposed. Canceling at that stage costs a week and a fixed fee rather than a quarter.</p>
+<p>Each opportunity identified in a review is assessed against five criteria before it is recommended: orchestration, governance, integration, observability, and outcomes — the last measured in resolution time and revenue rather than in systems deployed. An opportunity that fails one is not proposed. Canceling at that stage costs two days and a fixed fee rather than a quarter.</p>
     `,
     excerpt:
       'Gartner expects over 40% of agentic AI projects to be canceled by 2027 — from cost, unclear value and missing risk controls. The five tests that catch it early.',

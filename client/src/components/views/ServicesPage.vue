@@ -102,48 +102,31 @@ onMounted(() => {
         <div class="approach-content">
           <h2>How the review runs</h2>
           <p>
-            One business week, on-site, from tool inventory through to opportunity sizing.
-            The owner-operator is present on the first day.
+            Two days, on-site, from tool inventory through to the written report.
+            The owner-operator is present on the first morning.
           </p>
 
           <div class="process-steps">
             <div class="process-step">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h3>Discovery</h3>
-                <p>Workflow walks and tool inventory, on-site, with the owner-operator present.</p>
+                <h3>Day 1 — Discovery and analysis</h3>
+                <p>
+                  Workflow walks and tool inventory with the owner-operator present, then
+                  bottleneck scoring and review of the internal logic each process depends on.
+                </p>
               </div>
             </div>
 
             <div class="process-step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h3>Analysis</h3>
-                <p>Bottleneck scoring and review of the internal logic each process depends on.</p>
-              </div>
-            </div>
-
-            <div class="process-step">
-              <div class="step-number">3</div>
-              <div class="step-content">
-                <h3>Sizing</h3>
-                <p>Opportunity sizing and cost projections against stated labor and time assumptions.</p>
-              </div>
-            </div>
-
-            <div class="process-step">
-              <div class="step-number">4</div>
-              <div class="step-content">
-                <h3>Strategy</h3>
-                <p>Drafting the 90-day roadmap: sequence, integration points, and measures.</p>
-              </div>
-            </div>
-
-            <div class="process-step">
-              <div class="step-number">5</div>
-              <div class="step-content">
-                <h3>Delivery</h3>
-                <p>Written delivery of the readiness assessment, the three bottlenecks, and the roadmap.</p>
+                <h3>Day 2 — Sizing, roadmap and delivery</h3>
+                <p>
+                  Opportunity sizing against stated labor and time assumptions, the 90-day
+                  roadmap, and written delivery of the readiness assessment and the three
+                  bottlenecks before we leave.
+                </p>
               </div>
             </div>
           </div>
