@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "bun run index.ts",
+    "sync-content": "bun run cms/sync-content.ts",
     "dev": "bun --watch index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

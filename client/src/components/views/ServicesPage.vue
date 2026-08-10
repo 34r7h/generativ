@@ -39,10 +39,11 @@ onMounted(() => {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Our Services</h1>
+        <h1>One Way In. Two Ways Forward.</h1>
         <p class="hero-description">
-          Comprehensive solutions for AI safety and performance, ensuring your organization
-          stays at the forefront of technological innovation while managing risks effectively.
+          Every engagement starts with the $500 AI Opportunity Audit: five business days,
+          your top three operational leaks quantified in writing, and a full refund if we
+          cannot find at least $5,000 in annual savings.
         </p>
       </div>
     </section>
@@ -94,43 +95,50 @@ onMounted(() => {
     <section class="approach-section">
       <div class="container">
         <div class="approach-content">
-          <h2>Our Approach</h2>
+          <h2>The 5-Day Precision Delivery Schedule</h2>
           <p>
-            At Generativ Consulting Company, we believe in a methodical, evidence-based
-            approach to AI safety and performance. Our process combines rigorous testing,
-            innovative parallelization techniques, and critical thinking education.
+            An owner-operator cannot disappear into a discovery phase. The audit goes from
+            tool inventory to ROI sizing in a single business week, on-site, with you present.
           </p>
 
           <div class="process-steps">
             <div class="process-step">
               <div class="step-number">1</div>
               <div class="step-content">
-                <h3>Assess</h3>
-                <p>We begin by thoroughly evaluating your current AI implementation, identifying strengths and vulnerabilities.</p>
+                <h3>Discovery</h3>
+                <p>Workflow walks and tool inventory, on-site. We watch the work actually move rather than reading a diagram of it.</p>
               </div>
             </div>
 
             <div class="process-step">
               <div class="step-number">2</div>
               <div class="step-content">
-                <h3>Design</h3>
-                <p>Our experts design custom solutions tailored to your specific needs and challenges.</p>
+                <h3>Analysis</h3>
+                <p>Bottleneck scoring and internal logic review — where does a task stop and wait for a human who is already busy?</p>
               </div>
             </div>
 
             <div class="process-step">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h3>Implement</h3>
-                <p>We work alongside your team to implement our recommended solutions, ensuring seamless integration.</p>
+                <h3>Sizing</h3>
+                <p>ROI opportunity sizing and cost projections, using standard labor and time assumptions you can verify yourself.</p>
               </div>
             </div>
 
             <div class="process-step">
               <div class="step-number">4</div>
               <div class="step-content">
-                <h3>Optimize</h3>
-                <p>Through continuous testing and refinement, we optimize your AI systems for both safety and performance.</p>
+                <h3>Strategy</h3>
+                <p>Drafting the 90-day roadmap: what ships first, what it plugs into, and what it is measured against.</p>
+              </div>
+            </div>
+
+            <div class="process-step">
+              <div class="step-number">5</div>
+              <div class="step-content">
+                <h3>Delivery</h3>
+                <p>Your Readiness Score, the top three bottlenecks, and the roadmap — in writing, with the math shown.</p>
               </div>
             </div>
           </div>
@@ -141,11 +149,14 @@ onMounted(() => {
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="container">
-        <h2>Ready to Transform Your AI Implementation?</h2>
-        <p>Schedule a free consultation with our experts to discuss your needs.</p>
+        <h2>Identify Your $5,000 in Savings</h2>
+        <p>
+          Thirty-minute discovery session, then the five-day schedule. Flat $500 — credited
+          in full toward your build, or refunded if the numbers are not there.
+        </p>
         <div class="cta-buttons">
-          <router-link to="/contact" class="primary-button">Request Consultation</router-link>
-          <router-link to="/case-studies" class="secondary-button">View Case Studies</router-link>
+          <router-link to="/contact" class="primary-button">Book the $500 Audit</router-link>
+          <router-link to="/blog" class="secondary-button">Read the Leak Diagnostics</router-link>
         </div>
       </div>
     </section>

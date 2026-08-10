@@ -134,7 +134,7 @@ function setFormType(type) {
   // Set default subject based on form type
   switch (type) {
     case 'assessment':
-      formData.value.subject = 'AI Vulnerability Scan Request';
+      formData.value.subject = 'AI Opportunity Audit Request ($500)';
       break;
     case 'newsletter':
       formData.value.subject = 'Newsletter Subscription';
@@ -150,9 +150,10 @@ function setFormType(type) {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Contact Us</h1>
+        <h1>Book the $500 Audit</h1>
         <p class="hero-description">
-          Get in touch with our team to discuss how we can help with your AI safety and performance needs.
+          Thirty minutes to scope it, five business days to deliver it. If we do not find at
+          least $5,000 in verifiable annual savings, you get the $500 back — no questions asked.
         </p>
       </div>
     </section>
@@ -174,7 +175,7 @@ function setFormType(type) {
                 :class="['form-type-button', { active: formData.formType === 'assessment' }]"
                 @click="setFormType('assessment')"
               >
-                Request Assessment
+                Book the $500 Audit
               </button>
               <button 
                 :class="['form-type-button', { active: formData.formType === 'newsletter' }]"
@@ -194,7 +195,7 @@ function setFormType(type) {
             <!-- Contact Form -->
             <form v-else @submit.prevent="submitForm" class="contact-form">
               <h2>{{ 
-                formData.formType === 'assessment' ? 'Request AI Vulnerability Scan' : 
+                formData.formType === 'assessment' ? 'Book Your AI Opportunity Audit' :
                 formData.formType === 'newsletter' ? 'Subscribe to Our Newsletter' : 
                 'Send Us a Message' 
               }}</h2>
@@ -262,17 +263,18 @@ function setFormType(type) {
               </div>
               
               <div v-if="formData.formType === 'assessment'" class="form-group">
-                <label for="requestType">Assessment Type *</label>
-                <select 
-                  id="requestType" 
-                  v-model="formData.requestType" 
+                <label for="requestType">Type of Operation *</label>
+                <select
+                  id="requestType"
+                  v-model="formData.requestType"
                   :disabled="loading"
                   required
                 >
-                  <option value="general">General Assessment</option>
-                  <option value="safety">Safety Testing</option>
-                  <option value="performance">Performance Optimization</option>
-                  <option value="comprehensive">Comprehensive Evaluation</option>
+                  <option value="real-estate">Real Estate / Property Management</option>
+                  <option value="medical">Dental / Medical / Clinical</option>
+                  <option value="legal">Law / Tax / Professional Services</option>
+                  <option value="multi-site">Multi-site or complex operation</option>
+                  <option value="general">Something else</option>
                 </select>
               </div>
               

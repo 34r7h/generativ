@@ -77,6 +77,22 @@ onMounted(() => {
               <h2>{{ section.title }}</h2>
               <div class="content-text" v-html="section.content"></div>
               
+              <!-- Stats (market and impact figures) -->
+              <div v-if="section.settings?.stats" class="stats-grid">
+                <div
+                  v-for="stat in section.settings.stats"
+                  :key="stat.label"
+                  class="stat-card"
+                >
+                  <div class="stat-value">{{ stat.value }}</div>
+                  <div class="stat-label">{{ stat.label }}</div>
+                  <p class="stat-detail" v-if="stat.detail">{{ stat.detail }}</p>
+                </div>
+              </div>
+              <p class="stats-note" v-if="section.settings?.statsNote">
+                {{ section.settings.statsNote }}
+              </p>
+
               <!-- Values -->
               <div v-if="section.settings?.values" class="values-grid">
                 <div 
@@ -262,6 +278,50 @@ onMounted(() => {
   font-size: 1.1rem;
   color: var(--text-color);
   line-height: 1.6;
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background-color: var(--white, #fff);
+  border-radius: var(--border-radius, 8px);
+  border-top: 4px solid var(--primary-color);
+  padding: 28px 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: var(--dark-blue);
+  margin-bottom: 8px;
+}
+
+.stat-detail {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.stats-note {
+  font-size: 0.82rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  text-align: center;
 }
 
 /* Values Grid */

@@ -39,9 +39,10 @@ onMounted(() => {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Our Blog</h1>
+        <h1>Leak Diagnostics</h1>
         <p class="hero-description">
-          Insights, updates, and expertise from our team of AI safety and performance specialists.
+          The factors behind the audit: where operational margin actually goes, what closing
+          each leak is worth, and why most agentic AI projects never ship.
         </p>
       </div>
     </section>

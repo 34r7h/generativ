@@ -35,6 +35,7 @@ const fetchSiteSettings = async () => {
 // Navigation items
 const navItems = [
   { name: 'Home', path: '/' },
+  { name: 'The $500 Audit', path: '/services/ai-opportunity-audit' },
   { name: 'Services', path: '/services' },
   { name: 'About', path: '/about' },
   { name: 'Team', path: '/team' },
@@ -47,6 +48,11 @@ const navItems = [
 const isActive = (path) => {
   if (path === '/') {
     return route.path === '/';
+  }
+  // Deep links (e.g. /services/ai-opportunity-audit) match exactly so they
+  // don't also light up their parent section.
+  if (path.split('/').length > 2) {
+    return route.path === path;
   }
   return route.path.startsWith(path);
 };

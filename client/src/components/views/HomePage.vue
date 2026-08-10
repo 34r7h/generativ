@@ -165,6 +165,71 @@ onMounted(() => {
               <h2>{{ section.title }}</h2>
               <div class="content-text" v-html="section.content"></div>
               
+              <!-- Stats (leak factors / measured impact) -->
+              <div v-if="section.settings?.stats" class="stats-grid">
+                <div
+                  v-for="stat in section.settings.stats"
+                  :key="stat.label"
+                  class="stat-card"
+                >
+                  <div class="stat-value">{{ stat.value }}</div>
+                  <div class="stat-label">{{ stat.label }}</div>
+                  <p class="stat-detail" v-if="stat.detail">{{ stat.detail }}</p>
+                </div>
+              </div>
+              <p class="stats-note" v-if="section.settings?.statsNote">
+                {{ section.settings.statsNote }}
+              </p>
+
+              <!-- Verticals (leak → fix, by industry) -->
+              <div v-if="section.settings?.verticals" class="verticals-grid">
+                <div
+                  v-for="vertical in section.settings.verticals"
+                  :key="vertical.title"
+                  class="vertical-card"
+                >
+                  <div class="vertical-icon" v-if="vertical.icon">{{ vertical.icon }}</div>
+                  <h3>{{ vertical.title }}</h3>
+                  <p class="vertical-leak">{{ vertical.leak }}</p>
+                  <div class="vertical-shift">
+                    <span class="shift-before">{{ vertical.before }}</span>
+                    <span class="shift-arrow">→</span>
+                    <span class="shift-after">{{ vertical.after }}</span>
+                  </div>
+                  <p class="vertical-proof" v-if="vertical.proof">{{ vertical.proof }}</p>
+                </div>
+              </div>
+
+              <!-- Offer ladder -->
+              <div v-if="section.settings?.tiers" class="tiers-grid">
+                <div
+                  v-for="(tier, index) in section.settings.tiers"
+                  :key="tier.name"
+                  class="tier-card"
+                  :class="{ 'tier-featured': index === 0 }"
+                >
+                  <h3>{{ tier.name }}</h3>
+                  <div class="tier-price">{{ tier.price }}</div>
+                  <div class="tier-timeline">{{ tier.timeline }}</div>
+                  <p class="tier-objective">{{ tier.objective }}</p>
+                </div>
+              </div>
+
+              <!-- Steps (delivery schedule) -->
+              <div v-if="section.settings?.steps" class="steps-list">
+                <div
+                  v-for="(step, index) in section.settings.steps"
+                  :key="step.title"
+                  class="step-item"
+                >
+                  <div class="step-number">{{ index + 1 }}</div>
+                  <div class="step-content">
+                    <h3>{{ step.title }}</h3>
+                    <p>{{ step.description }}</p>
+                  </div>
+                </div>
+              </div>
+
               <!-- Value Points -->
               <div v-if="section.settings?.valuePoints" class="value-points">
                 <div 
@@ -323,16 +388,216 @@ onMounted(() => {
 }
 
 .content-section .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
+  display: block;
 }
 
 .content-section h2 {
   font-size: 2.5rem;
   margin-bottom: 16px;
   color: var(--black);
+  text-align: center;
+}
+
+.content-text {
+  text-align: center;
+}
+
+/* Alternate content sections so consecutive blocks stay legible */
+.page-section:nth-child(even) .content-section {
+  background-color: var(--white, #fff);
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin: 40px 0 16px;
+}
+
+.stat-card {
+  background-color: var(--white, #fff);
+  border-radius: var(--border-radius, 8px);
+  border-top: 4px solid var(--primary-color);
+  padding: 28px 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.stat-value {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.stat-label {
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.stat-detail {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.stats-note {
+  font-size: 0.82rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  text-align: center;
+  margin: 0;
+}
+
+/* Verticals */
+.verticals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.vertical-card {
+  background-color: var(--white, #fff);
+  border-radius: var(--border-radius, 8px);
+  padding: 32px 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.vertical-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.vertical-card h3 {
+  margin: 0 0 12px;
+  color: var(--dark-blue, #123);
+}
+
+.vertical-leak {
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.vertical-shift {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 16px;
+  border-radius: var(--border-radius, 8px);
+  background-color: var(--light-blue);
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.shift-before {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+.shift-arrow {
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.shift-after {
+  font-weight: 600;
+  color: var(--black);
+}
+
+.vertical-proof {
+  margin: auto 0 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* Offer ladder */
+.tiers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.tier-card {
+  background-color: var(--white, #fff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--border-radius, 8px);
+  padding: 32px 28px;
+}
+
+.tier-featured {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.tier-card h3 {
+  margin: 0 0 16px;
+  font-size: 1.15rem;
+  color: var(--dark-blue, #123);
+}
+
+.tier-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.tier-timeline {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  margin-bottom: 16px;
+}
+
+.tier-objective {
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Steps */
+.steps-list {
+  max-width: 820px;
+  margin: 40px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.step-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.step-number {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: var(--white, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.step-content h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  color: var(--black);
+}
+
+.step-content p {
+  margin: 0;
+  line-height: 1.6;
 }
 
 /* No data states */

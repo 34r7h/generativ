@@ -55,6 +55,7 @@ import { handleAuth } from "./actions/auth.js";
 import { initCMSDB } from "./cms/db.js";
 import { handleCMSOperation } from "./cms/api.js";
 import { seedCMSData } from "./cms/seed.js";
+import { syncPrimeDirective } from "./cms/prime-directive.js";
 import type { AuthOperation } from "./actions/auth.js";
 import type { CMSOperation } from "./cms/api.js";
 
@@ -79,6 +80,20 @@ initDB().then(async () => {
       console.log("CMS database seeded successfully");
     } catch (error) {
       console.error("Failed to seed CMS data:", error);
+    }
+  }
+
+  // Apply the prime directive (canonical, code-owned site content).
+  // Idempotent upsert by slug — safe to run on every deploy.
+  // Triggered by SYNC_CONTENT=true or --sync-content.
+  const shouldSyncContent = process.env.SYNC_CONTENT === 'true' ||
+                            process.argv.includes('--sync-content');
+
+  if (shouldSyncContent) {
+    try {
+      await syncPrimeDirective();
+    } catch (error) {
+      console.error("Failed to apply prime directive:", error);
     }
   }
 }).catch((error) => {
