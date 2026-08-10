@@ -1041,6 +1041,25 @@ async function upsertBlogPosts(): Promise<{ created: number; updated: number }> 
   return { created, updated };
 }
 
+/**
+ * Earlier seed data stored unresolved placeholder ids (`team_1`, `team_2`, ...) in
+ * BlogPost.author. Both BlogPage and BlogPostPage render that field verbatim, so
+ * those placeholders show up as a visible byline. Normalize them.
+ */
+async function repairBlogBylines(): Promise<number> {
+  const posts = await getAllBlogPosts();
+  let repaired = 0;
+
+  for (const post of posts) {
+    if (/^team_\d+$/.test(post.author || '')) {
+      await updateBlogPost(post.id, { author: 'Generativ Consulting Company' });
+      repaired++;
+    }
+  }
+
+  return repaired;
+}
+
 async function upsertSiteSettings(): Promise<void> {
   const current = await getSiteSettings();
 
@@ -1124,6 +1143,9 @@ export async function syncPrimeDirective() {
 
   const blogResult = await upsertBlogPosts();
   console.log(`  blog posts: ${blogResult.created} created, ${blogResult.updated} updated`);
+
+  const repaired = await repairBlogBylines();
+  console.log(`  placeholder bylines repaired: ${repaired}`);
 
   console.log('Prime directive applied.');
 }
