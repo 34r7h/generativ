@@ -169,50 +169,16 @@ onMounted(() => {
                     />
                   </div>
                   
-                  <div class="form-group">
-                    <label class="form-label">Contact Email</label>
-                    <input 
-                      type="email" 
-                      v-model="settingsForm.contactEmail" 
-                      class="form-control"
-                      placeholder="contact@company.com"
-                    />
-                  </div>
                 </div>
                 
-                <!-- Social Links -->
+                <!-- Contact details and social profiles live in their own section so
+                     there is exactly one place to edit them. -->
                 <div class="settings-section">
-                  <h3>Social Media Links</h3>
-                  
-                  <div class="form-group">
-                    <label class="form-label">LinkedIn</label>
-                    <input 
-                      type="url" 
-                      v-model="settingsForm.socialLinks.linkedin" 
-                      class="form-control"
-                      placeholder="https://linkedin.com/company/yourcompany"
-                    />
-                  </div>
-                  
-                  <div class="form-group">
-                    <label class="form-label">Twitter</label>
-                    <input 
-                      type="url" 
-                      v-model="settingsForm.socialLinks.twitter" 
-                      class="form-control"
-                      placeholder="https://twitter.com/yourcompany"
-                    />
-                  </div>
-                  
-                  <div class="form-group">
-                    <label class="form-label">GitHub</label>
-                    <input 
-                      type="url" 
-                      v-model="settingsForm.socialLinks.github" 
-                      class="form-control"
-                      placeholder="https://github.com/yourcompany"
-                    />
-                  </div>
+                  <h3>Contact details</h3>
+                  <p class="settings-pointer">
+                    Email, phone, address, opening hours and social profiles are edited under
+                    <router-link to="/admin/contact">Contact</router-link>.
+                  </p>
                 </div>
                 
                 <!-- SEO Settings -->
@@ -388,6 +354,16 @@ onMounted(() => {
   color: var(--gray-900);
   margin-bottom: 20px;
   font-size: 1.25rem;
+}
+
+.settings-pointer {
+  margin: 0;
+  color: var(--gray-600);
+}
+
+.settings-pointer a {
+  color: var(--primary-dark);
+  font-weight: 500;
 }
 
 .form-group {
