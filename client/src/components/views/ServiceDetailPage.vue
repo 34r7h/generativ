@@ -175,6 +175,42 @@ async function fetchServiceData() {
   }
 }
 
+// Checkout. The price shown here is a label; what is charged is decided
+// server-side from the stored service record, so this cannot set its own price.
+const paymentsEnabled = ref(false);
+const checkoutBusy = ref(false);
+const checkoutError = ref(null);
+
+const priceLine = computed(() => formatPrice(service.value?.pricingDetail));
+const canBuy = computed(() => paymentsEnabled.value && isPurchasable(service.value));
+const buyLabel = computed(() => checkoutLabel(service.value));
+
+async function loadPaymentConfig() {
+  try {
+    const response = await cmsAPI.getPaymentConfig();
+    paymentsEnabled.value = !!response?.config?.enabled;
+  } catch {
+    paymentsEnabled.value = false;
+  }
+}
+
+async function startCheckout() {
+  try {
+    checkoutBusy.value = true;
+    checkoutError.value = null;
+
+    const response = await cmsAPI.createCheckoutSession(service.value.slug);
+    if (!response.success || !response.url) {
+      throw new Error(response.error || 'Could not start checkout');
+    }
+    window.location.assign(response.url);
+  } catch (err) {
+    console.error('Checkout failed:', err);
+    checkoutError.value = err.message || 'Could not start checkout';
+    checkoutBusy.value = false;
+  }
+}
+
 onMounted(() => {
   fetchServiceData();
   loadPaymentConfig();
