@@ -1,4 +1,5 @@
 <script setup>
+import BrandMark from './BrandMark.vue';
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 
@@ -31,9 +32,7 @@ onMounted(() => {
           <div class="footer-brand">
             <div class="footer-logo">
               <img v-if="siteSettings?.logo?.filePath" :src="siteSettings.logo.filePath" alt="Generativ Consulting" />
-              <span v-else class="logo-text">
-                <span class="gradient-text">Generativ</span>
-              </span>
+              <BrandMark v-else :size="32" tone="dark" />
             </div>
             <p class="footer-tagline">{{ siteSettings?.tagline || 'Where AI speed meets human trust' }}</p>
             <div class="footer-social">
@@ -133,10 +132,14 @@ onMounted(() => {
   padding: var(--spacing-2xl) 0;
 }
 
+/* Three children — brand, the link columns, the newsletter. The old
+   `1.5fr repeat(3, 1fr)` declared four tracks, so the links block was crushed
+   into a single 1fr while the fourth track sat empty. */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.5fr repeat(3, 1fr);
-  gap: var(--spacing-xl);
+  grid-template-columns: 1.3fr 2.4fr 1.5fr;
+  gap: var(--spacing-2xl);
+  align-items: start;
 }
 
 .footer-brand {
@@ -227,11 +230,13 @@ onMounted(() => {
 
 .newsletter-form {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-sm);
 }
 
 .newsletter-form .form-control {
-  flex: 1;
+  flex: 1 1 180px;
+  min-width: 0;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;

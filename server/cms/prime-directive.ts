@@ -1034,16 +1034,29 @@ const teamMembers: TeamSeed[] = [
     name: '34r7h',
     position: 'Engineering Lead',
     bio:
-      'Fifteen years building generators — systems that write systems, from code and content ' +
-      'pipelines through to the tooling that produces them. Works the full depth of the stack: ' +
-      'memory layout, protocol and runtime behavior at the bottom; interfaces, orchestration and ' +
-      'deployment at the top; and the judgment about which layer a problem actually belongs to, ' +
-      'which is usually lower than it first appears.',
+      'Fifteen years building generators — programs whose output is other programs. Code ' +
+      'generators, content pipelines, scaffolding tools, and the compilers and template ' +
+      'engines underneath them; the recurring problem in all of it is the same one, which is ' +
+      'knowing which decisions belong to the generator and which belong to the thing being ' +
+      'generated. Get that boundary wrong and every change costs twice.\n\n' +
+      'Works the full depth of the stack rather than a layer of it. At the bottom: memory ' +
+      'layout, binary formats, protocol behavior, and the profiling needed to find out where ' +
+      'time is actually spent rather than where it is assumed to be spent. In the middle: data ' +
+      'modelling, storage engines, queueing and the failure semantics that decide whether a ' +
+      'system degrades or falls over. At the top: interfaces, deployment, and the operational ' +
+      'tooling that determines whether anyone can run the thing on a Tuesday afternoon.\n\n' +
+      'On engagements this shows up as diagnosis before construction. Most performance ' +
+      'problems presented as scaling problems are a data model applied at the wrong layer, and ' +
+      'most integration problems are two systems disagreeing about what a record means. Both ' +
+      'are cheaper to find in the review than to discover after a build. What gets written is ' +
+      'deliberately plain: readable code, few dependencies, and no framework that has to be ' +
+      'learned by whoever inherits it.',
     expertise: [
       'Programming',
       'Generative Systems',
       'Systems Programming',
       'Full-Stack Architecture',
+      'Performance Engineering',
       'Developer Tooling'
     ],
     email: '',
@@ -1056,11 +1069,21 @@ const teamMembers: TeamSeed[] = [
     name: 'Empyrean',
     position: 'Visual Lead',
     bio:
-      'Storyboards for film and advertising: sequence, framing and pacing worked out on paper ' +
-      'before anything is produced. Builds the generative pipelines that carry those boards into ' +
-      'finished assets — ComfyUI graphs and related tooling, with controlled conditioning, ' +
-      'consistent characters and reproducible output rather than one good result nobody can ' +
-      'repeat. The board sets the shot; the pipeline is only there to render it faithfully.',
+      'Storyboards for film and advertising: sequence, framing, staging and pacing worked out ' +
+      'on paper before a single asset is produced. A board is a cheap place to be wrong — a ' +
+      'shot that does not read at thumbnail size will not read at full resolution either, and ' +
+      'finding that out in pencil costs an afternoon rather than a production day.\n\n' +
+      'Builds the generative pipelines that carry those boards into finished assets: ComfyUI ' +
+      'graphs and the surrounding tooling, with controlled conditioning, reference and pose ' +
+      'control, consistent characters across shots, upscaling and compositing passes, and ' +
+      'seeds and parameters recorded so a frame can be reproduced exactly weeks later. The ' +
+      'discipline that separates a usable pipeline from a slot machine is reproducibility: one ' +
+      'striking image nobody can generate twice is a screenshot, not a deliverable.\n\n' +
+      'The working method keeps direction upstream of generation. The board sets the shot; the ' +
+      'pipeline renders it faithfully; anything the model contributes that the board did not ' +
+      'ask for is reviewed rather than accepted. That order also settles the questions clients ' +
+      'ask about provenance and revision — when the intent is documented and the parameters ' +
+      'are recorded, a change request is a re-render rather than a fresh roll of the dice.',
     expertise: [
       'Multimedia Generation',
       'Storyboarding',
@@ -1079,16 +1102,29 @@ const teamMembers: TeamSeed[] = [
     name: 'Jayesh',
     position: 'Enterprise Automation Lead',
     bio:
-      'Works on the systems a practice already runs — CRM, ERP, and the reporting built on top of them — ' +
-      'and on the automation that connects them. Engagements cover record reconciliation across systems that ' +
-      'disagree, robotic process automation for the repetitive paths through those systems, and the analytics ' +
-      'layer that makes the result measurable. The order matters: reconciliation first, automation second, ' +
-      'reporting last, because a dashboard built over duplicate records is confidently wrong.',
+      'Works on the systems a practice already runs — CRM, ERP, practice management, the ' +
+      'billing platform, and the reporting layered over all of them — and on the automation ' +
+      'that connects them. In most offices these were adopted years apart by different people ' +
+      'for different reasons, and the seams between them are where administrative time ' +
+      'quietly goes.\n\n' +
+      'Engagements usually run in that order. First reconciliation: identifying where two ' +
+      'systems disagree about the same customer, matching records, and measuring the ' +
+      'duplication rate rather than assuming it. Then robotic process automation for the ' +
+      'repetitive paths through those systems — the re-keying, the status updates, the ' +
+      'exports that someone assembles by hand every Friday. Then the analytics layer, once ' +
+      'the numbers underneath it can be trusted.\n\n' +
+      'The sequence is not negotiable. A dashboard built over duplicate records is confidently ' +
+      'wrong, and an agent automating a process nobody has written down will automate the ' +
+      'exceptions along with the rule. Every integration ships with the boring parts attached: ' +
+      'credentials held by the practice rather than an individual, rate limits and costs known ' +
+      'in advance, a logged trail of every automated action, and a manual fallback that has ' +
+      'actually been exercised.',
     expertise: [
       'CRM Integration',
       'ERP Systems',
       'Robotic Process Automation',
       'Data Reconciliation',
+      'Systems Integration',
       'Analytics'
     ],
     email: '',
@@ -1101,12 +1137,26 @@ const teamMembers: TeamSeed[] = [
     name: 'Helen',
     position: 'Product and Training Lead',
     bio:
-      'Responsible for what gets built and for whether the people using it can operate it once we leave. ' +
-      'Scopes implementations down to the narrowest version that still answers the question, then writes the ' +
-      'approval gates, error-recognition practice, and disclosure procedure that the staff running it need. ' +
-      'A system nobody on the team can supervise is not finished, whatever its accuracy on a test set.',
+      'Responsible for two things that are really one: what gets built, and whether the people ' +
+      'using it can operate it after we leave. Scopes each implementation down to the ' +
+      'narrowest version that still answers the question it was commissioned to answer — most ' +
+      'proposals arrive wider than the problem, and the width is where budgets and timelines ' +
+      'go.\n\n' +
+      'A data science background sets the standard for what counts as working. A correct ' +
+      'output has to be defined precisely enough that two reviewers independently agree on it; ' +
+      'until that exists there is no error rate, only impressions. From there: baselines ' +
+      'measured before the build rather than reconstructed after it, evaluation sets drawn ' +
+      'from the practice\'s own historical cases, and monitoring that reports drift in terms ' +
+      'the office already understands.\n\n' +
+      'The training half is written for the people who will actually run the system — front ' +
+      'desk staff, case managers, whoever is on shift. Approval-gate judgment: which decisions ' +
+      'a person must still make. Error recognition: what a wrong output looks like before it ' +
+      'reaches a client. Disclosure practice: what has to be said, to whom, and when. A system ' +
+      'nobody on the team can supervise is not finished, whatever its accuracy on a test set.',
     expertise: [
       'Product Design',
+      'Data Science',
+      'Evaluation and Measurement',
       'Training',
       'Process Documentation',
       'Change Management',

@@ -1,4 +1,5 @@
 <script setup>
+import BrandMark from './BrandMark.vue';
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { cmsAPI } from '../../api/client';
@@ -74,9 +75,7 @@ onMounted(() => {
       <div class="logo-container">
         <router-link to="/" class="logo">
           <img v-if="siteSettings?.logo?.filePath" :src="siteSettings.logo.filePath" alt="Generativ Consulting" />
-          <span v-else class="logo-text">
-            <span class="gradient-text">Generativ</span>
-          </span>
+          <BrandMark v-else :size="34" />
         </router-link>
       </div>
       

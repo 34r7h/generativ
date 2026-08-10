@@ -3,7 +3,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
-import placeholderPerson from '../../assets/images/placeholder-person.svg';
+import AvatarPortrait from '../shared/AvatarPortrait.vue';
 import { memberSlug, findMemberBySlug } from '../../config/people';
 import { iconFor } from '../../config/icons';
 
@@ -16,6 +16,14 @@ const member = ref(null);
 const colleagues = ref([]);
 
 const slug = computed(() => route.params.slug);
+
+// Bios are stored as plain text with blank-line paragraph breaks.
+const bioParagraphs = computed(() =>
+  (member.value?.bio || '')
+    .split(/\n\s*\n/)
+    .map((para) => para.trim())
+    .filter(Boolean)
+);
 
 async function loadMember() {
   try {
@@ -79,7 +87,8 @@ watch(slug, (value) => {
         <div class="container">
           <div class="member-identity">
             <div class="member-photo">
-              <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
+              <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
+              <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
             </div>
             <div class="member-headline">
               <h1>{{ member.name }}</h1>
@@ -112,10 +121,21 @@ watch(slug, (value) => {
           <div class="member-grid">
             <div class="member-main">
               <h2>About</h2>
-              <p v-if="member.bio" class="member-bio">{{ member.bio }}</p>
+              <template v-if="bioParagraphs.length">
+                <p v-for="(para, index) in bioParagraphs" :key="index" class="member-bio">
+                  {{ para }}
+                </p>
+              </template>
               <p v-else class="member-bio muted">
                 A written profile for {{ member.name }} is not published yet.
               </p>
+
+              <div class="member-navigation">
+                <button @click="goBack" class="back-button">
+                  <AppIcon name="arrowLeft" :size="18" />
+                  <span>Back to Team</span>
+                </button>
+              </div>
             </div>
 
             <aside class="member-aside" v-if="member.expertise && member.expertise.length">
@@ -127,13 +147,6 @@ watch(slug, (value) => {
                 </li>
               </ul>
             </aside>
-          </div>
-
-          <div class="member-navigation">
-            <button @click="goBack" class="back-button">
-              <AppIcon name="arrowLeft" :size="18" />
-              <span>Back to Team</span>
-            </button>
           </div>
         </div>
       </section>
@@ -150,7 +163,8 @@ watch(slug, (value) => {
               class="colleague-card"
             >
               <div class="colleague-photo">
-                <img :src="colleague.photo?.filePath || placeholderPerson" :alt="colleague.name" />
+                <img v-if="colleague.photo?.filePath" :src="colleague.photo.filePath" :alt="colleague.name" />
+                <AvatarPortrait v-else :slug="memberSlug(colleague)" :name="colleague.name" />
               </div>
               <h3>{{ colleague.name }}</h3>
               <p>{{ colleague.position }}</p>
@@ -252,6 +266,11 @@ watch(slug, (value) => {
   font-size: 1.1rem;
   line-height: 1.75;
   color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.member-bio:last-of-type {
+  margin-bottom: 0;
 }
 
 .member-bio.muted {
@@ -282,7 +301,7 @@ watch(slug, (value) => {
 }
 
 .member-navigation {
-  margin-top: 48px;
+  margin-top: 28px;
 }
 
 .back-button {
@@ -316,7 +335,8 @@ watch(slug, (value) => {
 
 .colleagues-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 260px));
+  justify-content: start;
   gap: 24px;
 }
 

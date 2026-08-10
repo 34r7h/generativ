@@ -1,10 +1,16 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { cmsAPI } from '../../api/client';
-import placeholderPerson from '../../assets/images/placeholder-person.svg';
 import AppIcon from '../shared/AppIcon.vue';
+import AvatarPortrait from '../shared/AvatarPortrait.vue';
 import BrandGraphic from '../shared/BrandGraphic.vue';
 import { memberSlug } from '../../config/people';
+
+// Cards carry the opening paragraph; the full bio lives on the profile page.
+function bioLead(bio) {
+  const first = (bio || '').split(/\n\s*\n/)[0].trim();
+  return first.length > 260 ? `${first.slice(0, 257).trimEnd()}…` : first;
+}
 
 const loading = ref(true);
 const error = ref(null);
@@ -148,12 +154,13 @@ onMounted(() => {
             >
               <router-link :to="`/team/${memberSlug(member)}`" class="member-identity-link">
                 <div class="member-photo">
-                  <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
+                  <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
+                  <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
                 </div>
                 <h2>{{ member.name }}</h2>
               </router-link>
               <p class="member-position">{{ member.position }}</p>
-              <p class="member-bio">{{ member.bio }}</p>
+              <p class="member-bio">{{ bioLead(member.bio) }}</p>
 
               <div class="member-expertise" v-if="member.expertise && member.expertise.length">
                 <div
@@ -366,11 +373,17 @@ onMounted(() => {
 /* Team Grid */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
   gap: 30px;
+  align-items: stretch;
 }
 
+/* Cards are a column so bios of different lengths still leave the tag row and
+   the profile link on the same baseline across the row, rather than each card
+   ending wherever its prose happens to stop. */
 .team-card {
+  display: flex;
+  flex-direction: column;
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -391,8 +404,9 @@ onMounted(() => {
 .member-profile-link {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 7px;
-  margin-top: 6px;
+  margin-top: auto;
   color: var(--primary-color);
   font-weight: 500;
 }
@@ -432,7 +446,9 @@ onMounted(() => {
   color: var(--light-text);
   font-size: 0.95rem;
   margin-bottom: 20px;
-  line-height: 1.6;
+  line-height: 1.65;
+  text-align: left;
+  flex-grow: 1;
 }
 
 .member-expertise {
@@ -441,6 +457,10 @@ onMounted(() => {
   justify-content: center;
   gap: 8px;
   margin-bottom: 20px;
+}
+
+.member-expertise:empty {
+  display: none;
 }
 
 .expertise-tag {
@@ -461,6 +481,11 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   gap: 15px;
+  margin-top: 14px;
+}
+
+.member-social:empty {
+  display: none;
 }
 
 .social-link {

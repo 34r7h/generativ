@@ -1,11 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
-import placeholderPerson from '../../assets/images/placeholder-person.svg';
 import AppIcon from '../shared/AppIcon.vue';
 import BrandGraphic from '../shared/BrandGraphic.vue';
+import AvatarPortrait from '../shared/AvatarPortrait.vue';
 import { iconFor, verticalIcon } from '../../config/icons';
 import { memberSlug } from '../../config/people';
+
+// Summary cards carry the opening sentences only.
+function bioLead(bio) {
+  const first = (bio || '').split(/\n\s*\n/)[0].trim();
+  return first.length > 180 ? `${first.slice(0, 177).trimEnd()}…` : first;
+}
 
 const loading = ref(true);
 const error = ref(null);
@@ -281,11 +287,12 @@ onMounted(() => {
                   class="team-card"
                 >
                   <div class="member-photo">
-                    <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
+                    <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
+                    <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
                   </div>
                   <h3>{{ member.name }}</h3>
                   <p class="member-position">{{ member.position }}</p>
-                  <p class="member-bio">{{ member.bio }}</p>
+                  <p class="member-bio">{{ bioLead(member.bio) }}</p>
                 </router-link>
               </div>
 

@@ -1,7 +1,14 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
-import placeholderPerson from '../../assets/images/placeholder-person.svg';
+import AvatarPortrait from '../shared/AvatarPortrait.vue';
+import { memberSlug } from '../../config/people';
+
+// Summary cards carry the opening sentences only.
+function bioLead(bio) {
+  const first = (bio || '').split(/\n\s*\n/)[0].trim();
+  return first.length > 180 ? `${first.slice(0, 177).trimEnd()}…` : first;
+}
 import BrandGraphic from '../shared/BrandGraphic.vue';
 
 const loading = ref(true);
@@ -142,11 +149,12 @@ onMounted(() => {
                   class="team-card"
                 >
                   <div class="member-photo">
-                    <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
+                    <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
+                    <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
                   </div>
                   <h3>{{ member.name }}</h3>
                   <p class="member-position">{{ member.position }}</p>
-                  <p class="member-bio">{{ member.bio }}</p>
+                  <p class="member-bio">{{ bioLead(member.bio) }}</p>
                   
                   <div class="member-expertise" v-if="member.expertise && member.expertise.length">
                     <div 
@@ -306,6 +314,19 @@ onMounted(() => {
   font-size: 1.1rem;
   color: var(--text-color);
   line-height: 1.6;
+}
+
+/* A section's padding is the only space below its last block — trailing
+   margins on prose and grids stack on top of it and read as a dead band. */
+.content-text :deep(p:last-child),
+.content-text :deep(ul:last-child),
+.content-text :deep(ol:last-child) {
+  margin-bottom: 0;
+}
+
+.content-section .container > *:last-child,
+.content-section .container > *:last-child > *:last-child {
+  margin-bottom: 0;
 }
 
 /* Stats */
