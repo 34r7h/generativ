@@ -94,13 +94,18 @@ label {
   font-weight: 500;
 }
 
-input, textarea, select {
+input:not([type="checkbox"]):not([type="radio"]), textarea, select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: var(--border-radius);
   font-size: 1rem;
   transition: border-color 0.3s;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  width: auto;
+  padding: 0;
 }
 
 input:focus, textarea:focus, select:focus {

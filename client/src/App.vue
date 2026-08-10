@@ -49,13 +49,15 @@ function checkAuthentication() {
     
     <!-- Admin layout -->
     <template v-else>
-      <div class="admin-layout">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
-      </div>
+      <!-- No wrapper here. Every admin page is its own layout root and carries
+           the class itself; wrapping them in a second .admin-layout put each
+           page inside the 280px sidebar column of an outer grid, collapsing the
+           content column to 48px. -->
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </template>
   </div>
 </template>
