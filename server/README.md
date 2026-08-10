@@ -10,6 +10,28 @@ A high-performance, scalable server built with Bun and LMDB for authentication a
 - **RESTful API**: Clean endpoints for user management and data operations
 - **Session Management**: Automatic cleanup and expiration handling
 
+## The database is not in the repository
+
+`server/data/` holds the live LMDB database and is deliberately untracked. It
+used to be committed, which meant a routine `git reset --hard` — or a pull
+carrying a deletion of that path — would overwrite or remove the running
+database, taking content, payment settings and orders with it.
+
+A fresh checkout therefore starts with no database. Build one from the
+code-owned content:
+
+```bash
+cd server
+bun install
+bun run sync-content   # creates ./data and writes pages, services, posts, team
+```
+
+Back it up before anything that rewrites the working tree:
+
+```bash
+cp -a server/data ~/generativ-data-$(date +%s)
+```
+
 ## Quick Start
 
 ```bash

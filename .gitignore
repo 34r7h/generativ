@@ -169,3 +169,9 @@ pnpm-lock.yaml
 
 # Bun
 bun.lockb
+
+# The live LMDB database. Tracking it meant an ordinary `git reset --hard` or a
+# pull carrying a deletion would overwrite or remove the running database —
+# content, payment settings and orders included. The data is rebuilt from code:
+#   cd server && bun run sync-content
+server/data/
