@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router';
 import AdminSidebar from './components/AdminSidebar.vue';
 import AdminHeader from './components/AdminHeader.vue';
 import { cmsAPI } from '../../../api/client';
+import AppIcon from '../../shared/AppIcon.vue';
+import { iconFor } from '../../../config/icons';
 
 const router = useRouter();
 const loading = ref(true);
@@ -21,7 +23,7 @@ const serviceForm = ref({
   slug: '',
   shortDescription: '',
   fullDescription: '',
-  icon: '🔧',
+  icon: 'wrench',
   benefits: [],
   pricing: '',
   isPublished: false,
@@ -87,7 +89,7 @@ const createService = () => {
     slug: '',
     shortDescription: '',
     fullDescription: '',
-    icon: '🔧',
+    icon: 'wrench',
     benefits: [],
     pricing: '',
     isPublished: false,
@@ -339,7 +341,9 @@ onMounted(() => {
                   <tr v-for="service in filteredServices" :key="service.id" class="table-row">
                     <td class="service-cell">
                       <div class="service-info">
-                        <div class="service-icon">{{ service.icon }}</div>
+                        <div class="service-icon">
+                          <AppIcon :name="iconFor(service.title)" :size="22" />
+                        </div>
                         <div class="service-details">
                           <div class="service-title">{{ service.title }}</div>
                           <div class="service-description">{{ service.shortDescription }}</div>
@@ -567,7 +571,7 @@ onMounted(() => {
 }
 
 .service-icon {
-  font-size: 1.5rem;
+  color: var(--primary, #3b82f6);
   width: 40px;
   height: 40px;
   display: flex;

@@ -32,14 +32,18 @@ import {
   createBlogPost,
   updateBlogPost,
   deleteBlogPost,
+  getAllTeamMembers,
+  createTeamMember,
+  updateTeamMember,
   getSiteSettings,
   saveSiteSettings
 } from './db.js';
-import type { Page, Service, BlogPost, SiteSettings } from './schema';
+import type { Page, Service, BlogPost, SiteSettings, TeamMember } from './schema';
 
 type PageSeed = Omit<Page, 'id' | 'createdAt' | 'updatedAt'>;
 type ServiceSeed = Omit<Service, 'id' | 'createdAt' | 'updatedAt'>;
 type BlogSeed = Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>;
+type TeamSeed = Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>;
 
 // ---------------------------------------------------------------------------
 // The offer, stated once, reused everywhere.
@@ -295,7 +299,7 @@ const aboutPage: PageSeed = {
             detail: 'Gartner — driven by cost, unclear value, and inadequate risk controls.'
           },
           {
-            value: '<5% → 40%',
+            value: '<5% to 40%',
             label: 'enterprise apps with task-specific AI agents, 2025 to end of 2026',
             detail: 'Gartner.'
           },
@@ -1035,6 +1039,81 @@ async function upsertSiteSettings(): Promise<void> {
 /**
  * Apply the prime directive to the CMS database. Safe to run repeatedly.
  */
+
+// ---------------------------------------------------------------------------
+// The people delivering the work. Matched on `name`, which is what the public
+// profile URL (/team/:slug) is derived from on the client.
+// ---------------------------------------------------------------------------
+
+const teamMembers: TeamSeed[] = [
+  {
+    name: 'Jayesh',
+    position: 'Enterprise Automation Lead',
+    bio:
+      'Works on the systems a practice already runs — CRM, ERP, and the reporting built on top of them — ' +
+      'and on the automation that connects them. Engagements cover record reconciliation across systems that ' +
+      'disagree, robotic process automation for the repetitive paths through those systems, and the analytics ' +
+      'layer that makes the result measurable. The order matters: reconciliation first, automation second, ' +
+      'reporting last, because a dashboard built over duplicate records is confidently wrong.',
+    expertise: [
+      'CRM Integration',
+      'ERP Systems',
+      'Robotic Process Automation',
+      'Data Reconciliation',
+      'Analytics'
+    ],
+    email: '',
+    linkedIn: '',
+    userId: '',
+    sortOrder: 1,
+    isActive: true
+  },
+  {
+    name: 'Helen',
+    position: 'Product and Training Lead',
+    bio:
+      'Responsible for what gets built and for whether the people using it can operate it once we leave. ' +
+      'Scopes implementations down to the narrowest version that still answers the question, then writes the ' +
+      'approval gates, error-recognition practice, and disclosure procedure that the staff running it need. ' +
+      'A system nobody on the team can supervise is not finished, whatever its accuracy on a test set.',
+    expertise: [
+      'Product Design',
+      'Training',
+      'Process Documentation',
+      'Change Management',
+      'AI Literacy'
+    ],
+    email: '',
+    linkedIn: '',
+    userId: '',
+    sortOrder: 2,
+    isActive: true
+  }
+];
+
+async function upsertTeamMembers(): Promise<{ created: number; updated: number }> {
+  const existing = await getAllTeamMembers();
+  let created = 0;
+  let updated = 0;
+
+  for (const seed of teamMembers) {
+    const matches = existing.filter(
+      m => m.name.trim().toLowerCase() === seed.name.trim().toLowerCase()
+    );
+    if (matches.length === 0) {
+      await createTeamMember(seed);
+      created++;
+    } else {
+      for (const match of matches) {
+        await updateTeamMember(match.id, seed);
+        updated++;
+      }
+    }
+  }
+
+  return { created, updated };
+}
+
 export async function syncPrimeDirective() {
   console.log('Applying prime directive to CMS content...');
 
@@ -1049,6 +1128,9 @@ export async function syncPrimeDirective() {
 
   const blogResult = await upsertBlogPosts();
   console.log(`  blog posts: ${blogResult.created} created, ${blogResult.updated} updated`);
+
+  const teamResult = await upsertTeamMembers();
+  console.log(`  team members: ${teamResult.created} created, ${teamResult.updated} updated`);
 
   const removedServices = await deleteRetiredServices();
   const removedPosts = await deleteRetiredBlogPosts();

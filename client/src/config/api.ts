@@ -21,7 +21,7 @@ export const API_CONFIG = {
 
 // Log configuration in development mode
 if (import.meta.env.DEV) {
-  console.log('🔧 API Configuration:', {
+  console.log('API Configuration:', {
     mode: import.meta.env.MODE,
     apiUrl: API_CONFIG.API_URL,
     isDev: import.meta.env.DEV

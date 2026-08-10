@@ -6,6 +6,7 @@ import ServicesPage from '../components/views/ServicesPage.vue'
 import ServiceDetailPage from '../components/views/ServiceDetailPage.vue'
 import AboutPage from '../components/views/AboutPage.vue'
 import TeamPage from '../components/views/TeamPage.vue'
+import TeamMemberPage from '../components/views/TeamMemberPage.vue'
 import BlogPage from '../components/views/BlogPage.vue'
 import BlogPostPage from '../components/views/BlogPostPage.vue'
 import ContactPage from '../components/views/ContactPage.vue'
@@ -19,6 +20,8 @@ import SignupPage from '../components/views/auth/SignupPage.vue'
 // Admin pages
 import AdminDashboard from '../components/views/admin/DashboardPage.vue'
 import AdminPages from '../components/views/admin/PagesPage.vue'
+import AdminPageContent from '../components/views/admin/PageContentPage.vue'
+import AdminContact from '../components/views/admin/ContactPage.vue'
 import AdminTeam from '../components/views/admin/TeamPage.vue'
 import AdminServices from '../components/views/admin/ServicesPage.vue'
 import AdminBlog from '../components/views/admin/BlogPage.vue'
@@ -66,6 +69,11 @@ const router = createRouter({
       path: '/team',
       name: 'team',
       component: TeamPage
+    },
+    {
+      path: '/team/:slug',
+      name: 'team-member',
+      component: TeamMemberPage
     },
     {
       path: '/blog',
@@ -121,6 +129,22 @@ const router = createRouter({
       path: '/admin/pages',
       name: 'admin-pages',
       component: AdminPages,
+      beforeEnter: requireAuth,
+      meta: { requiresAuth: true }
+    },
+    {
+      // Content management for one public page, resolved the same way the
+      // public site resolves it (getPageBySlug).
+      path: '/admin/pages/:slug',
+      name: 'admin-page-content',
+      component: AdminPageContent,
+      beforeEnter: requireAuth,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/admin/contact',
+      name: 'admin-contact',
+      component: AdminContact,
       beforeEnter: requireAuth,
       meta: { requiresAuth: true }
     },

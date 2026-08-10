@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import AdminSidebar from './components/AdminSidebar.vue';
 import AdminHeader from './components/AdminHeader.vue';
 import { cmsAPI } from '../../../api/client';
+import AppIcon from '../../shared/AppIcon.vue';
 
 const router = useRouter();
 const loading = ref(true);
@@ -118,7 +119,7 @@ onMounted(() => {
                 <div class="media-preview">
                   <img v-if="media.type?.startsWith('image')" :src="media.url" :alt="media.title" />
                   <div v-else class="file-icon">
-                    📄
+                    <AppIcon name="document" :size="28" />
                   </div>
                 </div>
                 <div class="media-info">
@@ -134,7 +135,7 @@ onMounted(() => {
             </div>
 
             <div v-else class="empty-state">
-              <div class="empty-icon">📁</div>
+              <div class="empty-icon"><AppIcon name="folder" :size="40" /></div>
               <h3>No media files</h3>
               <p>Upload your first media file to get started.</p>
               <button @click="triggerFileUpload" class="btn btn-primary">

@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import placeholderPerson from '../../assets/images/placeholder-person.svg';
+import BrandGraphic from '../shared/BrandGraphic.vue';
 
 const loading = ref(true);
 const error = ref(null);
@@ -66,8 +67,13 @@ onMounted(() => {
           <!-- Hero Section -->
           <section v-if="section.type === 'hero'" class="page-hero">
             <div class="container">
-              <h1>{{ section.title }}</h1>
-              <p class="hero-description">{{ section.content }}</p>
+              <div class="hero-text">
+                <h1>{{ section.title }}</h1>
+                <p class="hero-description">{{ section.content }}</p>
+              </div>
+              <div class="hero-graphic">
+                <BrandGraphic name="automation" />
+              </div>
             </div>
           </section>
 
@@ -244,7 +250,29 @@ onMounted(() => {
 .page-hero {
   padding: 80px 0;
   background-color: var(--light-blue);
-  text-align: center;
+}
+
+.page-hero .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-graphic {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .page-hero .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-graphic {
+    justify-content: center;
+  }
 }
 
 .page-hero h1 {

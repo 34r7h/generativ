@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { cmsAPI } from '../../api/client';
+import AppIcon from '../shared/AppIcon.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -132,7 +133,8 @@ watch(postSlug, (slug) => {
           
           <div class="post-navigation">
             <button @click="goBack" class="back-button">
-              ← Back to All Posts
+              <AppIcon name="arrowLeft" :size="18" />
+              <span>Back to All Posts</span>
             </button>
           </div>
         </div>
@@ -286,6 +288,9 @@ watch(postSlug, (slug) => {
 }
 
 .back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   background: none;
   border: none;
   color: var(--primary-color);

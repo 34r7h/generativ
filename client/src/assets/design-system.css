@@ -102,6 +102,21 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--dark);
 }
 
+/* Colour policy: dark ink is never allowed to sit on a brand-coloured surface.
+   The heading colour above is a default for pages, not for painted blocks —
+   any block that paints itself with a brand colour sets its own foreground and
+   everything inside it inherits that foreground rather than reverting to dark. */
+.cta-section h1, .cta-section h2, .cta-section h3,
+.cta-section h4, .cta-section h5, .cta-section h6,
+.request-section h1, .request-section h2, .request-section h3,
+.request-section h4, .request-section h5, .request-section h6,
+.contact-info h1, .contact-info h2, .contact-info h3,
+.contact-info h4, .contact-info h5, .contact-info h6,
+.on-brand h1, .on-brand h2, .on-brand h3,
+.on-brand h4, .on-brand h5, .on-brand h6 {
+  color: inherit;
+}
+
 h1 {
   font-size: 3rem;
   letter-spacing: -0.025em;

@@ -2,6 +2,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { cmsAPI } from '../../api/client';
 import placeholderPerson from '../../assets/images/placeholder-person.svg';
+import AppIcon from '../shared/AppIcon.vue';
+import BrandGraphic from '../shared/BrandGraphic.vue';
+import { memberSlug } from '../../config/people';
 
 const loading = ref(true);
 const error = ref(null);
@@ -76,11 +79,16 @@ onMounted(() => {
     <!-- Hero Section -->
     <section class="page-hero">
       <div class="container">
-        <h1>Our Team</h1>
-        <p class="hero-description">
-          Meet the experts behind Generativ Consulting Company, dedicated to advancing
-          AI safety and performance.
-        </p>
+        <div class="hero-text">
+          <h1>Our Team</h1>
+          <p class="hero-description">
+            The people who run the review and build what it recommends: enterprise
+            automation, product and training, engineering, and visual work.
+          </p>
+        </div>
+        <div class="hero-graphic">
+          <BrandGraphic name="training" />
+        </div>
       </div>
     </section>
 
@@ -138,10 +146,12 @@ onMounted(() => {
               :key="member.id"
               class="team-card"
             >
-              <div class="member-photo">
-                <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
-              </div>
-              <h2>{{ member.name }}</h2>
+              <router-link :to="`/team/${memberSlug(member)}`" class="member-identity-link">
+                <div class="member-photo">
+                  <img :src="member.photo?.filePath || placeholderPerson" :alt="member.name" />
+                </div>
+                <h2>{{ member.name }}</h2>
+              </router-link>
               <p class="member-position">{{ member.position }}</p>
               <p class="member-bio">{{ member.bio }}</p>
 
@@ -155,6 +165,11 @@ onMounted(() => {
                   {{ skill }}
                 </div>
               </div>
+
+              <router-link :to="`/team/${memberSlug(member)}`" class="member-profile-link">
+                <span>View profile</span>
+                <AppIcon name="arrowRight" :size="16" />
+              </router-link>
 
               <div class="member-social" v-if="member.linkedIn || member.twitter || member.email">
                 <a v-if="member.email" :href="`mailto:${member.email}`" class="social-link">Email</a>
@@ -202,25 +217,25 @@ onMounted(() => {
 
         <div class="culture-grid">
           <div class="culture-item">
-            <div class="culture-icon">🔍</div>
+            <div class="culture-icon"><AppIcon name="search" :size="26" /></div>
             <h3>Intellectual Curiosity</h3>
             <p>We encourage deep exploration of complex problems and celebrate asking the right questions.</p>
           </div>
 
           <div class="culture-item">
-            <div class="culture-icon">🤝</div>
+            <div class="culture-icon"><AppIcon name="handshake" :size="26" /></div>
             <h3>Collaborative Spirit</h3>
             <p>We believe the best solutions emerge from diverse perspectives working together.</p>
           </div>
 
           <div class="culture-item">
-            <div class="culture-icon">📈</div>
+            <div class="culture-icon"><AppIcon name="chart" :size="26" /></div>
             <h3>Growth Mindset</h3>
             <p>We embrace challenges and see failures as opportunities to learn and improve.</p>
           </div>
 
           <div class="culture-item">
-            <div class="culture-icon">🎯</div>
+            <div class="culture-icon"><AppIcon name="target" :size="26" /></div>
             <h3>Impact-Driven</h3>
             <p>We focus on solutions that create meaningful, measurable results for our clients.</p>
           </div>
@@ -251,7 +266,29 @@ onMounted(() => {
 .page-hero {
   padding: 80px 0;
   background-color: var(--light-blue);
-  text-align: center;
+}
+
+.page-hero .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-graphic {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .page-hero .container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .hero-graphic {
+    justify-content: center;
+  }
 }
 
 .page-hero h1 {
@@ -262,7 +299,6 @@ onMounted(() => {
 
 .hero-description {
   max-width: 700px;
-  margin: 0 auto;
   font-size: 1.2rem;
   color: var(--light-text);
 }
@@ -345,6 +381,24 @@ onMounted(() => {
 
 .team-card:hover {
   transform: translateY(-5px);
+}
+
+.member-identity-link {
+  display: block;
+  color: inherit;
+}
+
+.member-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.member-profile-link:hover {
+  text-decoration: underline;
 }
 
 .member-photo {
@@ -548,8 +602,15 @@ onMounted(() => {
 }
 
 .culture-icon {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
 }
 
 .culture-item h3 {
@@ -571,6 +632,7 @@ onMounted(() => {
 }
 
 .cta-section h2 {
+  color: inherit;
   font-size: 2.5rem;
   margin-bottom: 15px;
 }

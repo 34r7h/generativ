@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
+import AppIcon from '../shared/AppIcon.vue';
 
 // Form data
 const formData = ref({
@@ -22,11 +23,29 @@ const error = ref(null);
 // CMS data
 const pageLoading = ref(true);
 const siteSettings = ref(null);
+// Defaults are only what renders before site settings arrive; every field below
+// is overwritten by whatever an admin has saved under Contact details.
 const contactInfo = ref({
   email: 'info@generativ.cc',
-  phone: '+1 (555) 123-4567',
-  address: 'San Francisco, CA'
+  phone: '',
+  address: '',
+  hours: ''
 });
+
+// Social profiles come from site settings too; only the ones actually filled in
+// are rendered, so no link ever points at "#".
+const socialProfiles = computed(() => {
+  const links = siteSettings.value?.socialLinks || {};
+  return [
+    { label: 'LinkedIn', url: links.linkedin },
+    { label: 'Twitter', url: links.twitter },
+    { label: 'GitHub', url: links.github }
+  ].filter(profile => profile.url);
+});
+
+const mapsUrl = computed(
+  () => `https://maps.google.com/?q=${encodeURIComponent(contactInfo.value.address)}`
+);
 
 // Validate form data
 function validateForm() {
@@ -71,8 +90,14 @@ async function loadPageData() {
       if (response.settings.contactPhone) {
         contactInfo.value.phone = response.settings.contactPhone;
       }
-      if (response.settings.contactAddress) {
-        contactInfo.value.address = response.settings.contactAddress;
+      // `address` is the schema field; `contactAddress` is what older records
+      // were written with. Accept either.
+      const address = response.settings.address || response.settings.contactAddress;
+      if (address) {
+        contactInfo.value.address = address;
+      }
+      if (response.settings.contactHours) {
+        contactInfo.value.hours = response.settings.contactHours;
       }
     }
   } catch (err) {
@@ -304,51 +329,52 @@ function setFormType(type) {
           <div class="contact-info">
             <h2>Get in Touch</h2>
             
-            <div class="info-item">
-              <div class="info-icon">📧</div>
+            <!-- Every value below comes from site settings, editable under
+                 Admin → Contact details. A field left blank there is omitted
+                 rather than shown as a placeholder. -->
+            <div class="info-item" v-if="contactInfo.email">
+              <div class="info-icon"><AppIcon name="mail" :size="22" :label="'Email'" /></div>
               <div class="info-content">
                 <h3>Email</h3>
-                <p><a href="mailto:info@generativ.cc">info@generativ.cc</a></p>
+                <p><a :href="`mailto:${contactInfo.email}`">{{ contactInfo.email }}</a></p>
               </div>
             </div>
-            
-            <div class="info-item">
-              <div class="info-icon">📞</div>
+
+            <div class="info-item" v-if="contactInfo.phone">
+              <div class="info-icon"><AppIcon name="phone" :size="22" :label="'Phone'" /></div>
               <div class="info-content">
                 <h3>Phone</h3>
-                <p><a href="tel:+15551234567">+1 (555) 123-4567</a></p>
+                <p><a :href="`tel:${contactInfo.phone.replace(/[^+\d]/g, '')}`">{{ contactInfo.phone }}</a></p>
               </div>
             </div>
-            
-            <div class="info-item">
-              <div class="info-icon">📍</div>
+
+            <div class="info-item" v-if="contactInfo.address">
+              <div class="info-icon"><AppIcon name="pin" :size="22" :label="'Office'" /></div>
               <div class="info-content">
                 <h3>Office</h3>
-                <p>
-                  123 AI Innovation Center<br>
-                  San Francisco, CA 94105<br>
-                  United States
-                </p>
+                <p class="preserve-lines">{{ contactInfo.address }}</p>
               </div>
             </div>
-            
-            <div class="info-item">
-              <div class="info-icon">⏰</div>
+
+            <div class="info-item" v-if="contactInfo.hours">
+              <div class="info-icon"><AppIcon name="clock" :size="22" :label="'Hours'" /></div>
               <div class="info-content">
                 <h3>Business Hours</h3>
-                <p>
-                  Monday - Friday: 9am - 6pm PST<br>
-                  Saturday - Sunday: Closed
-                </p>
+                <p class="preserve-lines">{{ contactInfo.hours }}</p>
               </div>
             </div>
-            
-            <div class="social-links">
+
+            <div class="social-links" v-if="socialProfiles.length">
               <h3>Connect With Us</h3>
               <div class="social-icons">
-                <a href="#" class="social-icon">LinkedIn</a>
-                <a href="#" class="social-icon">Twitter</a>
-                <a href="#" class="social-icon">GitHub</a>
+                <a
+                  v-for="profile in socialProfiles"
+                  :key="profile.label"
+                  :href="profile.url"
+                  target="_blank"
+                  rel="noopener"
+                  class="social-icon"
+                >{{ profile.label }}</a>
               </div>
             </div>
           </div>
@@ -357,12 +383,12 @@ function setFormType(type) {
     </section>
     
     <!-- Map Section -->
-    <section class="map-section">
+    <section class="map-section" v-if="contactInfo.address">
       <div class="map-placeholder">
         <div class="map-overlay">
           <h3>Our Location</h3>
-          <p>123 AI Innovation Center, San Francisco, CA 94105</p>
-          <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="primary-button">
+          <p class="preserve-lines">{{ contactInfo.address }}</p>
+          <a :href="mapsUrl" target="_blank" rel="noopener noreferrer" class="primary-button">
             View on Google Maps
           </a>
         </div>
@@ -583,6 +609,11 @@ input:focus, textarea:focus, select:focus {
   border-radius: var(--border-radius);
 }
 
+.contact-info h2,
+.contact-info h3 {
+  color: inherit;
+}
+
 .contact-info h2 {
   font-size: 1.8rem;
   margin-bottom: 30px;
@@ -597,7 +628,12 @@ input:focus, textarea:focus, select:focus {
 .info-icon {
   width: 40px;
   height: 40px;
-  font-size: 1.5rem;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 15px;
   flex-shrink: 0;
 }
@@ -610,6 +646,12 @@ input:focus, textarea:focus, select:focus {
 .info-content p {
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.5;
+}
+
+/* Address and hours are free text from the admin; keep the line breaks the
+   editor typed without letting raw HTML through. */
+.preserve-lines {
+  white-space: pre-line;
 }
 
 .info-content a {

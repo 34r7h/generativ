@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { cmsAPI } from '../../api/client';
+import AppIcon from '../shared/AppIcon.vue';
+import { iconFor } from '../../config/icons';
 
 const route = useRoute();
 const router = useRouter();
@@ -20,7 +22,7 @@ const fallbackServices = {
     id: 'safety',
     title: 'AI Safety Testing',
     slug: 'safety-testing',
-    icon: '🔒',
+    icon: 'shield',
     shortDescription: 'Rigorous testing methodologies to ensure your AI systems operate safely and reliably.',
     fullDescription: `
       <p>Our AI Safety Testing service provides comprehensive evaluation and verification of your AI systems to ensure they operate reliably, safely, and in alignment with your business objectives.</p>
@@ -53,7 +55,7 @@ const fallbackServices = {
     id: 'parallel',
     title: 'Parallelization Infrastructure',
     slug: 'parallelization',
-    icon: '⚡',
+    icon: 'bolt',
     shortDescription: 'Speed up your AI workflows with state-of-the-art parallelization techniques and infrastructure.',
     fullDescription: `
       <p>Our Parallelization Infrastructure service helps organizations dramatically accelerate their AI workflows through advanced orchestration, batching, and resource optimization strategies.</p>
@@ -86,7 +88,7 @@ const fallbackServices = {
     id: 'critical',
     title: 'Critical Thinking Education',
     slug: 'critical-thinking',
-    icon: '🧠',
+    icon: 'brain',
     shortDescription: 'Equip your team with the critical thinking skills needed to work effectively with AI systems.',
     fullDescription: `
       <p>Our Critical Thinking Education service builds the essential cognitive skills your team needs to effectively evaluate, refine, and leverage AI-generated outputs in your business processes.</p>
@@ -188,7 +190,9 @@ onMounted(() => {
       <section class="service-hero" :class="`service-${service.slug}-hero`">
         <div class="container">
           <div class="service-hero-content">
-            <div v-if="service.icon" class="service-icon">{{ service.icon }}</div>
+            <div class="service-icon">
+              <AppIcon :name="iconFor(service.title)" :size="30" />
+            </div>
             <h1>{{ service.title }}</h1>
             <p class="service-intro">{{ service.shortDescription }}</p>
             <router-link to="/contact" class="primary-button">Request This Service</router-link>
@@ -212,7 +216,8 @@ onMounted(() => {
                 <h3>Key Benefits</h3>
                 <ul>
                   <li v-for="(benefit, index) in service.benefits" :key="index">
-                    {{ benefit }}
+                    <AppIcon name="check" :size="16" class="benefit-check" />
+                    <span>{{ benefit }}</span>
                   </li>
                 </ul>
               </div>
@@ -242,7 +247,9 @@ onMounted(() => {
               :key="otherService.id" 
               class="service-card"
             >
-              <div class="service-icon" v-if="otherService.icon">{{ otherService.icon }}</div>
+              <div class="other-service-icon">
+                <AppIcon :name="iconFor(otherService.title)" :size="24" />
+              </div>
               <h3>{{ otherService.title }}</h3>
               <p>{{ otherService.shortDescription }}</p>
               <router-link :to="`/services/${otherService.slug}`" class="service-link">
@@ -316,8 +323,27 @@ onMounted(() => {
 }
 
 .service-icon {
-  font-size: 3rem;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
+}
+
+.other-service-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius);
+  background-color: var(--light-blue);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
 }
 
 .service-hero-content h1 {
@@ -416,17 +442,16 @@ onMounted(() => {
 }
 
 .service-benefits li {
-  padding-left: 25px;
-  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
   margin-bottom: 12px;
   color: var(--text-color);
 }
 
-.service-benefits li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
+.benefit-check {
   color: var(--primary-color);
+  margin-top: 4px;
 }
 
 .service-pricing {
@@ -514,6 +539,7 @@ onMounted(() => {
 }
 
 .cta-section h2 {
+  color: inherit;
   font-size: 2rem;
   margin-bottom: 15px;
 }

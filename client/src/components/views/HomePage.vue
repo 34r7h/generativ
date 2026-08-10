@@ -2,6 +2,10 @@
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import placeholderPerson from '../../assets/images/placeholder-person.svg';
+import AppIcon from '../shared/AppIcon.vue';
+import BrandGraphic from '../shared/BrandGraphic.vue';
+import { iconFor, verticalIcon } from '../../config/icons';
+import { memberSlug } from '../../config/people';
 
 const loading = ref(true);
 const error = ref(null);
@@ -124,6 +128,9 @@ onMounted(() => {
                   </router-link>
                 </div>
               </div>
+              <div class="hero-graphic">
+                <BrandGraphic name="audit" />
+              </div>
             </div>
           </section>
 
@@ -141,7 +148,9 @@ onMounted(() => {
                   :key="service.id"
                   class="service-card"
                 >
-                  <div class="service-icon" v-if="service.icon">{{ service.icon }}</div>
+                  <div class="service-icon">
+                    <AppIcon :name="iconFor(service.title)" :size="26" />
+                  </div>
                   <h3>{{ service.title }}</h3>
                   <p>{{ service.shortDescription }}</p>
                   <router-link :to="`/services/${service.slug}`" class="service-link">
@@ -178,19 +187,21 @@ onMounted(() => {
                 {{ section.settings.statsNote }}
               </p>
 
-              <!-- Verticals (leak → fix, by industry) -->
+              <!-- Verticals (leak to fix, by industry) -->
               <div v-if="section.settings?.verticals" class="verticals-grid">
                 <div
                   v-for="vertical in section.settings.verticals"
                   :key="vertical.title"
                   class="vertical-card"
                 >
-                  <div class="vertical-icon" v-if="vertical.icon">{{ vertical.icon }}</div>
+                  <div class="vertical-icon">
+                    <AppIcon :name="verticalIcon(vertical.title)" :size="22" />
+                  </div>
                   <h3>{{ vertical.title }}</h3>
                   <p class="vertical-leak">{{ vertical.leak }}</p>
                   <div class="vertical-shift">
                     <span class="shift-before">{{ vertical.before }}</span>
-                    <span class="shift-arrow">→</span>
+                    <AppIcon name="arrowRight" :size="18" class="shift-arrow" />
                     <span class="shift-after">{{ vertical.after }}</span>
                   </div>
                   <p class="vertical-proof" v-if="vertical.proof">{{ vertical.proof }}</p>
@@ -234,7 +245,7 @@ onMounted(() => {
                   :key="point.title"
                   class="value-point"
                 >
-                  <div class="value-icon">✓</div>
+                  <div class="value-icon"><AppIcon name="check" :size="18" /></div>
                   <div class="value-text">
                     <h4>{{ point.title }}</h4>
                     <p>{{ point.description }}</p>
@@ -248,7 +259,8 @@ onMounted(() => {
                 :to="section.settings.ctaUrl" 
                 class="text-button"
               >
-                {{ section.settings.ctaText }} →
+                <span>{{ section.settings.ctaText }}</span>
+                <AppIcon name="arrowRight" :size="18" />
               </router-link>
             </div>
           </section>
@@ -262,9 +274,10 @@ onMounted(() => {
               </div>
 
               <div class="team-grid" v-if="teamMembers.length">
-                <div
+                <router-link
                   v-for="member in teamMembers.slice(0, section.settings?.showMembers || 3)"
                   :key="member.id"
+                  :to="`/team/${memberSlug(member)}`"
                   class="team-card"
                 >
                   <div class="member-photo">
@@ -273,7 +286,7 @@ onMounted(() => {
                   <h3>{{ member.name }}</h3>
                   <p class="member-position">{{ member.position }}</p>
                   <p class="member-bio">{{ member.bio }}</p>
-                </div>
+                </router-link>
               </div>
 
               <div v-else class="no-team">
@@ -341,11 +354,19 @@ onMounted(() => {
 }
 
 .hero-section .container {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 48px;
+  align-items: center;
 }
 
 .hero-content {
   max-width: 760px;
+}
+
+.hero-graphic {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .hero-content h1 {
@@ -467,7 +488,14 @@ onMounted(() => {
 }
 
 .vertical-icon {
-  font-size: 2rem;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--border-radius);
+  background-color: var(--light-blue);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 12px;
 }
 
@@ -500,7 +528,6 @@ onMounted(() => {
 
 .shift-arrow {
   color: var(--primary-color);
-  font-weight: 700;
 }
 
 .shift-after {
@@ -655,7 +682,14 @@ onMounted(() => {
 }
 
 .service-icon {
-  font-size: 2.5rem;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
@@ -901,7 +935,9 @@ onMounted(() => {
 .text-button {
   font-weight: 500;
   color: var(--primary-color);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Page Content Section */
@@ -966,6 +1002,10 @@ onMounted(() => {
   .value-prop-section .container {
     grid-template-columns: 1fr;
     text-align: center;
+  }
+
+  .hero-graphic {
+    justify-content: center;
   }
 
   .hero-image,

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
+import AppIcon from '../shared/AppIcon.vue';
+import { iconFor } from '../../config/icons';
 
 const loading = ref(true);
 const error = ref(null);
@@ -70,7 +72,9 @@ onMounted(() => {
             :key="service.id"
             class="service-card"
           >
-            <div class="service-icon" v-if="service.icon">{{ service.icon }}</div>
+            <div class="service-icon">
+              <AppIcon :name="iconFor(service.title)" :size="26" />
+            </div>
             <h2>{{ service.title }}</h2>
             <p class="service-description">{{ service.shortDescription }}</p>
 
@@ -78,7 +82,8 @@ onMounted(() => {
               <h3>Key Benefits</h3>
               <ul>
                 <li v-for="(benefit, index) in service.benefits" :key="index">
-                  {{ benefit }}
+                  <AppIcon name="check" :size="16" class="benefit-check" />
+                  <span>{{ benefit }}</span>
                 </li>
               </ul>
             </div>
@@ -210,7 +215,14 @@ onMounted(() => {
 }
 
 .service-icon {
-  font-size: 3rem;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
@@ -243,17 +255,16 @@ onMounted(() => {
 }
 
 .service-benefits li {
-  padding-left: 25px;
-  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
   margin-bottom: 8px;
   color: var(--light-text);
 }
 
-.service-benefits li::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
+.benefit-check {
   color: var(--primary-color);
+  margin-top: 4px;
 }
 
 .primary-button {
@@ -343,6 +354,7 @@ onMounted(() => {
 }
 
 .cta-section h2 {
+  color: inherit;
   font-size: 2rem;
   margin-bottom: 15px;
 }
