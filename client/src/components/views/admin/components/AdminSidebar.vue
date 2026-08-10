@@ -85,6 +85,7 @@ const navGroups = [
   {
     label: 'System',
     items: [
+      { name: 'Payments', path: '/admin/payments', icon: 'database' },
       { name: 'Settings', path: '/admin/settings', icon: 'gear' }
     ]
   }

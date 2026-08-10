@@ -57,6 +57,8 @@ import type {
   Event,
   ContactSubmission,
   SiteSettings,
+  PaymentSettings,
+  Order,
   AdminUser,
   AuditLogEntry
 } from './schema';
@@ -71,6 +73,8 @@ let mediaDB: any = null;
 let eventsDB: any = null;
 let contactSubmissionsDB: any = null;
 let settingsDB: any = null;
+let paymentsDB: any = null;
+let ordersDB: any = null;
 let adminUsersDB: any = null;
 let auditLogDB: any = null;
 
@@ -144,6 +148,18 @@ export async function initCMSDB() {
     auditLogDB = db.openDB('cms_audit_log', { 
       encoding: 'msgpack',
       cache: true 
+    });
+
+    // Payment provider configuration and the orders created through it. Kept in
+    // their own stores so a settings dump never carries the secret key.
+    paymentsDB = db.openDB('cms_payments', {
+      encoding: 'msgpack',
+      cache: true
+    });
+
+    ordersDB = db.openDB('cms_orders', {
+      encoding: 'msgpack',
+      cache: true
     });
     
     // Indexes for efficient lookups
@@ -602,6 +618,62 @@ export async function saveSiteSettings(settings: Omit<SiteSettings, 'updatedAt'>
   };
   
   await settingsDB.put('site_settings', updatedSettings);
+  return true;
+}
+
+/**
+ * Payment settings.
+ *
+ * getPaymentSettings returns the stored record including secrets and is only
+ * ever called from server-side code paths. Nothing in the API layer passes its
+ * result to a client; see `getPublicPaymentConfig` and the masked admin view.
+ */
+export async function getPaymentSettings(): Promise<PaymentSettings | null> {
+  return paymentsDB.get('payment_settings');
+}
+
+export async function savePaymentSettings(
+  settings: Omit<PaymentSettings, 'updatedAt'>
+): Promise<boolean> {
+  await paymentsDB.put('payment_settings', {
+    ...settings,
+    updatedAt: new Date().toISOString()
+  });
+  return true;
+}
+
+// Order operations
+export async function createOrder(order: Omit<Order, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const id = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const now = new Date().toISOString();
+  await ordersDB.put(id, { ...order, id, createdAt: now, updatedAt: now });
+  return id;
+}
+
+export async function getOrderById(id: string): Promise<Order | null> {
+  return ordersDB.get(id);
+}
+
+export async function getOrderBySessionId(sessionId: string): Promise<Order | null> {
+  const all: Order[] = [];
+  for (const { value } of ordersDB.getRange()) {
+    if (value && value.stripeSessionId === sessionId) all.push(value);
+  }
+  return all[0] || null;
+}
+
+export async function getAllOrders(): Promise<Order[]> {
+  const orders: Order[] = [];
+  for (const { value } of ordersDB.getRange()) {
+    if (value && value.id) orders.push(value);
+  }
+  return orders.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export async function updateOrder(id: string, updates: Partial<Order>): Promise<boolean> {
+  const existing = await ordersDB.get(id);
+  if (!existing) return false;
+  await ordersDB.put(id, { ...existing, ...updates, updatedAt: new Date().toISOString() });
   return true;
 }
 

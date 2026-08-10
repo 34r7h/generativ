@@ -6,6 +6,13 @@ import AdminHeader from './components/AdminHeader.vue';
 import { cmsAPI } from '../../../api/client';
 import AppIcon from '../../shared/AppIcon.vue';
 import { iconFor } from '../../../config/icons';
+import {
+  PRICING_MODELS,
+  INTERVALS,
+  formatPrice,
+  toMinorUnits,
+  toMajorUnits
+} from '../../../config/pricing';
 
 const router = useRouter();
 const loading = ref(true);
@@ -34,6 +41,67 @@ const serviceForm = ref({
     keywords: []
   }
 });
+
+// Price is edited in major units (dollars) and stored in minor units (cents),
+// which is what Stripe expects and what avoids float arithmetic on money.
+const priceForm = ref({
+  model: 'quote',
+  amountMajor: '',
+  currency: 'usd',
+  interval: 'month',
+  intervalCount: 1,
+  stripePriceId: '',
+  purchasable: false,
+  note: ''
+});
+
+function blankPriceForm() {
+  return {
+    model: 'quote',
+    amountMajor: '',
+    currency: 'usd',
+    interval: 'month',
+    intervalCount: 1,
+    stripePriceId: '',
+    purchasable: false,
+    note: ''
+  };
+}
+
+function priceFormFrom(service) {
+  const p = service?.pricingDetail;
+  if (!p) return blankPriceForm();
+  return {
+    model: p.model || 'quote',
+    amountMajor: toMajorUnits(p.amount),
+    currency: p.currency || 'usd',
+    interval: p.interval || 'month',
+    intervalCount: p.intervalCount || 1,
+    stripePriceId: p.stripePriceId || '',
+    purchasable: !!p.purchasable,
+    note: p.note || ''
+  };
+}
+
+function priceFormToDetail() {
+  const f = priceForm.value;
+  if (f.model === 'quote') {
+    return { model: 'quote', purchasable: false, note: f.note.trim() };
+  }
+  return {
+    model: f.model,
+    amount: toMinorUnits(f.amountMajor),
+    currency: (f.currency || 'usd').toLowerCase(),
+    ...(f.model === 'subscription'
+      ? { interval: f.interval, intervalCount: Number(f.intervalCount) || 1 }
+      : {}),
+    stripePriceId: f.stripePriceId.trim(),
+    purchasable: !!f.purchasable,
+    note: f.note.trim()
+  };
+}
+
+const pricePreview = computed(() => formatPrice(priceFormToDetail()));
 
 // Computed properties
 const publishedCount = computed(() => services.value.filter(service => service.isPublished).length);
@@ -100,6 +168,7 @@ const createService = () => {
       keywords: []
     }
   };
+  priceForm.value = blankPriceForm();
   showModal.value = true;
 };
 
@@ -122,6 +191,7 @@ const editService = (service) => {
       keywords: [...(service.seo?.keywords || [])]
     }
   };
+  priceForm.value = priceFormFrom(service);
   showModal.value = true;
 };
 
@@ -171,11 +241,19 @@ const saveService = async () => {
     serviceForm.value.benefits = serviceForm.value.benefits.filter(benefit => benefit.trim());
     serviceForm.value.seo.keywords = serviceForm.value.seo.keywords.filter(keyword => keyword.trim());
     
+    const payload = { ...serviceForm.value, pricingDetail: priceFormToDetail() };
+
+    if (payload.pricingDetail.purchasable
+        && !payload.pricingDetail.stripePriceId
+        && !(payload.pricingDetail.amount >= 50)) {
+      throw new Error('A purchasable service needs an amount of at least 0.50, or a Stripe price ID');
+    }
+
     let response;
     if (editingService.value) {
-      response = await cmsAPI.updateService(editingService.value.id, serviceForm.value);
+      response = await cmsAPI.updateService(editingService.value.id, payload);
     } else {
-      response = await cmsAPI.createService(serviceForm.value);
+      response = await cmsAPI.createService(payload);
     }
     
     if (response.success) {
@@ -395,6 +473,163 @@ onMounted(() => {
         </div>
       </div>
     </main>
+
+    <!-- Service editor. Absent entirely before this change: services could be
+         listed and deleted, but not created or edited. -->
+    <div v-if="showModal" class="modal-backdrop" @click.self="showModal = false">
+      <div class="modal" role="dialog" aria-modal="true">
+        <header class="modal-head">
+          <h2>{{ editingService ? 'Edit service' : 'New service' }}</h2>
+          <button type="button" class="icon-button" aria-label="Close" @click="showModal = false">
+            <AppIcon name="close" :size="18" />
+          </button>
+        </header>
+
+        <form class="modal-body" @submit.prevent="saveService">
+          <div class="field-grid">
+            <label class="field">
+              <span class="field-label">Title</span>
+              <input v-model="serviceForm.title" class="input" required @blur="generateSlug" />
+            </label>
+
+            <label class="field">
+              <span class="field-label">Slug</span>
+              <input v-model="serviceForm.slug" class="input" required placeholder="ai-opportunity-audit" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field-label">Short description</span>
+            <textarea v-model="serviceForm.shortDescription" rows="2" class="input"></textarea>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Full description (HTML)</span>
+            <textarea v-model="serviceForm.fullDescription" rows="8" class="input mono"></textarea>
+          </label>
+
+          <div class="field">
+            <span class="field-label">Benefits</span>
+            <div v-for="(benefit, index) in serviceForm.benefits" :key="index" class="repeat-row">
+              <input v-model="serviceForm.benefits[index]" class="input" />
+              <button type="button" class="icon-button" aria-label="Remove" @click="removeBenefit(index)">
+                <AppIcon name="trash" :size="16" />
+              </button>
+            </div>
+            <button type="button" class="ghost-button small" @click="addBenefit">
+              <AppIcon name="plus" :size="15" /><span>Add benefit</span>
+            </button>
+          </div>
+
+          <!-- Pricing -->
+          <h3 class="subhead">Price</h3>
+
+          <div class="field-grid">
+            <label class="field">
+              <span class="field-label">How it is sold</span>
+              <select v-model="priceForm.model" class="input">
+                <option v-for="model in PRICING_MODELS" :key="model.value" :value="model.value">
+                  {{ model.label }}
+                </option>
+              </select>
+            </label>
+
+            <label class="field" v-if="priceForm.model !== 'quote'">
+              <span class="field-label">Amount</span>
+              <input v-model="priceForm.amountMajor" class="input" inputmode="decimal" placeholder="500" />
+              <small class="hint">In whole currency units. Stored as cents.</small>
+            </label>
+
+            <label class="field" v-if="priceForm.model !== 'quote'">
+              <span class="field-label">Currency</span>
+              <input v-model="priceForm.currency" class="input" maxlength="3" placeholder="usd" />
+            </label>
+          </div>
+
+          <div class="field-grid" v-if="priceForm.model === 'subscription'">
+            <label class="field">
+              <span class="field-label">Billed</span>
+              <select v-model="priceForm.interval" class="input">
+                <option v-for="interval in INTERVALS" :key="interval.value" :value="interval.value">
+                  {{ interval.label }}
+                </option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Every</span>
+              <input v-model.number="priceForm.intervalCount" type="number" min="1" max="12" class="input" />
+              <small class="hint">1 means every month or every year.</small>
+            </label>
+          </div>
+
+          <div class="field-grid" v-if="priceForm.model !== 'quote'">
+            <label class="field">
+              <span class="field-label">Stripe price ID (optional)</span>
+              <input v-model="priceForm.stripePriceId" class="input" placeholder="price_1AbC…" />
+              <small class="hint">
+                Set this to bill against a Price already defined in Stripe. Leave blank to charge
+                the amount above.
+              </small>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Note under the price</span>
+              <input v-model="priceForm.note" class="input" placeholder="Credited against an implementation" />
+            </label>
+          </div>
+
+          <label class="toggle-row" v-if="priceForm.model !== 'quote'">
+            <input type="checkbox" v-model="priceForm.purchasable" />
+            <span>
+              <strong>Sell this on the site</strong>
+              <small>
+                Shows a checkout button on the service page. Requires payments to be enabled and
+                keys saved under Payments.
+              </small>
+            </span>
+          </label>
+
+          <p v-if="pricePreview" class="preview">Shown to visitors as <strong>{{ pricePreview }}</strong></p>
+
+          <!-- Publication -->
+          <h3 class="subhead">Publication</h3>
+
+          <div class="field-grid">
+            <label class="field">
+              <span class="field-label">Sort order</span>
+              <input v-model.number="serviceForm.sortOrder" type="number" min="1" class="input" />
+            </label>
+
+            <label class="toggle-row">
+              <input type="checkbox" v-model="serviceForm.isPublished" />
+              <span><strong>Published</strong><small>Visible on the public site.</small></span>
+            </label>
+          </div>
+
+          <h3 class="subhead">SEO</h3>
+
+          <div class="field-grid">
+            <label class="field">
+              <span class="field-label">SEO title</span>
+              <input v-model="serviceForm.seo.title" class="input" />
+            </label>
+
+            <label class="field">
+              <span class="field-label">SEO description</span>
+              <input v-model="serviceForm.seo.description" class="input" />
+            </label>
+          </div>
+
+          <footer class="modal-foot">
+            <button type="button" class="ghost-button" @click="showModal = false">Cancel</button>
+            <button type="submit" class="btn btn-primary" :disabled="saving">
+              {{ saving ? 'Saving…' : 'Save service' }}
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -710,5 +945,170 @@ onMounted(() => {
   .service-description {
     max-width: 200px;
   }
+}
+
+/* Editor modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(17, 24, 39, 0.55);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  z-index: 400;
+}
+
+.modal {
+  width: 100%;
+  max-width: 780px;
+  background-color: #ffffff;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-head h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--gray-900);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-200);
+  margin-top: 24px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.field {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
+  font: inherit;
+  color: var(--gray-900);
+  background-color: #ffffff;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.input.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.hint {
+  display: block;
+  margin-top: 5px;
+  color: var(--gray-500);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.repeat-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.subhead {
+  margin: 26px 0 14px;
+  font-size: 0.9375rem;
+  color: var(--gray-900);
+}
+
+.toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 14px;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-md);
+  background-color: var(--gray-50);
+  margin-bottom: 16px;
+}
+
+.toggle-row input { margin-top: 3px; }
+.toggle-row strong { display: block; color: var(--gray-900); font-size: 0.9375rem; }
+.toggle-row small { color: var(--gray-600); line-height: 1.5; }
+
+.preview {
+  margin: 0 0 8px;
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
+  background-color: #ffffff;
+  color: var(--gray-600);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.icon-button:hover {
+  background-color: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.ghost-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius-md);
+  background-color: #ffffff;
+  color: var(--gray-700);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ghost-button.small {
+  padding: 6px 12px;
+  font-size: 0.8125rem;
 }
 </style>

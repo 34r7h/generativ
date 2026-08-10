@@ -5,6 +5,7 @@ import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import { iconFor } from '../../config/icons';
 import BrandGraphic from '../shared/BrandGraphic.vue';
+import { formatPrice, isPurchasable, checkoutLabel } from '../../config/pricing';
 
 const route = useRoute();
 const router = useRouter();
@@ -176,6 +177,7 @@ async function fetchServiceData() {
 
 onMounted(() => {
   fetchServiceData();
+  loadPaymentConfig();
 });
 </script>
 
@@ -238,14 +240,28 @@ onMounted(() => {
                 </ul>
               </div>
               
-              <div class="service-pricing" v-if="service.pricing">
-                <h3>Pricing</h3>
-                <p>{{ service.pricing }}</p>
+              <div class="service-pricing" v-if="priceLine || service.pricing">
+                <h3>Price</h3>
+                <p v-if="priceLine" class="price-figure">{{ priceLine }}</p>
+                <p v-if="service.pricingDetail?.note" class="price-note">
+                  {{ service.pricingDetail.note }}
+                </p>
+                <p v-else-if="service.pricing" class="price-note">{{ service.pricing }}</p>
               </div>
-              
+
               <div class="service-cta">
-                <h3>Ready to Get Started?</h3>
-                <router-link to="/contact" class="primary-button">Contact Us</router-link>
+                <template v-if="canBuy">
+                  <button type="button" class="primary-button" :disabled="checkoutBusy" @click="startCheckout">
+                    {{ checkoutBusy ? 'Opening checkout…' : buyLabel }}
+                  </button>
+                  <p class="checkout-note">Secure checkout through Stripe.</p>
+                  <p v-if="checkoutError" class="checkout-error">{{ checkoutError }}</p>
+                  <router-link to="/contact" class="text-link">Or ask a question first</router-link>
+                </template>
+                <template v-else>
+                  <h3>Scoping</h3>
+                  <router-link to="/contact" class="primary-button">Contact us</router-link>
+                </template>
               </div>
             </div>
           </div>
@@ -479,6 +495,51 @@ onMounted(() => {
 
 .service-pricing {
   margin-bottom: 30px;
+}
+
+.price-figure {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--dark-blue);
+  margin-bottom: 6px;
+}
+
+.price-note {
+  color: var(--light-text);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.checkout-note {
+  margin-top: 10px;
+  color: var(--light-text);
+  font-size: 0.85rem;
+}
+
+.checkout-error {
+  margin-top: 8px;
+  color: var(--error, #e53e3e);
+  font-size: 0.88rem;
+}
+
+.text-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+
+.service-cta button.primary-button {
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.service-cta button.primary-button:disabled {
+  opacity: 0.7;
+  cursor: default;
 }
 
 .service-pricing p {

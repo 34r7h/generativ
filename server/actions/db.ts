@@ -42,7 +42,10 @@ export async function initDB() {
       // Main database environment
       db = await open({
         path: process.cwd() + '/data',
-        maxDbs: 20, // Increased for more databases
+        // 22 stores are opened today (see openDB calls in actions/db.ts and
+        // cms/db.ts). LMDB fails the *opening* call with MDB_DBS_FULL once the
+        // limit is hit, so this must lead the store count, not trail it.
+        maxDbs: 48,
         mapSize: 2 * 1024 * 1024 * 1024, // 2GB
         pageSize: 8192, // Optimized for larger databases
         compression: true, // Enable compression for better storage

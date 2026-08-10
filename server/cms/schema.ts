@@ -85,6 +85,26 @@ export interface TeamMember {
   updatedAt: string;
 }
 
+// How a service is sold. `quote` means there is no self-serve price.
+export type PricingModel = 'quote' | 'one_time' | 'subscription';
+
+export interface ServicePricing {
+  model: PricingModel;
+  // Minor units (cents), matching Stripe. Absent for `quote`.
+  amount?: number;
+  currency?: string;
+  // Subscription only.
+  interval?: 'month' | 'year';
+  intervalCount?: number;
+  // Optional: bill against a Price already defined in the Stripe dashboard
+  // instead of an inline price built from `amount`.
+  stripePriceId?: string;
+  // Whether the public site offers a checkout button for this service.
+  purchasable: boolean;
+  // Shown under the price, e.g. what the fee is credited against.
+  note?: string;
+}
+
 export interface Service {
   id: string;
   slug: string;
@@ -94,7 +114,10 @@ export interface Service {
   icon?: string; // Icon name or emoji
   featuredImage?: MediaAsset;
   benefits: string[];
+  // Free-text price line, kept for services that are quoted rather than sold.
   pricing?: string;
+  // Structured price, used for display and for creating a Stripe checkout.
+  pricingDetail?: ServicePricing;
   isPublished: boolean;
   sortOrder: number;
   seo: SEOMetadata;
@@ -199,6 +222,53 @@ export interface SiteSettings {
     enableCookieBanner: boolean;
   };
   globalSEO: SEOMetadata;
+  updatedAt: string;
+}
+
+/**
+ * Payment provider configuration.
+ *
+ * `secretKey` and `webhookSecret` are written by an admin and read only by the
+ * server. No API operation returns either value — the admin screen is served
+ * `hasSecretKey` and a last-four fingerprint instead, so a compromised admin
+ * session cannot exfiltrate the key.
+ */
+export interface PaymentSettings {
+  provider: 'stripe';
+  enabled: boolean;
+  publishableKey: string;
+  secretKey: string;
+  webhookSecret: string;
+  currency: string;
+  successUrl: string;
+  cancelUrl: string;
+  updatedAt: string;
+}
+
+// What the public site is allowed to know about payment configuration.
+export interface PublicPaymentConfig {
+  enabled: boolean;
+  publishableKey: string;
+  currency: string;
+}
+
+export type OrderStatus = 'created' | 'paid' | 'failed' | 'canceled';
+
+export interface Order {
+  id: string;
+  serviceId: string;
+  serviceSlug: string;
+  serviceTitle: string;
+  mode: 'payment' | 'subscription';
+  amount: number;
+  currency: string;
+  status: OrderStatus;
+  stripeSessionId: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePaymentIntentId?: string;
+  customerEmail?: string;
+  createdAt: string;
   updatedAt: string;
 }
 

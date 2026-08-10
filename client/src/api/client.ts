@@ -361,6 +361,44 @@ export const cmsAPI = {
       operation: 'updateSiteSettings',
       settings
     }, true);
+  },
+
+  // Payments
+  //
+  // Public config carries the publishable key and nothing else; the secret key
+  // has no API operation that returns it. Checkout is created from a service
+  // slug — the server decides what that service costs.
+  getPaymentConfig: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getPaymentConfig'
+    });
+  },
+
+  getPaymentSettings: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getPaymentSettings'
+    }, true);
+  },
+
+  updatePaymentSettings: async (settings: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'updatePaymentSettings',
+      settings
+    }, true);
+  },
+
+  createCheckoutSession: async (serviceSlug: string, email?: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'createCheckoutSession',
+      serviceSlug,
+      email
+    });
+  },
+
+  getOrders: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getOrders'
+    }, true);
   }
 };
 

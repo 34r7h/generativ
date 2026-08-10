@@ -56,6 +56,11 @@ import { initCMSDB } from "./cms/db.js";
 import { handleCMSOperation } from "./cms/api.js";
 import { seedCMSData } from "./cms/seed.js";
 import { syncPrimeDirective } from "./cms/prime-directive.js";
+import {
+  loadSettings as loadPaymentSettings,
+  verifyWebhookSignature,
+  applyWebhookEvent
+} from "./cms/payments.js";
 import type { AuthOperation } from "./actions/auth.js";
 import type { CMSOperation } from "./cms/api.js";
 
@@ -148,6 +153,44 @@ const server = serve({
         return formatResponse(true, healthData, null, 200, corsHeaders);
       }
       
+      /**
+       * Stripe webhook.
+       *
+       * Needs its own route rather than a /cms operation for two reasons: the
+       * signature is computed over the RAW body, so it has to be read before
+       * any JSON parsing, and Stripe expects a 2xx quickly regardless of what
+       * we make of the event. A bad signature gets 400 and nothing is written.
+       */
+      if (url.pathname === "/stripe/webhook") {
+        if (req.method !== "POST") {
+          return formatResponse(false, null, "Method not allowed", 405, corsHeaders);
+        }
+
+        const rawBody = await req.text();
+        const signature = req.headers.get("stripe-signature") || "";
+
+        try {
+          const settings = await loadPaymentSettings();
+          const check = verifyWebhookSignature(rawBody, signature, settings.webhookSecret);
+
+          if (!check.valid) {
+            logger.warn("Rejected Stripe webhook", { reason: check.reason });
+            return formatResponse(false, null, "Invalid signature", 400, corsHeaders);
+          }
+
+          const event = JSON.parse(rawBody);
+          const outcome = await applyWebhookEvent(event);
+          logger.info("Stripe webhook processed", { type: event.type, handled: outcome.handled, note: outcome.note });
+
+          // Acknowledge receipt even for event types we do not act on, so
+          // Stripe does not retry them indefinitely.
+          return formatResponse(true, { received: true, handled: outcome.handled }, null, 200, corsHeaders);
+        } catch (error: any) {
+          logger.error("Stripe webhook error", { error: error?.message });
+          return formatResponse(false, null, "Webhook processing failed", 400, corsHeaders);
+        }
+      }
+
       // Authentication endpoint
       if (url.pathname === "/auth") {
         if (req.method !== "POST") {

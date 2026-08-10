@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
 import { iconFor } from '../../config/icons';
+import { formatPrice } from '../../config/pricing';
 
 const loading = ref(true);
 const error = ref(null);
@@ -76,6 +77,10 @@ onMounted(() => {
               <AppIcon :name="iconFor(service.title)" :size="26" />
             </div>
             <h2>{{ service.title }}</h2>
+            <p class="service-price" v-if="formatPrice(service.pricingDetail)">
+              {{ formatPrice(service.pricingDetail) }}
+            </p>
+            <p class="service-price quoted" v-else>Quoted</p>
             <p class="service-description">{{ service.shortDescription }}</p>
 
             <div class="service-benefits" v-if="service.benefits && service.benefits.length">
@@ -213,6 +218,19 @@ onMounted(() => {
   color: var(--dark-blue);
   margin-bottom: 15px;
   min-height: 2.4em;
+}
+
+.service-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dark-blue);
+  margin-bottom: 12px;
+}
+
+.service-price.quoted {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--light-text);
 }
 
 .service-description {

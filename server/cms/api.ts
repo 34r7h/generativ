@@ -15,9 +15,13 @@ export type CMSOperation =
   // Settings
   'getSiteSettings' | 'updateSiteSettings' |
   // Admin users
-  'createAdminUser' | 'getAdminUser' | 'getAllAdminUsers' | 'updateAdminUser' | 'deleteAdminUser';
+  'createAdminUser' | 'getAdminUser' | 'getAllAdminUsers' | 'updateAdminUser' | 'deleteAdminUser' |
+  // Payments
+  'getPaymentConfig' | 'getPaymentSettings' | 'updatePaymentSettings' |
+  'createCheckoutSession' | 'getOrders' | 'getOrder';
 import * as cmsDB from './db.js';
 import { authenticateUser } from '../actions/db.js';
+import * as payments from './payments.js';
 
 // Check if a user has admin permissions
 export async function isAdminUser(userId: string): Promise<boolean> {
@@ -68,7 +72,11 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
     'getAllBlogPosts',
     'getMedia',
     'getAllMedia',
-    'getSiteSettings'
+    'getSiteSettings',
+    // Publishable key and currency only; see payments.getPublicConfig.
+    'getPaymentConfig',
+    // Prices come from the stored service record, never from the request.
+    'createCheckoutSession'
   ];
   
   // Check if operation is public
@@ -345,6 +353,47 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
         }
         return { success: postDeleted };
       
+      // Payment operations
+      case 'getPaymentConfig':
+        return { success: true, config: await payments.getPublicConfig() };
+
+      case 'getPaymentSettings':
+        // Deliberately the masked view: no operation returns the secret key.
+        return { success: true, settings: await payments.getAdminView() };
+
+      case 'updatePaymentSettings': {
+        const result = await payments.updateSettings(requestData.settings || {});
+        if (result.success && userId) {
+          await cmsDB.createAuditLogEntry(userId, 'update', 'payment_settings', 'payment_settings', {
+            enabled: requestData.settings?.enabled,
+            rotatedSecretKey: !!requestData.settings?.secretKey,
+            rotatedWebhookSecret: !!requestData.settings?.webhookSecret
+          });
+        }
+        return result.success
+          ? { success: true, settings: await payments.getAdminView() }
+          : { success: false, error: result.error };
+      }
+
+      case 'createCheckoutSession':
+        try {
+          return await payments.createCheckoutSession({
+            serviceSlug: requestData.serviceSlug,
+            email: requestData.email
+          });
+        } catch (checkoutError: any) {
+          return { success: false, error: checkoutError?.message || 'Could not start checkout' };
+        }
+
+      case 'getOrders':
+        return { success: true, orders: await cmsDB.getAllOrders() };
+
+      case 'getOrder':
+        if (!requestData.orderId) {
+          return { success: false, error: 'Order ID is required' };
+        }
+        return { success: true, order: await cmsDB.getOrderById(requestData.orderId) };
+
       // Media operations
       case 'uploadMedia':
         if (!requestData.media) {

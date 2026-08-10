@@ -403,6 +403,13 @@ const services: ServiceSeed[] = [
       'Observational; NDA signed before the first day'
     ],
     pricing: '$500 (to $3,500 for multi-site operations)',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 50000,
+      currency: 'usd',
+      purchasable: true,
+      note: 'Credited in full against an implementation, or refunded if the review does not identify at least $5,000 in annual savings.'
+    },
     isPublished: true,
     sortOrder: 1,
     seo: {
@@ -441,6 +448,11 @@ const services: ServiceSeed[] = [
       'Two-week handover with runbooks and training'
     ],
     pricing: '$1,500 – $3,500 fixed price (50% upfront)',
+    pricingDetail: {
+      model: 'quote',
+      purchasable: false,
+      note: 'Quoted after the review, against the process being automated.'
+    },
     isPublished: true,
     sortOrder: 2,
     seo: {
@@ -475,6 +487,15 @@ const services: ServiceSeed[] = [
       'Ongoing partnership — no re-scoping every quarter'
     ],
     pricing: '$1,500 – $5,000 per month',
+    pricingDetail: {
+      model: 'subscription',
+      amount: 150000,
+      currency: 'usd',
+      interval: 'month',
+      intervalCount: 1,
+      purchasable: true,
+      note: 'Entry tier. Cancel any time; larger estates are quoted on volume.'
+    },
     isPublished: true,
     sortOrder: 3,
     seo: {
@@ -511,6 +532,11 @@ const services: ServiceSeed[] = [
       'Evidence trails that hold up under a professional audit cycle'
     ],
     pricing: 'Included in implementation and retainer engagements; standalone assessments from $15,000',
+    pricingDetail: {
+      model: 'quote',
+      purchasable: false,
+      note: 'Quoted on the number of systems under test.'
+    },
     isPublished: true,
     sortOrder: 4,
     seo: {
@@ -546,6 +572,11 @@ const services: ServiceSeed[] = [
       'Continuous performance monitoring and tuning'
     ],
     pricing: 'Custom pricing based on workload',
+    pricingDetail: {
+      model: 'quote',
+      purchasable: false,
+      note: 'Quoted against measured throughput targets.'
+    },
     isPublished: true,
     sortOrder: 5,
     seo: {
@@ -579,6 +610,13 @@ const services: ServiceSeed[] = [
       'Documented practice for disclosure obligations'
     ],
     pricing: 'Included with implementation handover; standalone workshops from $5,000',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 240000,
+      currency: 'usd',
+      purchasable: true,
+      note: 'Per cohort of up to twelve people, delivered on site.'
+    },
     isPublished: true,
     sortOrder: 6,
     seo: {
@@ -611,6 +649,161 @@ const RETIRED_BLOG_SLUGS = [
 const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000).toISOString();
 
 const blogPosts: BlogSeed[] = [
+  {
+    slug: 'what-a-two-day-review-can-and-cannot-see',
+    title: 'What a two-day review can and cannot see',
+    content: `
+<p>Compressing an operational review into two on-site days changes what it is able to establish. That is worth stating plainly, because a review that overclaims is worse than one that is narrow.</p>
+
+<h2>What two days is enough for</h2>
+<ul>
+  <li><strong>Volume.</strong> Call logs, form counts, ticket counts and appointment records are already recorded somewhere. Reading them is a morning's work, not a week's.</li>
+  <li><strong>Sequence.</strong> Walking a process with the person who performs it surfaces the steps that exist but are written down nowhere — the exceptions, the workarounds, the second system somebody keeps in a spreadsheet.</li>
+  <li><strong>Arithmetic.</strong> Once volume and minutes-per-unit are known, annual cost is multiplication. The hard part was never the sum; it was getting honest inputs.</li>
+  <li><strong>Disqualification.</strong> Finding out that a process cannot be automated safely is fast. Missing consent records, an approval that a regulator requires a human to make, a system with no export — each is a single question.</li>
+</ul>
+
+<h2>What it is not enough for</h2>
+<ul>
+  <li><strong>Seasonality.</strong> Two days in a quiet week and two days in a busy one produce different numbers. Where the swing matters, the review takes twelve months of history rather than trusting the fortnight it happened to land in.</li>
+  <li><strong>Data quality at depth.</strong> A sample tells you whether duplicates exist. It does not tell you the duplication rate to a point where you would stake a build on it. That measurement belongs to the first week of an implementation, not to the review.</li>
+  <li><strong>Behaviour under load.</strong> How a team actually handles a backlog is observable only during one, and backlogs do not schedule themselves around a visit.</li>
+</ul>
+
+<h2>Why the shorter form is still the right default</h2>
+<p>The purpose of the review is to decide what to do next, not to be comprehensive. Three costed opportunities with visible assumptions are enough to choose between building, waiting, or doing nothing — and the fee is small enough that "do nothing" remains a real answer.</p>
+<p>Where the arithmetic is close enough that the decision could go either way, the honest output is a measurement plan rather than a recommendation: what to count, for how long, before committing.</p>
+    `,
+    excerpt:
+      'Two on-site days is enough to establish volume, sequence and arithmetic. It is not enough for seasonality or data quality at depth — and saying so is part of the deliverable.',
+    author: 'Generativ Consulting Company',
+    categories: ['Operational Review', 'Method'],
+    tags: ['audit scope', 'measurement', 'assumptions', 'process mapping'],
+    isPublished: true,
+    publishedAt: daysAgo(1),
+    seo: {
+      title: 'What a two-day review can and cannot see',
+      description:
+        'The four things an on-site operational review establishes in two days, the three it cannot, and why the shorter form is still the right default.',
+      keywords: ['operational review', 'process audit', 'automation assessment', 'measurement plan']
+    }
+  },
+  {
+    slug: 'what-automation-costs-to-run',
+    title: 'What automation costs to run',
+    content: `
+<p>Build cost is quoted, agreed and paid once. Running cost recurs, is rarely modelled, and is where automation projects quietly stop being worth it.</p>
+
+<h2>The four lines nobody budgets</h2>
+<ul>
+  <li><strong>Inference.</strong> Priced per token or per call, which makes it invisible until volume arrives. The figure that matters is not the average month; it is the highest month of the last two years, doubled.</li>
+  <li><strong>Review.</strong> Any output that reaches a client through an approval gate consumes a person's attention. An automation that saves ten minutes of processing and adds three minutes of review has saved seven, not ten.</li>
+  <li><strong>Drift.</strong> Models are replaced by their vendors on the vendor's schedule. A pinned version is a cost — you pay to stay still — and an unpinned one is a risk. Both need a line.</li>
+  <li><strong>Integration decay.</strong> The systems on either end change: a field is renamed, an API version is retired, a login policy changes. Budget for a few hours a month against every connector, not zero.</li>
+</ul>
+
+<h2>A worked figure</h2>
+<p>Take a document pipeline processing 400 forms a month. Inference at roughly $0.04 a form is $16. Review at two minutes a form and a $32 loaded rate is about $427. Version pinning and connector maintenance, at three hours a month, is another $96. The recurring cost is close to $540 a month — dominated not by the model but by the human in the loop.</p>
+<p>Against a manual baseline of 400 forms at 18 minutes and the same rate — about $3,840 — it still holds comfortably. But notice what actually decides it: the review time, which is a policy choice, not a technical one.</p>
+
+<h2>Where it stops holding</h2>
+<p>Two conditions flip the arithmetic. Volume below roughly a hundred units a month leaves the fixed maintenance cost with too little to spread across. And a correctness bar high enough to require reviewing every output at full attention removes most of the saving by definition.</p>
+<p>Both are knowable before anything is built, which is the point of asking.</p>
+    `,
+    excerpt:
+      'Inference, review time, model drift and integration decay are the recurring costs of an automation. Review time usually dominates — and it is a policy choice, not a technical one.',
+    author: 'Generativ Consulting Company',
+    categories: ['Operations', 'Cost'],
+    tags: ['running cost', 'inference cost', 'human in the loop', 'maintenance'],
+    isPublished: true,
+    publishedAt: daysAgo(3),
+    seo: {
+      title: 'What automation costs to run',
+      description:
+        'The four recurring costs of a deployed automation — inference, review, drift and integration decay — with a worked figure and the conditions that flip it.',
+      keywords: ['automation running cost', 'inference cost', 'AI maintenance', 'total cost of ownership']
+    }
+  },
+  {
+    slug: 'approval-gates-and-what-they-are-for',
+    title: 'Approval gates, and what they are for',
+    content: `
+<p>An approval gate is the point where an automated process stops and waits for a person. Deciding where those points go is the main safety decision in any implementation, and it is usually made badly — either everywhere, which removes the saving, or nowhere, which removes the recourse.</p>
+
+<h2>The test that places them</h2>
+<p>Gate an action if reversing it is expensive. Not if it is important, not if it is client-facing, not if it makes anyone nervous — if reversing it is expensive.</p>
+<ul>
+  <li>Drafting a reply: cheap to reverse. No gate; review the sample weekly.</li>
+  <li>Sending that reply to a client: expensive to reverse. Gate.</li>
+  <li>Extracting fields from a form into a staging table: cheap. No gate.</li>
+  <li>Writing those fields into the system of record: expensive, because everything downstream now trusts them. Gate, or reconcile automatically against a second source.</li>
+  <li>Scheduling an internal task: cheap. Cancelling an appointment on a client's behalf: expensive.</li>
+</ul>
+
+<h2>What a gate has to give the person</h2>
+<p>A gate that shows only the output is a rubber stamp with extra steps. The reviewer needs the inputs the decision was made from, the confidence or provenance where the system has one, and the ability to reject without writing an essay. If rejecting is harder than approving, the approval rate tells you nothing.</p>
+
+<h2>Gates decay</h2>
+<p>Approval rates climb over time, which reads as improvement and is often habituation. The countermeasure is cheap: periodically feed known-bad cases through the gate and see whether they are caught. A gate that has not rejected anything in three months is not a control; it is a delay.</p>
+
+<h2>Retiring one</h2>
+<p>A gate can be removed once the measured error rate is below the threshold the practice will accept and the rejection sample shows the reviewer is still catching what the system misses. Both conditions, not either. Most implementations should expect to retire one or two gates in the first year and keep the rest permanently.</p>
+    `,
+    excerpt:
+      'Gate an action if reversing it is expensive — not if it is merely important. What a gate must show the reviewer, why approval rates decay, and the two conditions for removing one.',
+    author: 'Generativ Consulting Company',
+    categories: ['AI Safety', 'Operations'],
+    tags: ['approval gates', 'human oversight', 'error rates', 'controls'],
+    isPublished: true,
+    publishedAt: daysAgo(6),
+    seo: {
+      title: 'Approval gates, and what they are for',
+      description:
+        'Where to place human approval in an automated process: gate what is expensive to reverse, give the reviewer the inputs, and test that the gate still rejects.',
+      keywords: ['approval gate', 'human in the loop', 'AI oversight', 'error rate']
+    }
+  },
+  {
+    slug: 'buying-automation-without-a-consultant',
+    title: 'Buying automation without a consultant',
+    content: `
+<p>Not every practice needs an engagement. Some need a checklist and an afternoon. Here is the version we would give a practice that asked how to do this without us.</p>
+
+<h2>Pick the process by its arithmetic, not its annoyance</h2>
+<p>The most irritating task is rarely the most expensive one. Count: units per month, minutes per unit, loaded hourly rate of whoever does it. Rank by the product. The top of that list is frequently something nobody complains about, because it is boring rather than painful.</p>
+
+<h2>Write it down before you automate it</h2>
+<p>If two people describe the process differently, you do not have a process; you have two. Reconciling that on paper costs an afternoon. Discovering it mid-build costs the build.</p>
+
+<h2>Define a correct output</h2>
+<p>Take twenty historical cases. Have two people independently write what the right answer was. Compare. If they disagree on more than two, the specification is the problem and no tool will fix it.</p>
+
+<h2>Start with the tools you already pay for</h2>
+<p>Most practice management systems, CRMs and document platforms have automation built in and switched off. Scheduled reminders, templated replies, form-to-record mapping and simple routing rules are usually available before anything is bought. Exhaust those first; the cheapest automation is the one already inside a licence you hold.</p>
+
+<h2>Buy narrow tools before broad ones</h2>
+<p>A tool that does one thing has a failure mode you can describe. A platform that does everything has a failure mode you discover. For a first automation, prefer the narrow one even where the platform looks better value per feature.</p>
+
+<h2>Keep the manual path alive</h2>
+<p>Run the automation alongside the manual process for a full cycle and compare outputs. This is dull and it is the step most often skipped. It is also the only thing standing between you and finding out at scale.</p>
+
+<h2>When to call someone</h2>
+<p>Three situations justify outside help: the process crosses systems that disagree about the same customer; the output carries a regulatory or disclosure obligation; or the arithmetic says the opportunity is large enough that being wrong about it is expensive. Otherwise, the checklist above is most of what an engagement would tell you.</p>
+    `,
+    excerpt:
+      'Rank processes by arithmetic rather than annoyance, define a correct output before buying anything, and exhaust the automation already inside your existing licences.',
+    author: 'Generativ Consulting Company',
+    categories: ['Practical', 'Automation'],
+    tags: ['DIY automation', 'process selection', 'tooling', 'evaluation'],
+    isPublished: true,
+    publishedAt: daysAgo(9),
+    seo: {
+      title: 'Buying automation without a consultant',
+      description:
+        'A practical checklist for automating a process without an engagement: pick by arithmetic, define a correct output, use the tools you already pay for.',
+      keywords: ['automation checklist', 'process automation', 'small business automation', 'buying software']
+    }
+  },
   {
     slug: 'administrative-overhead-cost',
     title: 'What administrative overhead costs a small practice',

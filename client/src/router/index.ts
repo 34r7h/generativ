@@ -7,6 +7,7 @@ import ServiceDetailPage from '../components/views/ServiceDetailPage.vue'
 import AboutPage from '../components/views/AboutPage.vue'
 import TeamPage from '../components/views/TeamPage.vue'
 import TeamMemberPage from '../components/views/TeamMemberPage.vue'
+import CheckoutResultPage from '../components/views/CheckoutResultPage.vue'
 import BlogPage from '../components/views/BlogPage.vue'
 import BlogPostPage from '../components/views/BlogPostPage.vue'
 import ContactPage from '../components/views/ContactPage.vue'
@@ -22,6 +23,7 @@ import AdminDashboard from '../components/views/admin/DashboardPage.vue'
 import AdminPages from '../components/views/admin/PagesPage.vue'
 import AdminPageContent from '../components/views/admin/PageContentPage.vue'
 import AdminContact from '../components/views/admin/ContactPage.vue'
+import AdminPayments from '../components/views/admin/PaymentsPage.vue'
 import AdminTeam from '../components/views/admin/TeamPage.vue'
 import AdminServices from '../components/views/admin/ServicesPage.vue'
 import AdminBlog from '../components/views/admin/BlogPage.vue'
@@ -101,6 +103,17 @@ const router = createRouter({
       component: ResourceDetailPage
     },
     
+    {
+      path: '/checkout/success',
+      name: 'checkout-success',
+      component: CheckoutResultPage
+    },
+    {
+      path: '/checkout/cancel',
+      name: 'checkout-cancel',
+      component: CheckoutResultPage
+    },
+
     // Auth routes
     {
       path: '/admin/login',
@@ -159,6 +172,13 @@ const router = createRouter({
       path: '/admin/services',
       name: 'admin-services',
       component: AdminServices,
+      beforeEnter: requireAuth,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/admin/payments',
+      name: 'admin-payments',
+      component: AdminPayments,
       beforeEnter: requireAuth,
       meta: { requiresAuth: true }
     },
