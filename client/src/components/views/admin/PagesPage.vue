@@ -39,7 +39,8 @@ const templates = [
   { value: 'about', label: 'About Page' },
   { value: 'contact', label: 'Contact Page' },
   { value: 'services', label: 'Services Page' },
-  { value: 'blog', label: 'Blog Page' }
+  { value: 'blog', label: 'Blog Page' },
+  { value: 'legal', label: 'Legal Page' }
 ];
 
 // Computed properties

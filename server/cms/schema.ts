@@ -49,7 +49,7 @@ export interface Page {
   slug: string;
   title: string;
   content: string; // Can be Markdown or HTML
-  template: 'default' | 'home' | 'contact' | 'services' | 'about' | 'blog';
+  template: 'default' | 'home' | 'contact' | 'services' | 'about' | 'blog' | 'legal';
   isPublished: boolean;
   publishedAt?: string;
   featuredImage?: MediaAsset;

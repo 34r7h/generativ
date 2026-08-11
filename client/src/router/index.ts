@@ -103,6 +103,20 @@ const router = createRouter({
       component: ResourceDetailPage
     },
     
+    // Linked from the footer of every page; both routed nowhere until now.
+    {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('../components/views/LegalPage.vue'),
+      meta: { title: 'Privacy Policy', pageSlug: 'privacy' }
+    },
+    {
+      path: '/terms',
+      name: 'terms',
+      component: () => import('../components/views/LegalPage.vue'),
+      meta: { title: 'Terms of Service', pageSlug: 'terms' }
+    },
+
     {
       path: '/checkout/success',
       name: 'checkout-success',

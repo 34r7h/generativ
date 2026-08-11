@@ -457,6 +457,245 @@ const aboutPage: PageSeed = {
 };
 
 // ---------------------------------------------------------------------------
+// Legal pages
+//
+// Both were linked from the footer of every page and routed nowhere. The text
+// describes what the engagement and the site actually do — observational
+// review, NDA before the first day, Stripe handling card data, the refund and
+// credit terms already published on the audit page. It is written to be
+// accurate rather than comprehensive, and has not been reviewed by a lawyer.
+// ---------------------------------------------------------------------------
+
+const LEGAL_UPDATED = '11 August 2026';
+
+const privacyPage: PageSeed = {
+  slug: 'privacy',
+  title: 'Privacy Policy',
+  content: '',
+  template: 'legal',
+  isPublished: true,
+  publishedAt: new Date().toISOString(),
+  sections: [
+    {
+      id: 'privacy-intro',
+      type: 'hero',
+      title: 'Privacy Policy',
+      content:
+        'What we collect, why, and what we do not do with it. Generativ Consulting Company is ' +
+        'the data controller for this site and for the engagements described on it.',
+      sortOrder: 1,
+      settings: { updated: LEGAL_UPDATED }
+    },
+    {
+      id: 'privacy-collect',
+      type: 'content',
+      title: 'What we collect',
+      content:
+        '<ul>' +
+        '<li><strong>What you send us.</strong> Name, email address, telephone number, company ' +
+        'and the content of any message submitted through the contact form.</li>' +
+        '<li><strong>What a purchase creates.</strong> When you pay for an engagement, we store ' +
+        'the service purchased, the amount, the email address given at checkout, and the Stripe ' +
+        'identifiers for the session and payment.</li>' +
+        '<li><strong>What the site records.</strong> Standard web server logs, including IP ' +
+        'address, user agent and the pages requested.</li>' +
+        '</ul>' +
+        '<p>There is no advertising network, no cross-site tracking and no third-party analytics ' +
+        'script on this site.</p>',
+      sortOrder: 2,
+      settings: {}
+    },
+    {
+      id: 'privacy-payments',
+      type: 'content',
+      title: 'Card details',
+      content:
+        '<p>Payments are processed by Stripe. Card numbers are entered on Stripe’s own checkout ' +
+        'page and are never sent to, handled by, or stored on our servers. What we receive back ' +
+        'is a confirmation, an email address and a payment reference. Stripe’s handling of that ' +
+        'data is governed by its own privacy policy.</p>',
+      sortOrder: 3,
+      settings: {}
+    },
+    {
+      id: 'privacy-engagement',
+      type: 'content',
+      title: 'Your data during an engagement',
+      content:
+        '<p>The operational review is observational. We watch how work moves through the ' +
+        'practice and record process steps, timings and volumes. Live customer records, patient ' +
+        'records and transaction databases are not copied, exported, duplicated or stored, and ' +
+        'client data is never used to train public models.</p>' +
+        '<p>A non-disclosure agreement is signed before the first day on site and covers every ' +
+        'process, metric and conversation involved. Where an implementation requires access to a ' +
+        'system, that access is scoped in writing, granted by you, and revoked at handover.</p>',
+      sortOrder: 4,
+      settings: {}
+    },
+    {
+      id: 'privacy-use',
+      type: 'content',
+      title: 'How we use it, and who else sees it',
+      content:
+        '<p>Contact details are used to answer your enquiry and to run an engagement you have ' +
+        'asked for. We do not sell personal data, and we do not share it except with the ' +
+        'processors this site depends on to function: Stripe for payments, our hosting and email ' +
+        'providers, and anyone we are legally required to disclose to.</p>' +
+        '<p>We do not send marketing email. There is no mailing list.</p>',
+      sortOrder: 5,
+      settings: {}
+    },
+    {
+      id: 'privacy-retention',
+      type: 'content',
+      title: 'How long we keep it',
+      content:
+        '<p>Enquiries are kept while a conversation is live and for up to two years afterwards. ' +
+        'Records of a payment are kept for as long as tax and accounting rules require, ' +
+        'currently seven years. Server logs are kept for 90 days.</p>',
+      sortOrder: 6,
+      settings: {}
+    },
+    {
+      id: 'privacy-rights',
+      type: 'content',
+      title: 'Your rights',
+      content:
+        '<p>You can ask us for a copy of the personal data we hold about you, ask us to correct ' +
+        'it, or ask us to delete it, subject to records we are required to keep. Write to ' +
+        '<a href="mailto:info@generativ.cc">info@generativ.cc</a> and we will respond within ' +
+        '30 days.</p>' +
+        '<p>If this policy changes, the date at the top of this page changes with it.</p>',
+      sortOrder: 7,
+      settings: {}
+    }
+  ],
+  seo: {
+    title: 'Privacy Policy — Generativ Consulting Company',
+    description:
+      'What Generativ Consulting Company collects, how payment and client data are handled, how long records are kept, and how to request access or deletion.',
+    keywords: ['privacy policy', 'data handling', 'NDA', 'client data']
+  }
+};
+
+const termsPage: PageSeed = {
+  slug: 'terms',
+  title: 'Terms of Service',
+  content: '',
+  template: 'legal',
+  isPublished: true,
+  publishedAt: new Date().toISOString(),
+  sections: [
+    {
+      id: 'terms-intro',
+      type: 'hero',
+      title: 'Terms of Service',
+      content:
+        'The terms on which Generativ Consulting Company provides this site and the engagements ' +
+        'described on it. Buying an engagement means accepting them.',
+      sortOrder: 1,
+      settings: { updated: LEGAL_UPDATED }
+    },
+    {
+      id: 'terms-engagements',
+      type: 'content',
+      title: 'Engagements',
+      content:
+        '<p>The AI Opportunity Audit is a two-day, on-site operational review delivered as a ' +
+        'written report: a readiness assessment, three costed bottlenecks, and a 90-day ' +
+        'roadmap. Dates are agreed in writing after purchase and depend on the owner-operator ' +
+        'being present on the first morning.</p>' +
+        '<p>Implementation and retainer work is scoped separately, in writing, before it ' +
+        'begins. Nothing on this site is an offer to perform work outside a written scope.</p>',
+      sortOrder: 2,
+      settings: {}
+    },
+    {
+      id: 'terms-fees',
+      type: 'content',
+      title: 'Fees, credit and refunds',
+      content:
+        '<p>The audit is a flat $500 for a single site. Fees for other engagements are those ' +
+        'quoted in writing; prices shown as “on application” are not offers.</p>' +
+        '<ul>' +
+        '<li><strong>Credit.</strong> The audit fee is credited in full against an ' +
+        'implementation if you proceed with one within 90 days of delivery.</li>' +
+        '<li><strong>Refund.</strong> If the report does not identify at least $5,000 in ' +
+        'annual savings, the fee is refunded in full on request within 30 days of delivery. ' +
+        'The report is yours either way.</li>' +
+        '<li><strong>Cancellation.</strong> Cancel more than five business days before the ' +
+        'first scheduled day for a full refund. Inside five days, we will reschedule once at ' +
+        'no charge.</li>' +
+        '</ul>' +
+        '<p>Refunds are returned to the original payment method through Stripe.</p>',
+      sortOrder: 3,
+      settings: {}
+    },
+    {
+      id: 'terms-your-part',
+      type: 'content',
+      title: 'What we need from you',
+      content:
+        '<p>The review only holds if it reflects how the office actually works. That requires ' +
+        'access to the premises on the agreed days, the owner-operator present on the first ' +
+        'morning, and honest answers about the exceptions nobody wrote down. Findings are ' +
+        'calculated from the labour and time assumptions you state; if those are wrong, the ' +
+        'arithmetic built on them will be too.</p>',
+      sortOrder: 4,
+      settings: {}
+    },
+    {
+      id: 'terms-ip',
+      type: 'content',
+      title: 'Ownership',
+      content:
+        '<p>The report and any automation built for you under an implementation are yours on ' +
+        'payment, including the runbooks needed to operate them. We keep ownership of our ' +
+        'general methods, templates and pre-existing tooling, and the right to reuse the ' +
+        'know-how — never your data, your figures, or anything identifying your practice.</p>',
+      sortOrder: 5,
+      settings: {}
+    },
+    {
+      id: 'terms-liability',
+      type: 'content',
+      title: 'Limits',
+      content:
+        '<p>A review is advice about operations. It is not legal, medical, tax or financial ' +
+        'advice, and decisions made on the strength of it remain yours. Automation we build ' +
+        'runs behind human approval gates by design; you remain responsible for what your ' +
+        'staff approve.</p>' +
+        '<p>Except where liability cannot lawfully be limited, our total liability arising from ' +
+        'an engagement is capped at the fees paid for that engagement, and we are not liable ' +
+        'for indirect or consequential loss, including lost profits.</p>',
+      sortOrder: 6,
+      settings: {}
+    },
+    {
+      id: 'terms-site',
+      type: 'content',
+      title: 'This site',
+      content:
+        '<p>The figures published here — response times, failure rates, processing costs — are ' +
+        'drawn from the sources named beside them and are reference points, not promises about ' +
+        'your practice. The audit recalculates all of them against your own numbers.</p>' +
+        '<p>These terms are governed by the law of the State of New York. If we change them, ' +
+        'the date at the top of this page changes with it; the terms in force when you paid ' +
+        'are the ones that apply to that engagement.</p>' +
+        '<p>Questions: <a href="mailto:info@generativ.cc">info@generativ.cc</a>.</p>',
+      sortOrder: 7,
+      settings: {}
+    }
+  ],
+  seo: {
+    title: 'Terms of Service — Generativ Consulting Company',
+    description:
+      'Engagement terms for Generativ Consulting Company: what the audit delivers, fees, the credit and refund conditions, ownership of the work, and limits of liability.',
+    keywords: ['terms of service', 'engagement terms', 'refund policy']
+  }
+};
+
+// ---------------------------------------------------------------------------
 // Services — the offer ladder first, the underlying capability behind it.
 // ---------------------------------------------------------------------------
 
@@ -1292,7 +1531,7 @@ async function upsertPages(): Promise<{ created: number; updated: number }> {
   let created = 0;
   let updated = 0;
 
-  for (const seed of [homePage, aboutPage]) {
+  for (const seed of [homePage, aboutPage, privacyPage, termsPage]) {
     const matches = existing.filter(p => p.slug === seed.slug);
     if (matches.length === 0) {
       await createPage(seed);
@@ -1415,10 +1654,11 @@ async function upsertSiteSettings(): Promise<void> {
     address: current?.address,
     logo: current?.logo,
     favicon: current?.favicon,
-    socialLinks: current?.socialLinks || {
-      linkedin: 'https://linkedin.com/company/generativ-cc',
-      twitter: 'https://twitter.com/generativcc',
-      github: 'https://github.com/generativcc'
+    // Not `current?.socialLinks || …`: twitter.com/generativcc and
+    // github.com/generativcc both return 404, and deferring to the stored value
+    // meant the sync could never remove them.
+    socialLinks: {
+      linkedin: 'https://linkedin.com/company/generativ-cc'
     },
     footer: {
       copyrightText: `© ${new Date().getFullYear()} Generativ Consulting Company. All rights reserved.`,
