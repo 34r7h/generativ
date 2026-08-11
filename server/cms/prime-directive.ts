@@ -975,7 +975,7 @@ const services: ServiceSeed[] = [
   <li><strong>Extractable answers:</strong> the specific claims a model can lift — services, coverage area, credentials, prices, constraints — stated plainly on pages that are cheap to parse.</li>
   <li><strong>Structured data:</strong> schema for organization, services and locations, so the facts are machine-readable rather than inferred from prose.</li>
   <li><strong>Corroboration:</strong> the third-party sources assistants lean on — directories, professional registries, review platforms — reconciled so they agree with each other and with you.</li>
-  <li><strong>Re-measurement:</strong> the same question set re-run monthly, with transcripts, so you can see whether citation is rising.</li>
+  <li><strong>Re-measurement:</strong> the same question set re-run at 30 and 90 days, with transcripts, so you can see whether citation is rising. Continuous monthly monitoring is part of the Managed Operations Retainer if you want it to keep running.</li>
 </ul>
 
 <h3>What it does not do</h3>
@@ -986,20 +986,83 @@ const services: ServiceSeed[] = [
       'Facts stated so a model can extract them without inference',
       'Structured data for organization, services and locations',
       'Third-party sources reconciled against each other',
-      'Monthly re-measurement against the same question set'
+      'Re-measured at 30 and 90 days against the same question set'
     ],
+    pricing: '$2,000 one-time',
     pricingDetail: {
-      model: 'quote',
-      purchasable: false,
-      note: 'Scoped on the size of the question set and the number of locations.'
+      model: 'one_time',
+      amount: 200000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'Baseline, build, and re-measurement at 30 and 90 days. Up to 25 buyer ' +
+        'questions and 3 locations.'
     },
     isPublished: true,
-    sortOrder: 11,
+    sortOrder: 12,
     seo: {
       title: 'Answer Engine Optimization (AEO) | Generativ Consulting Company',
       description:
         'Getting named by AI assistants when buyers ask for a provider: measured baselines, extractable facts, structured data and monthly re-measurement.',
       keywords: ['answer engine optimization', 'AEO', 'AI search visibility', 'LLM citation']
+    }
+  },
+  {
+    slug: 'search-visibility-foundation',
+    title: 'Search Visibility Foundation',
+    shortDescription:
+      'The Technical SEO Foundation and the Answer Engine Optimization build, done once together, so you are findable by both a search engine and an assistant.',
+    fullDescription: `
+<p>These two are usually sold apart and are cheapest done together, because they touch the same pages on the same pass. One fixes whether a crawler can read you at all; the other fixes whether a model can quote you once it has. Doing the second without the first is decorating a building nobody can find.</p>
+
+<h3>What is included</h3>
+<ul>
+  <li><strong>The full technical pass:</strong> indexation and duplication resolved to one canonical site, redirect chains flattened, Core Web Vitals measured on real loads and fixed, a page per service and location, local profile and citations made consistent, analytics configured to attribute enquiries to pages.</li>
+  <li><strong>The full AEO build:</strong> a measured baseline of who the major assistants name today with transcripts kept, the claims about you stated so a model can extract them without inference, schema for organization, services and locations, and third-party sources reconciled so they agree with each other and with you.</li>
+  <li><strong>One structural pass, not two:</strong> the service and location pages are written once to satisfy both, which is where the saving comes from.</li>
+  <li><strong>Re-measurement at 30 and 90 days</strong> against the same question set and the same search console, so the effect is a number.</li>
+</ul>
+
+<h3>What it costs separately</h3>
+<p>The Technical SEO Foundation is $2,000 and the Answer Engine Optimization build is $2,000. Together they are $3,500.</p>
+
+<h3>What it does not do</h3>
+<p>Nobody can guarantee a ranking or a mention in a generated answer, and anyone who does is selling something else. What is controllable is whether the facts about you are present, consistent, fast to load and easy to extract. That is the whole mechanism, and it is the part that is broken in most practices we look at.</p>
+
+<h3>Delivered as</h3>
+<p>The fixes implemented directly, a prioritised list of anything left with the effort and expected effect of each item, and a short document your own developer can follow. It is a foundation, not a retainer — the point is that it ends.</p>
+    `,
+    benefits: [
+      'Both foundations in one pass, $500 less than buying them apart',
+      'Indexation, duplication and Core Web Vitals fixed, measured on real loads',
+      'A page per service and location, written to satisfy crawler and assistant at once',
+      'A recorded baseline of who assistants name today, with transcripts',
+      'Local profile, citations and third-party sources reconciled',
+      'Re-measured at 30 and 90 days; no retainer attached'
+    ],
+    pricing: '$3,500 one-time',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 350000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One site, up to 15 service and location pages, 25 buyer questions and ' +
+        '3 locations. $500 less than the two bought separately.'
+    },
+    isPublished: true,
+    sortOrder: 13,
+    seo: {
+      title: 'Search Visibility Foundation — $3,500 | Generativ Consulting Company',
+      description:
+        'A one-time engagement combining the technical SEO pass and the answer engine optimization build: indexation, Core Web Vitals, service and location pages, schema, citations and a measured assistant baseline.',
+      keywords: [
+        'search visibility',
+        'technical SEO',
+        'answer engine optimization',
+        'AEO',
+        'local SEO'
+      ]
     }
   },
   {
@@ -1029,13 +1092,20 @@ const services: ServiceSeed[] = [
       'Approval gates on anything expensive to reverse',
       'Cost per qualified lead reported against the prior period'
     ],
+    pricing: '$900 per month',
     pricingDetail: {
-      model: 'quote',
-      purchasable: false,
-      note: 'Scoped on account size and ad spend. Spend is paid to the platform and not marked up.'
+      model: 'subscription',
+      amount: 90000,
+      currency: 'usd',
+      interval: 'month',
+      intervalCount: 1,
+      purchasable: true,
+      note:
+        'Management only, for accounts up to $10,000 a month in spend. Ad spend is ' +
+        'paid to the platform directly and is never marked up. Cancel any month.'
     },
     isPublished: true,
-    sortOrder: 12,
+    sortOrder: 14,
     seo: {
       title: 'Agentic Search Marketing (SEM) | Generativ Consulting Company',
       description:
@@ -1070,13 +1140,18 @@ const services: ServiceSeed[] = [
       'Local profile and citations made consistent',
       'Analytics configured to attribute enquiries to pages'
     ],
+    pricing: '$2,000 one-time',
     pricingDetail: {
-      model: 'quote',
-      purchasable: false,
-      note: 'Scoped on the size of the site and the number of service and location pages.'
+      model: 'one_time',
+      amount: 200000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One site, up to 15 service and location pages. It ends — there is no ' +
+        'retainer attached to it.'
     },
     isPublished: true,
-    sortOrder: 13,
+    sortOrder: 11,
     seo: {
       title: 'Technical SEO Foundation | Generativ Consulting Company',
       description:
