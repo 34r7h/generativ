@@ -789,7 +789,7 @@ const services: ServiceSeed[] = [
         '($5,000) are bought directly.'
     },
     isPublished: true,
-    sortOrder: 6,
+    sortOrder: 7,
     seo: {
       title: 'Implementation Sprint — Generativ Consulting Company',
       description:
@@ -832,7 +832,7 @@ const services: ServiceSeed[] = [
       note: 'Entry tier. Cancel any time; larger estates are quoted on volume.'
     },
     isPublished: true,
-    sortOrder: 5,
+    sortOrder: 6,
     seo: {
       title: 'Managed Operations Retainer | Generativ Consulting Company',
       description:
@@ -873,7 +873,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted on the number of systems under test.'
     },
     isPublished: true,
-    sortOrder: 7,
+    sortOrder: 8,
     seo: {
       title: 'AI Safety Testing | Generativ Consulting Company',
       description:
@@ -913,7 +913,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted against measured throughput targets.'
     },
     isPublished: true,
-    sortOrder: 8,
+    sortOrder: 9,
     seo: {
       title: 'Parallelization Infrastructure | Generativ Consulting Company',
       description:
@@ -953,7 +953,7 @@ const services: ServiceSeed[] = [
       note: 'Standalone cohort of up to twelve people, on site. Included with an implementation handover.'
     },
     isPublished: true,
-    sortOrder: 9,
+    sortOrder: 10,
     seo: {
       title: 'Critical Thinking Education | Generativ Consulting Company',
       description:
@@ -994,7 +994,7 @@ const services: ServiceSeed[] = [
       note: 'Scoped on the size of the question set and the number of locations.'
     },
     isPublished: true,
-    sortOrder: 10,
+    sortOrder: 11,
     seo: {
       title: 'Answer Engine Optimization (AEO) | Generativ Consulting Company',
       description:
@@ -1035,7 +1035,7 @@ const services: ServiceSeed[] = [
       note: 'Scoped on account size and ad spend. Spend is paid to the platform and not marked up.'
     },
     isPublished: true,
-    sortOrder: 11,
+    sortOrder: 12,
     seo: {
       title: 'Agentic Search Marketing (SEM) | Generativ Consulting Company',
       description:
@@ -1076,12 +1076,69 @@ const services: ServiceSeed[] = [
       note: 'Scoped on the size of the site and the number of service and location pages.'
     },
     isPublished: true,
-    sortOrder: 12,
+    sortOrder: 13,
     seo: {
       title: 'Technical SEO Foundation | Generativ Consulting Company',
       description:
         'A one-time technical SEO pass: indexation, duplication, Core Web Vitals, service and location pages, local citations and analytics attribution.',
       keywords: ['technical SEO', 'core web vitals', 'local SEO', 'site audit']
+    }
+  },
+  {
+    slug: 'consulting-sessions',
+    title: 'Consulting Sessions',
+    shortDescription:
+      'Three one-hour sessions to use as you need them, on any question about automating the way your practice runs.',
+    fullDescription: `
+<p>Three hours of direct access, booked one hour at a time, remote. For the questions that do not need anybody on site and do not need anything built — they need an answer from someone who has done it before.</p>
+
+<h3>What people use them for</h3>
+<ul>
+  <li><strong>Reading a proposal before signing it.</strong> A vendor has quoted five figures for an AI project. What is actually being delivered, what is being assumed, and what happens when it does not work.</li>
+  <li><strong>Choosing between tools.</strong> Whether the automation already sitting inside the software you pay for covers the case, before buying anything new.</li>
+  <li><strong>Deciding whether a process is worth automating at all.</strong> The arithmetic, done out loud, on a process you already suspect is costing you.</li>
+  <li><strong>Unblocking something half-built.</strong> An automation that works except in the cases that matter, or one nobody trusts enough to leave running.</li>
+  <li><strong>Second opinion on an internal plan</strong>, including the parts nobody wants to say to the person who wrote it.</li>
+</ul>
+
+<h3>How it works</h3>
+<p>Book each hour when you need it, by video or phone. Send anything you want read beforehand and it is read beforehand — that is part of the hour, not billed on top. Notes and any recommendations are written up afterwards, in a paragraph or two, so a decision does not live only in someone's memory.</p>
+
+<h3>What it is not</h3>
+<p>This is advice, not a diagnostic. It is not the two-day on-site review: nobody watches how the work actually runs, so there is no readiness assessment, no costed bottlenecks and no 90-day roadmap. If what you need is to find out where the time and margin are going, buy the AI Opportunity Audit instead — it is $500 and it produces a document.</p>
+
+<h3>Terms</h3>
+<p>Use the three hours within six months. Unused hours are refunded on request. Reschedule any session up to 24 hours before it starts. The fee is not credited against an implementation; the audit fee is.</p>
+    `,
+    benefits: [
+      'Three one-hour sessions, booked when you need them',
+      'Remote, by video or phone, with no travel to pay for',
+      'Material sent in advance is read as part of the hour, not billed on top',
+      'Written notes after each session, so decisions are recorded',
+      'Reschedule up to 24 hours before; unused hours refunded within six months'
+    ],
+    pricing: '$250 for three hours',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 25000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'Three one-hour sessions, used within six months. Advice rather than a ' +
+        'diagnostic — not credited against an implementation.'
+    },
+    isPublished: true,
+    sortOrder: 2,
+    seo: {
+      title: 'Consulting Sessions — $250 for three hours | Generativ Consulting Company',
+      description:
+        'Three one-hour remote consulting sessions on automating a professional practice: reviewing vendor proposals, choosing tools, sizing a process, or unblocking a half-built automation.',
+      keywords: [
+        'AI consulting hours',
+        'automation consulting session',
+        'AI advisory',
+        'second opinion AI proposal'
+      ]
     }
   },
   {
@@ -1122,7 +1179,7 @@ const services: ServiceSeed[] = [
         'Your $500 audit fee is credited against it if the audit was in the last 90 days.'
     },
     isPublished: true,
-    sortOrder: 2,
+    sortOrder: 3,
     seo: {
       title: 'Inbound Response Automation | Generativ Consulting Company',
       description:
@@ -1176,7 +1233,7 @@ const services: ServiceSeed[] = [
         'Your $500 audit fee is credited against it if the audit was in the last 90 days.'
     },
     isPublished: true,
-    sortOrder: 3,
+    sortOrder: 4,
     seo: {
       title: 'Records and Intake Sprint — $2,500 | Generativ Consulting Company',
       description:
@@ -1234,7 +1291,7 @@ const services: ServiceSeed[] = [
         'Includes 30 days of monitored operation. Nothing renews automatically.'
     },
     isPublished: true,
-    sortOrder: 4,
+    sortOrder: 5,
     seo: {
       title: 'Practice Automation Package — $5,000 | Generativ Consulting Company',
       description:
