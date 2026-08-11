@@ -331,10 +331,14 @@ onMounted(() => {
       <!-- CTA Section -->
       <section class="cta-section">
         <div class="container">
-          <h2>Ready to Transform Your AI Implementation?</h2>
-          <p>Schedule a free consultation with our experts to discuss your needs.</p>
+          <h2>Start with the review</h2>
+          <p>
+            Two days on site, $500. Credited in full against an implementation if you proceed,
+            or refunded if it does not identify at least $5,000 in annual savings.
+          </p>
           <div class="cta-buttons">
-            <router-link to="/contact" class="primary-button">Request Consultation</router-link>
+            <router-link to="/services/ai-opportunity-audit" class="primary-button">Book the audit</router-link>
+            <router-link to="/contact" class="secondary-button">Ask a question first</router-link>
           </div>
         </div>
       </section>
@@ -380,7 +384,7 @@ onMounted(() => {
 /* Service Hero */
 .service-hero {
   padding: 80px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .service-hero .container {
@@ -400,7 +404,7 @@ onMounted(() => {
   width: 60px;
   height: 60px;
   border-radius: var(--border-radius);
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   display: flex;
   align-items: center;
@@ -412,7 +416,7 @@ onMounted(() => {
   width: 44px;
   height: 44px;
   border-radius: var(--border-radius);
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   color: var(--primary-color);
   display: flex;
   align-items: center;
@@ -430,20 +434,6 @@ onMounted(() => {
   font-size: 1.2rem;
   color: var(--light-text);
   margin-bottom: 30px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
 }
 
 .service-hero-image img {
@@ -491,7 +481,8 @@ onMounted(() => {
 
 /* Service Sidebar */
 .service-sidebar {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -583,7 +574,7 @@ onMounted(() => {
 }
 
 .service-cta {
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   padding: 20px;
   border-radius: var(--border-radius);
 }
@@ -600,7 +591,7 @@ onMounted(() => {
 /* Related Services */
 .related-services {
   padding: 60px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .related-services h2 {
@@ -616,7 +607,8 @@ onMounted(() => {
 }
 
 .service-card {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -650,44 +642,23 @@ onMounted(() => {
 
 /* CTA Section */
 .cta-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
+  padding: clamp(56px, 7vw, 92px) 0;
 }
 
 .cta-section h2 {
-  color: inherit;
-  font-size: 2rem;
-  margin-bottom: 15px;
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
 }
 
 .cta-section p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+  font-size: 1.0625rem;
+  margin-bottom: 28px;
 }
 
 .cta-buttons {
   display: flex;
-  justify-content: center;
-}
-
-.secondary-button {
-  background-color: transparent;
-  border: 1px solid var(--white);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.secondary-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 /* Service-specific styling */
@@ -730,17 +701,5 @@ onMounted(() => {
     margin-left: auto;
     margin-right: auto;
   }
-}
-
-.cta-section .primary-button,
-.request-section .primary-button {
-  background-color: var(--white);
-  color: var(--dark-blue);
-}
-
-.cta-section .primary-button:hover,
-.request-section .primary-button:hover {
-  background-color: var(--light-blue);
-  color: var(--dark-blue);
 }
 </style>

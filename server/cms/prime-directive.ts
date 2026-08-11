@@ -62,24 +62,28 @@ export const PRIME_DIRECTIVE = {
 // engagement research; each figure is attributed where it is rendered.
 const LEAK_STATS = [
   {
-    value: '42%',
-    label: 'of local businesses lose money to missed calls',
-    detail: 'Typically over $500 a month in attributable revenue.'
+    value: '21×',
+    label: 'more likely to qualify a lead answered in 5 minutes than in 30',
+    detail: 'An inbound enquiry left for half an hour is a different asset from one answered at once.',
+    source: 'MIT / InsideSales Lead Response Management study (Oldroyd)'
+  },
+  {
+    value: '80%',
+    label: 'of AI projects fail — twice the rate of IT projects without AI',
+    detail: 'The causes are organisational: misaligned purpose, weak data foundations, sponsorship that fades.',
+    source: 'RAND, RR-A2680-1, 2024'
+  },
+  {
+    value: '95%',
+    label: 'of enterprise GenAI pilots show no measurable P&L impact',
+    detail: 'Pilots stall because the tool never learns the workflow it was dropped into.',
+    source: 'MIT Project NANDA, State of AI in Business 2025'
   },
   {
     value: '$12–$20',
-    label: 'labor cost per manually processed form',
-    detail: 'Manual document processing runs 10–30 minutes per file.'
-  },
-  {
-    value: '12 min',
-    label: 'industry-standard first response to an inbound lead',
-    detail: 'Automated qualification and routing responds in roughly 12 seconds.'
-  },
-  {
-    value: '85%',
-    label: 'of failed AI projects trace back to data quality',
-    detail: 'Duplicate records and unreconciled systems, not model capability.'
+    label: 'labour cost per manually processed form',
+    detail: 'Manual document processing runs 10 to 30 minutes per file.',
+    source: 'Small-business automation research, 2026'
   }
 ];
 
@@ -104,6 +108,13 @@ const VERTICALS = [
     before: 'Manual review of contracts, referral packets and tax documents',
     after: 'Extraction in 1 to 2 seconds behind a human approval gate',
     proof: 'Designed for AI-disclosure requirements such as 15th Judicial Circuit AO 2.109-4/26.'
+  },
+  {
+    title: 'Trucking and logistics',
+    leak: 'Empty miles run well above the point at which a lane stops paying for itself.',
+    before: 'Deadhead at the 20 to 28 per cent industry range; dispatch working from a load board by hand',
+    after: 'Return loads matched against the ELD feed before the truck is empty',
+    proof: 'Fifteen per cent is the usual profitability threshold; published optimisation studies report around 12.5 per cent total cost reduction.'
   }
 ];
 
@@ -179,8 +190,17 @@ const homePage: PageSeed = {
           'Law and tax',
           'Professional services, 5 to 50 people'
         ],
-        ctaPrimary: { text: 'Start with an audit', url: '/services/ai-opportunity-audit' },
-        ctaSecondary: { text: 'See all services', url: '/services' }
+        ctaPrimary: { text: 'Book the audit — $500', url: '/services/ai-opportunity-audit' },
+        ctaSecondary: { text: 'See all services', url: '/services' },
+        terms:
+          'Credited in full against an implementation, or refunded if the review does not ' +
+          'identify at least $5,000 in annual savings.',
+        // Three figures pinned to the bottom of the first screen.
+        proof: [
+          { value: '2 days', label: 'On site, owner-operator present' },
+          { value: '3 bottlenecks', label: 'Each costed, with the arithmetic shown' },
+          { value: '$5,000', label: 'Minimum annual saving identified, or refunded' }
+        ]
       }
     },
     {
@@ -188,39 +208,87 @@ const homePage: PageSeed = {
       type: 'content',
       title: 'How the audit runs',
       content:
-        '<p>Two days, on-site, with the owner-operator present on the first morning. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.</p>',
+        'Two days, on-site, with the owner-operator present on the first morning. The diagnostic only holds if it captures how the office actually works, including the exceptions nobody wrote down.',
       sortOrder: 5,
-      settings: { steps: ONSITE_SCHEDULE }
+      settings: { eyebrow: 'Method', steps: ONSITE_SCHEDULE }
     },
     {
       id: 'verticals',
       type: 'content',
       title: 'Where the time goes',
       content:
-        '<p>Three operational patterns we have measured in real estate, clinical and legal practices.</p>',
+        'Four operational patterns we have measured — in property, clinical, legal and logistics practices. Each one is a leak with a number attached to it.',
       sortOrder: 2,
-      settings: { verticals: VERTICALS }
+      settings: { eyebrow: 'Where it leaks', verticals: VERTICALS }
     },
     {
       id: 'evidence',
       type: 'content',
       title: 'Reference figures',
       content:
-        '<p>Baselines we start from. The audit recalculates each against your own numbers rather than assuming them.</p>',
+        'Baselines we start from, each attributed. The audit recalculates all of them against your own numbers rather than assuming them.',
       sortOrder: 3,
       settings: {
+        eyebrow: 'Evidence',
         stats: LEAK_STATS,
         statsNote:
-          'Missed-call and form-processing figures from 2026 small-business automation research; lead-response benchmark from industry reporting; data-quality figure from published AI project post-mortems.'
+          'The 21× multiplier is from the MIT / InsideSales Lead Response Management study and is frequently misattributed to Harvard Business Review, which published the related 2011 audit of 2,241 firms. Failure-rate figures are from RAND RR-A2680-1 (2024) and MIT Project NANDA, State of AI in Business (2025). Form-processing costs are from 2026 small-business automation research.'
       }
     },
     {
       id: 'services-overview',
       type: 'services',
       title: 'Services',
-      content: 'What follows an audit, and the practice behind it.',
+      content: 'What follows an audit, and the practice behind it. Prices are the ones you pay.',
       sortOrder: 4,
-      settings: {}
+      settings: { eyebrow: 'Offer' }
+    },
+    {
+      id: 'objections',
+      type: 'content',
+      title: 'The reasonable objections',
+      content:
+        'The ones worth answering before anybody spends money. If the answer here does not satisfy you, it will not survive two days on site either.',
+      sortOrder: 6,
+      settings: {
+        eyebrow: 'Straight answers',
+        faq: [
+          {
+            question: 'We already use ChatGPT.',
+            answer:
+              'That is a tool for a person, not a system for a practice. What we build runs without ' +
+              'anybody prompting it, writes into the CRM or EHR you already use, and leaves a record ' +
+              'of every decision it made. Those are different problems.'
+          },
+          {
+            question: 'Is it safe to let software act on our behalf?',
+            answer:
+              'Nothing acts unsupervised. The system drafts the action and a member of staff approves ' +
+              'it; the approval gate is the design, not a setting. Every non-deterministic decision is ' +
+              'traceable to the inputs that produced it.'
+          },
+          {
+            question: 'We have been burned by an AI project before.',
+            answer:
+              'Most people have. RAND puts AI project failure at over 80 per cent, twice the rate of ' +
+              'IT projects without AI, and the causes are organisational rather than technical. That ' +
+              'is the argument for a $500 review before a five-figure build, not against it.'
+          },
+          {
+            question: 'What if the review finds nothing worth doing?',
+            answer:
+              'Then you get the report and your money back. The fee is refunded if we do not identify ' +
+              'at least $5,000 in annual savings, and credited in full against the build if you proceed.'
+          },
+          {
+            question: 'Who sees our data?',
+            answer:
+              'The review is observational. Live customer records and transaction databases are not ' +
+              'copied, duplicated or stored, and an NDA covering every process, metric and conversation ' +
+              'is signed before the first day.'
+          }
+        ]
+      }
     },
     {
       id: 'closing-cta',
@@ -229,10 +297,12 @@ const homePage: PageSeed = {
       content:
         'Two days on site, $500. Credited in full against an implementation if you proceed, ' +
         'or refunded if it does not identify at least $5,000 in annual savings.',
-      sortOrder: 7,
+      sortOrder: 8,
       settings: {
-        ctaPrimary: { text: 'Book the audit', url: '/contact' },
-        ctaSecondary: { text: 'What it covers', url: '/services/ai-opportunity-audit' }
+        eyebrow: 'Next step',
+        invert: true,
+        ctaPrimary: { text: 'Book the audit', url: '/services/ai-opportunity-audit' },
+        ctaSecondary: { text: 'Ask a question first', url: '/contact' }
       }
     },
     {
@@ -240,8 +310,8 @@ const homePage: PageSeed = {
       type: 'team',
       title: 'Team',
       content: '',
-      sortOrder: 6,
-      settings: { showMembers: 3, ctaText: 'Full team', ctaUrl: '/team' }
+      sortOrder: 7,
+      settings: { eyebrow: 'Who does the work', showMembers: 4, ctaText: 'Full team', ctaUrl: '/team' }
     }
   ],
   seo: {

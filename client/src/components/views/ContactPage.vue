@@ -405,23 +405,23 @@ function setFormType(type) {
         
         <div class="faq-grid">
           <div class="faq-item">
-            <h3>How long does an assessment typically take?</h3>
-            <p>Our standard assessments are typically completed within 2-3 weeks, depending on the complexity and scale of your AI systems.</p>
+            <h3>How long does the review take?</h3>
+            <p>Two days on site. The written report — readiness assessment, three costed bottlenecks and a 90-day roadmap — is delivered before we leave on the second day.</p>
           </div>
-          
+
           <div class="faq-item">
-            <h3>Do you offer remote services?</h3>
-            <p>Yes, we offer both on-site and remote consulting services to accommodate clients around the world.</p>
+            <h3>What does it cost, and what if it finds nothing?</h3>
+            <p>$500 flat. It is credited in full against an implementation if you proceed, and refunded if the review does not identify at least $5,000 in annual savings.</p>
           </div>
-          
+
           <div class="faq-item">
-            <h3>What industries do you specialize in?</h3>
-            <p>We work with clients across various industries including finance, healthcare, media, and technology, with particular expertise in high-regulatory environments.</p>
+            <h3>Which practices do you work with?</h3>
+            <p>Owner-operated practices of roughly 5 to 50 people: real estate and property management, dental and medical, law and tax, and trucking and logistics.</p>
           </div>
-          
+
           <div class="faq-item">
-            <h3>How do I prepare for an initial consultation?</h3>
-            <p>We recommend preparing a brief overview of your current AI systems, key challenges, and desired outcomes to make the most of our initial discussion.</p>
+            <h3>Do you need access to our systems?</h3>
+            <p>No. The review is observational — live customer records and transaction databases are not copied, duplicated or stored, and an NDA is signed before the first day.</p>
           </div>
         </div>
       </div>
@@ -438,7 +438,7 @@ function setFormType(type) {
 
 /* Hero Section */
 .page-hero {
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   padding: 80px 0;
 }
 
@@ -476,45 +476,48 @@ function setFormType(type) {
 /* Form Type Selector */
 .form-type-selector {
   display: flex;
+  gap: 4px;
   margin-bottom: 30px;
-  background-color: var(--light-blue);
-  border-radius: var(--border-radius);
+  padding: 4px;
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
   overflow: hidden;
 }
 
 .form-type-button {
   flex: 1;
-  padding: 12px;
+  padding: 11px;
   border: none;
   background: none;
   cursor: pointer;
   font-weight: 500;
-  color: var(--text-color);
-  transition: var(--transition);
-  font-size: 0.9rem;
+  color: var(--g-text-dim);
+  transition: color 150ms ease, background-color 150ms ease;
+  font-size: 0.875rem;
 }
 
 .form-type-button.active {
-  background-color: var(--primary-color);
-  color: var(--white);
+  background-color: var(--g-volt-wash);
+  color: var(--g-volt);
+  border-radius: 3px;
 }
 
 .form-type-button:not(.active):hover {
-  background-color: rgba(76, 111, 255, 0.1);
+  color: var(--g-text);
 }
 
 /* Contact Form */
 .contact-form-container {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   padding: 30px;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
 
 .contact-form h2 {
-  font-size: 1.8rem;
-  color: var(--dark-blue);
-  margin-bottom: 20px;
+  font-size: 1.375rem;
+  margin-bottom: 22px;
 }
 
 .form-row {
@@ -537,7 +540,7 @@ label {
 input, textarea, select {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--g-line-2);
   border-radius: var(--border-radius);
   font-size: 1rem;
 }
@@ -553,27 +556,6 @@ input:focus, textarea:focus, select:focus {
 
 .form-actions {
   margin-top: 30px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: var(--transition);
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-}
-
-.primary-button:disabled {
-  background-color: #a0a0a0;
-  cursor: not-allowed;
 }
 
 /* Success and Error Messages */
@@ -606,30 +588,28 @@ input:focus, textarea:focus, select:focus {
 
 /* Contact Info */
 .contact-info {
-  align-self: flex-start;
-  max-width: 100%;
+  align-self: stretch;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px 48px;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  padding: 22px 30px;
-  border-radius: var(--border-radius);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
+  color: var(--g-text);
+  padding: 22px 26px;
+  border-radius: var(--g-r);
 }
 
 .contact-info h2,
-.contact-info h3 {
-  color: inherit;
-}
+.contact-info h3 { color: inherit; }
 
 .contact-info h2 {
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-}
-
-.contact-info h2 {
-  font-size: 1.15rem;
+  font-family: var(--g-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-text-faint);
   margin: 0;
   white-space: nowrap;
 }
@@ -637,31 +617,33 @@ input:focus, textarea:focus, select:focus {
 .info-item {
   display: flex;
   align-items: center;
-  margin-bottom: 25px;
-  align-items: flex-start;
+  gap: 12px;
 }
 
 .info-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  color: var(--white);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--g-r);
+  border: 1px solid var(--g-line-2);
+  color: var(--g-volt);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 15px;
   flex-shrink: 0;
 }
 
 .info-content h3 {
-  font-size: 1.2rem;
-  margin-bottom: 5px;
+  font-size: 0.8125rem;
+  color: var(--g-text-faint);
+  font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .info-content p {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--g-text);
+  font-size: 0.9375rem;
   line-height: 1.5;
+  margin: 0;
 }
 
 /* Address and hours are free text from the admin; keep the line breaks the
@@ -671,13 +653,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 .info-content a {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--g-text);
   text-decoration: none;
   transition: var(--transition);
 }
 
 .info-content a:hover {
-  color: var(--white);
+  color: var(--g-volt);
   text-decoration: underline;
 }
 
@@ -746,14 +728,13 @@ input:focus, textarea:focus, select:focus {
 
 /* FAQ Section */
 .faq-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
+  padding: clamp(56px, 7vw, 92px) 0;
+  border-top: 1px solid var(--g-line);
 }
 
 .faq-section h2 {
-  font-size: 2.5rem;
-  color: var(--dark-blue);
-  margin-bottom: 50px;
+  font-size: var(--g-h2);
+  margin-bottom: clamp(34px, 4vw, 50px);
 }
 
 .faq-grid {
@@ -763,17 +744,18 @@ input:focus, textarea:focus, select:focus {
 }
 
 .faq-item {
-  background-color: var(--white);
-  padding: 25px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
+  padding: 26px;
+  border-radius: var(--g-r);
 }
 
 .faq-item h3 {
-  font-size: 1.3rem;
-  color: var(--dark-blue);
-  margin-bottom: 15px;
+  font-size: 1.0625rem;
+  margin-bottom: 10px;
 }
+
+.faq-item p { font-size: 0.9375rem; }
 
 .faq-item p {
   color: var(--light-text);
@@ -782,20 +764,17 @@ input:focus, textarea:focus, select:focus {
 
 /* CTA Section */
 .cta-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
+  padding: clamp(56px, 7vw, 92px) 0;
 }
 
 .cta-section h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
 }
 
 .cta-section p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.0625rem;
+  margin-bottom: 28px;
 }
 
 /* Responsive */

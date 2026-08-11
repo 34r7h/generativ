@@ -2,20 +2,18 @@
 import { ref, computed, onMounted } from 'vue';
 import { cmsAPI } from '../../api/client';
 import AppIcon from '../shared/AppIcon.vue';
-import BrandGraphic from '../shared/BrandGraphic.vue';
 import HeroAnimation from '../shared/HeroAnimation.vue';
 import AvatarPortrait from '../shared/AvatarPortrait.vue';
-import { iconFor, verticalIcon } from '../../config/icons';
 import { memberSlug } from '../../config/people';
 
 // Summary cards carry the opening sentences only.
 function bioLead(bio) {
   const first = (bio || '').split(/\n\s*\n/)[0].trim();
-  if (first.length <= 210) return first;
+  if (first.length <= 180) return first;
   // Cut on a sentence boundary — a lead clipped mid-clause reads as a bug.
-  const cut = first.slice(0, 210);
+  const cut = first.slice(0, 180);
   const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('? '), cut.lastIndexOf('! '));
-  return stop > 60 ? cut.slice(0, stop + 1) : cut.slice(0, cut.lastIndexOf(' ')).trimEnd() + '\u2026';
+  return stop > 60 ? cut.slice(0, stop + 1) : cut.slice(0, cut.lastIndexOf(' ')).trimEnd() + '…';
 }
 
 const loading = ref(true);
@@ -31,402 +29,404 @@ const orderedSections = computed(() =>
   [...(pageData.value?.sections || [])].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
 );
 
-
-// Fetch page data
-async function fetchPageData() {
-  try {
-    loading.value = true;
-    console.log('Fetching home page data...');
-
-    // Get site settings
-    try {
-      const settingsResponse = await cmsAPI.getSiteSettings();
-      if (settingsResponse.success && settingsResponse.settings) {
-        siteSettings.value = settingsResponse.settings;
-        console.log('Site settings loaded:', siteSettings.value);
-      }
-    } catch (settingsError) {
-      console.warn('Failed to load site settings:', settingsError);
-    }
-
-    // Get home page data
-    try {
-      const pageResponse = await cmsAPI.getPageBySlug('home');
-      console.log('Home page response:', pageResponse);
-      if (pageResponse.success && pageResponse.page) {
-        pageData.value = pageResponse.page;
-        console.log('Home page data loaded:', pageData.value);
-      } else {
-        error.value = 'Home page content not found';
-      }
-    } catch (pageError) {
-      console.error('Failed to load home page:', pageError);
-      error.value = 'Failed to load home page content';
-    }
-
-    // Get services
-    try {
-      const servicesResponse = await cmsAPI.getServices();
-      console.log('Services response:', servicesResponse);
-      if (servicesResponse.success) {
-        services.value = [...(servicesResponse.services || [])]
-          .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
-        console.log('Services loaded:', services.value);
-      }
-    } catch (servicesError) {
-      console.error('Failed to load services:', servicesError);
-    }
-
-    // Get team members
-    try {
-      const teamResponse = await cmsAPI.getTeamMembers();
-      console.log('Team members response:', teamResponse);
-      if (teamResponse.success) {
-        teamMembers.value = teamResponse.members || [];
-        console.log('Team members loaded:', teamMembers.value);
-      }
-    } catch (teamError) {
-      console.error('Failed to load team members:', teamError);
-    }
-
-    loading.value = false;
-  } catch (err) {
-    console.error('Error fetching page data:', err);
-    error.value = 'Failed to load page content';
-    loading.value = false;
-  }
+// Section index for the mono counter in each band header. Computed from the
+// rendered order so inserting a section in the admin renumbers the rest.
+function indexOf(section) {
+  const i = orderedSections.value.findIndex((s) => s.id === section.id);
+  return String(i + 1).padStart(2, '0');
 }
 
-onMounted(() => {
-  fetchPageData();
-});
+const hero = computed(() => orderedSections.value.find((s) => s.type === 'hero'));
+const bodySections = computed(() => orderedSections.value.filter((s) => s.type !== 'hero'));
+
+/*
+ * Price shown on a service row.
+ *
+ * This column is one line by design — the row rhythm is the point of the list.
+ * Several `pricing` strings are full sentences ("Included in implementation and
+ * retainer engagements; standalone assessments from $15,000"), so the figure is
+ * extracted rather than printed: the stored amount when there is one, otherwise
+ * the first money value in the string, otherwise "On application". The full
+ * wording is on the service page.
+ */
+function priceOf(service) {
+  const detail = service.pricingDetail;
+
+  if (detail?.purchasable && typeof detail.amount === 'number') {
+    const formatted = `$${(detail.amount / 100).toLocaleString('en-US')}`;
+    return detail.model === 'subscription' ? `${formatted}/mo` : formatted;
+  }
+
+  const text = service.pricing || '';
+  const money = text.match(/\$[\d,]+(?:[–-]\s*\$?[\d,]+)?/);
+  if (!money) return 'On application';
+
+  const prefix = /\bfrom\b/i.test(text) ? 'From ' : '';
+  const suffix = /\b(per month|\/mo|monthly)\b/i.test(text) ? '/mo' : '';
+  return `${prefix}${money[0].replace(/\s+/g, '')}${suffix}`;
+}
+
+async function fetchPageData() {
+  loading.value = true;
+  error.value = null;
+
+  try {
+    const settingsResponse = await cmsAPI.getSiteSettings();
+    if (settingsResponse.success && settingsResponse.settings) {
+      siteSettings.value = settingsResponse.settings;
+    }
+  } catch (settingsError) {
+    console.warn('Failed to load site settings:', settingsError);
+  }
+
+  try {
+    const pageResponse = await cmsAPI.getPageBySlug('home');
+    if (pageResponse.success && pageResponse.page) {
+      pageData.value = pageResponse.page;
+    } else {
+      error.value = 'Home page content not found';
+    }
+  } catch (pageError) {
+    console.error('Failed to load home page:', pageError);
+    error.value = 'Failed to load home page content';
+  }
+
+  try {
+    const servicesResponse = await cmsAPI.getServices();
+    if (servicesResponse.success) {
+      services.value = [...(servicesResponse.services || [])]
+        .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+    }
+  } catch (servicesError) {
+    console.error('Failed to load services:', servicesError);
+  }
+
+  try {
+    const teamResponse = await cmsAPI.getTeamMembers();
+    if (teamResponse.success) teamMembers.value = teamResponse.members || [];
+  } catch (teamError) {
+    console.error('Failed to load team members:', teamError);
+  }
+
+  loading.value = false;
+}
+
+onMounted(fetchPageData);
 </script>
 
 <template>
   <div class="home-page">
-    <!-- Loading State -->
-    <div v-if="loading" class="loading-state">
+    <div v-if="loading" class="state-panel">
       <div class="spinner"></div>
-      <p>Loading...</p>
     </div>
 
-    <!-- Error State -->
-    <div v-else-if="error" class="error-state">
+    <div v-else-if="error" class="state-panel">
       <p>{{ error }}</p>
-      <button @click="fetchPageData">Try Again</button>
+      <button class="g-btn g-btn--ghost" @click="fetchPageData">Try again</button>
     </div>
 
-    <!-- Content -->
-    <div v-else>
-      <!-- Dynamic Page Content -->
-      <div v-if="pageData">
-        <!-- Render page sections dynamically -->
-        <div v-for="section in orderedSections" :key="section.id" class="page-section">
-          
-          <!-- Hero Section -->
-          <section v-if="section.type === 'hero'" class="hero-section">
-            <div class="container">
-              <div class="hero-content">
-                <h1>{{ section.title }}</h1>
-                <p class="hero-subhead" v-if="section.settings?.subhead">
-                  {{ section.settings.subhead }}
-                </p>
-                <p class="hero-lede">{{ section.content }}</p>
-                <ul class="hero-serves" v-if="section.settings?.serves">
-                  <li v-for="item in section.settings.serves" :key="item">
-                    <AppIcon name="check" :size="15" />
-                    <span>{{ item }}</span>
-                  </li>
-                </ul>
-                <div class="hero-cta" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
-                  <router-link 
-                    v-if="section.settings?.ctaPrimary" 
-                    :to="section.settings.ctaPrimary.url" 
-                    class="primary-button"
-                  >
-                    {{ section.settings.ctaPrimary.text }}
-                  </router-link>
-                  <router-link 
-                    v-if="section.settings?.ctaSecondary" 
-                    :to="section.settings.ctaSecondary.url" 
-                    class="secondary-button"
-                  >
-                    {{ section.settings.ctaSecondary.text }}
-                  </router-link>
-                </div>
-              </div>
-              <div class="hero-graphic">
-                <HeroAnimation />
-              </div>
-            </div>
-          </section>
+    <template v-else-if="pageData">
+      <!-- ================= HERO ================= -->
+      <section v-if="hero" class="hero">
+        <div class="hero-grid-lines" aria-hidden="true"></div>
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <h1>{{ hero.title }}</h1>
+            <p class="hero-subhead" v-if="hero.settings?.subhead">{{ hero.settings.subhead }}</p>
+            <p class="hero-lede">{{ hero.content }}</p>
 
-          <!-- Services Section -->
-          <section v-else-if="section.type === 'services'" class="services-section">
-            <div class="container">
-              <div class="section-header">
-                <h2>{{ section.title }}</h2>
-                <p class="section-intro">{{ section.content }}</p>
-              </div>
+            <ul class="hero-serves" v-if="hero.settings?.serves">
+              <li v-for="item in hero.settings.serves" :key="item" class="g-tag">{{ item }}</li>
+            </ul>
 
-              <div class="services-grid" v-if="services.length">
-                <div
-                  v-for="service in services"
-                  :key="service.id"
-                  class="service-card"
-                >
-                  <div class="service-icon">
-                    <AppIcon :name="iconFor(service.title)" :size="26" />
-                  </div>
-                  <h3>{{ service.title }}</h3>
-                  <p>{{ service.shortDescription }}</p>
-                  <router-link :to="`/services/${service.slug}`" class="service-link">
-                    Learn More
-                  </router-link>
-                </div>
-              </div>
-
-              <div v-else class="no-services">
-                <p>No services available yet.</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Content Section -->
-          <section v-else-if="section.type === 'content'" class="content-section">
-            <div class="container">
-              <h2>{{ section.title }}</h2>
-              <div class="content-text" v-html="section.content"></div>
-              
-              <!-- Stats (leak factors / measured impact) -->
-              <div v-if="section.settings?.stats" class="stats-grid">
-                <div
-                  v-for="stat in section.settings.stats"
-                  :key="stat.label"
-                  class="stat-card"
-                >
-                  <div class="stat-value">{{ stat.value }}</div>
-                  <div class="stat-label">{{ stat.label }}</div>
-                  <p class="stat-detail" v-if="stat.detail">{{ stat.detail }}</p>
-                </div>
-              </div>
-              <p class="stats-note" v-if="section.settings?.statsNote">
-                {{ section.settings.statsNote }}
-              </p>
-
-              <!-- Verticals (leak to fix, by industry) -->
-              <div v-if="section.settings?.verticals" class="verticals-grid">
-                <div
-                  v-for="vertical in section.settings.verticals"
-                  :key="vertical.title"
-                  class="vertical-card"
-                >
-                  <div class="vertical-icon">
-                    <AppIcon :name="verticalIcon(vertical.title)" :size="22" />
-                  </div>
-                  <h3>{{ vertical.title }}</h3>
-                  <p class="vertical-leak">{{ vertical.leak }}</p>
-                  <div class="vertical-shift">
-                    <span class="shift-before">{{ vertical.before }}</span>
-                    <AppIcon name="arrowRight" :size="18" class="shift-arrow" />
-                    <span class="shift-after">{{ vertical.after }}</span>
-                  </div>
-                  <p class="vertical-proof" v-if="vertical.proof">{{ vertical.proof }}</p>
-                </div>
-              </div>
-
-              <!-- Offer ladder -->
-              <div v-if="section.settings?.tiers" class="tiers-grid">
-                <div
-                  v-for="(tier, index) in section.settings.tiers"
-                  :key="tier.name"
-                  class="tier-card"
-                  :class="{ 'tier-featured': index === 0 }"
-                >
-                  <h3>{{ tier.name }}</h3>
-                  <div class="tier-price">{{ tier.price }}</div>
-                  <div class="tier-timeline">{{ tier.timeline }}</div>
-                  <p class="tier-objective">{{ tier.objective }}</p>
-                </div>
-              </div>
-
-              <!-- Steps (delivery schedule) -->
-              <div v-if="section.settings?.steps" class="steps-list">
-                <div
-                  v-for="(step, index) in section.settings.steps"
-                  :key="step.title"
-                  class="step-item"
-                >
-                  <div class="step-number">{{ index + 1 }}</div>
-                  <div class="step-content">
-                    <h3>{{ step.title }}</h3>
-                    <p>{{ step.description }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Value Points -->
-              <div v-if="section.settings?.valuePoints" class="value-points">
-                <div 
-                  v-for="point in section.settings.valuePoints" 
-                  :key="point.title"
-                  class="value-point"
-                >
-                  <div class="value-icon"><AppIcon name="check" :size="18" /></div>
-                  <div class="value-text">
-                    <h4>{{ point.title }}</h4>
-                    <p>{{ point.description }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- CTA -->
-              <router-link 
-                v-if="section.settings?.ctaText && section.settings?.ctaUrl" 
-                :to="section.settings.ctaUrl" 
-                class="text-button"
+            <div class="hero-cta">
+              <router-link
+                v-if="hero.settings?.ctaPrimary"
+                :to="hero.settings.ctaPrimary.url"
+                class="g-btn g-btn--primary"
               >
-                <span>{{ section.settings.ctaText }}</span>
-                <AppIcon name="arrowRight" :size="18" />
+                {{ hero.settings.ctaPrimary.text }}
+              </router-link>
+              <router-link
+                v-if="hero.settings?.ctaSecondary"
+                :to="hero.settings.ctaSecondary.url"
+                class="g-btn g-btn--ghost"
+              >
+                {{ hero.settings.ctaSecondary.text }}
               </router-link>
             </div>
-          </section>
 
-          <!-- Team Section -->
-          <section v-else-if="section.type === 'team'" class="team-section">
-            <div class="container">
-              <div class="section-header">
-                <h2>{{ section.title }}</h2>
-                <p class="section-intro">{{ section.content }}</p>
-              </div>
-
-              <div class="team-grid" v-if="teamMembers.length">
-                <router-link
-                  v-for="member in teamMembers.slice(0, section.settings?.showMembers || 3)"
-                  :key="member.id"
-                  :to="`/team/${memberSlug(member)}`"
-                  class="team-card"
-                >
-                  <div class="member-photo">
-                    <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
-                    <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
-                  </div>
-                  <h3>{{ member.name }}</h3>
-                  <p class="member-position">{{ member.position }}</p>
-                  <p class="member-bio">{{ bioLead(member.bio) }}</p>
-                </router-link>
-              </div>
-
-              <div v-else class="no-team">
-                <p>No team members available yet.</p>
-              </div>
-
-              <div class="team-cta" v-if="section.settings?.ctaText && section.settings?.ctaUrl">
-                <router-link :to="section.settings.ctaUrl" class="secondary-button">
-                  {{ section.settings.ctaText }}
-                </router-link>
-              </div>
-            </div>
-          </section>
-
-          <!-- CTA Section -->
-          <section v-else-if="section.type === 'cta'" class="cta-section">
-            <div class="container">
-              <h2>{{ section.title }}</h2>
-              <p>{{ section.content }}</p>
-              <div class="cta-buttons" v-if="section.settings?.ctaPrimary || section.settings?.ctaSecondary">
-                <router-link 
-                  v-if="section.settings?.ctaPrimary" 
-                  :to="section.settings.ctaPrimary.url" 
-                  class="primary-button"
-                >
-                  {{ section.settings.ctaPrimary.text }}
-                </router-link>
-                <router-link 
-                  v-if="section.settings?.ctaSecondary" 
-                  :to="section.settings.ctaSecondary.url" 
-                  class="secondary-button"
-                >
-                  {{ section.settings.ctaSecondary.text }}
-                </router-link>
-              </div>
-            </div>
-          </section>
-
-        </div>
-
-        <!-- Main Page Content (if any) -->
-        <section v-if="pageData.content" class="page-content-section">
-          <div class="container">
-            <div class="page-content" v-html="pageData.content"></div>
+            <p class="hero-terms" v-if="hero.settings?.terms">{{ hero.settings.terms }}</p>
           </div>
-        </section>
-      </div>
 
-      <!-- Fallback if no page data -->
-      <div v-else class="no-page-data">
-        <div class="container">
-          <h1>Welcome</h1>
-          <p>Page content is loading...</p>
+          <div class="hero-graphic">
+            <HeroAnimation />
+          </div>
         </div>
-      </div>
-    </div>
+
+        <!-- Proof strip: three figures pinned to the bottom of the fold. -->
+        <div class="container" v-if="hero.settings?.proof">
+          <div class="proof-strip">
+            <div v-for="item in hero.settings.proof" :key="item.label" class="proof-item">
+              <span class="proof-value">{{ item.value }}</span>
+              <span class="proof-label">{{ item.label }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= BODY SECTIONS ================= -->
+      <section
+        v-for="section in bodySections"
+        :key="section.id"
+        class="g-band"
+        :class="{ 'g-band--bone': section.settings?.invert }"
+      >
+        <div class="container">
+          <header class="g-head g-reveal">
+            <p class="g-eyebrow">{{ indexOf(section) }} — {{ section.settings?.eyebrow || section.type }}</p>
+            <h2 class="g-title">{{ section.title }}</h2>
+            <p class="g-sub" v-if="section.content" v-html="section.content"></p>
+          </header>
+
+          <!-- ---- Reference figures ---- -->
+          <div v-if="section.settings?.stats" class="figures">
+            <div v-for="stat in section.settings.stats" :key="stat.label" class="figure g-reveal">
+              <div class="g-figure">{{ stat.value }}</div>
+              <div class="figure-label">{{ stat.label }}</div>
+              <p class="figure-detail" v-if="stat.detail">{{ stat.detail }}</p>
+              <p class="figure-source" v-if="stat.source">{{ stat.source }}</p>
+            </div>
+          </div>
+          <p class="figures-note" v-if="section.settings?.statsNote">{{ section.settings.statsNote }}</p>
+
+          <!-- ---- Verticals, as rows rather than equal cards ---- -->
+          <div v-if="section.settings?.verticals" class="verticals">
+            <article
+              v-for="(vertical, i) in section.settings.verticals"
+              :key="vertical.title"
+              class="vertical g-reveal"
+            >
+              <div class="vertical-index">{{ String(i + 1).padStart(2, '0') }}</div>
+              <div class="vertical-body">
+                <h3>{{ vertical.title }}</h3>
+                <p class="vertical-leak">{{ vertical.leak }}</p>
+                <p class="vertical-proof" v-if="vertical.proof">{{ vertical.proof }}</p>
+              </div>
+              <div class="vertical-shift">
+                <span class="shift-before">{{ vertical.before }}</span>
+                <span class="shift-rule" aria-hidden="true"></span>
+                <span class="shift-after">{{ vertical.after }}</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- ---- Offer ladder ---- -->
+          <div v-if="section.settings?.tiers" class="tiers">
+            <div
+              v-for="(tier, index) in section.settings.tiers"
+              :key="tier.name"
+              class="tier g-card g-reveal"
+              :class="{ 'tier--lead': index === 0 }"
+            >
+              <h3>{{ tier.name }}</h3>
+              <div class="tier-price">{{ tier.price }}</div>
+              <div class="g-mono tier-timeline">{{ tier.timeline }}</div>
+              <p>{{ tier.objective }}</p>
+            </div>
+          </div>
+
+          <!-- ---- Services ---- -->
+          <div v-if="section.type === 'services'" class="service-rows">
+            <router-link
+              v-for="service in services"
+              :key="service.id"
+              :to="`/services/${service.slug}`"
+              class="service-row g-reveal"
+            >
+              <span class="service-name">{{ service.title }}</span>
+              <span class="service-desc">{{ service.shortDescription }}</span>
+              <span class="service-price">{{ priceOf(service) }}</span>
+              <span class="service-arrow"><AppIcon name="arrowRight" :size="16" /></span>
+            </router-link>
+          </div>
+
+          <!-- ---- Delivery steps ---- -->
+          <div v-if="section.settings?.steps" class="steps">
+            <div v-for="(step, index) in section.settings.steps" :key="step.title" class="step g-reveal">
+              <div class="step-number">{{ String(index + 1).padStart(2, '0') }}</div>
+              <div class="step-body">
+                <h3>{{ step.title }}</h3>
+                <p>{{ step.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- Objections ---- -->
+          <div v-if="section.settings?.faq" class="faq">
+            <div v-for="item in section.settings.faq" :key="item.question" class="faq-row g-reveal">
+              <h3>{{ item.question }}</h3>
+              <p>{{ item.answer }}</p>
+            </div>
+          </div>
+
+          <!-- ---- Value points ---- -->
+          <div v-if="section.settings?.valuePoints" class="values">
+            <div v-for="point in section.settings.valuePoints" :key="point.title" class="value g-reveal">
+              <AppIcon name="check" :size="16" class="value-tick" />
+              <div>
+                <h4>{{ point.title }}</h4>
+                <p>{{ point.description }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---- Team ---- -->
+          <div v-if="section.type === 'team' && teamMembers.length" class="team">
+            <router-link
+              v-for="member in teamMembers.slice(0, section.settings?.showMembers || 4)"
+              :key="member.id"
+              :to="`/team/${memberSlug(member)}`"
+              class="member g-card g-card--link g-reveal"
+            >
+              <div class="member-photo">
+                <img v-if="member.photo?.filePath" :src="member.photo.filePath" :alt="member.name" />
+                <AvatarPortrait v-else :slug="memberSlug(member)" :name="member.name" />
+              </div>
+              <h3>{{ member.name }}</h3>
+              <p class="member-position">{{ member.position }}</p>
+              <p class="member-bio">{{ bioLead(member.bio) }}</p>
+            </router-link>
+          </div>
+
+          <!-- ---- Closing call to action ---- -->
+          <div v-if="section.type === 'cta'" class="cta-actions">
+            <router-link
+              v-if="section.settings?.ctaPrimary"
+              :to="section.settings.ctaPrimary.url"
+              class="g-btn g-btn--primary"
+            >
+              {{ section.settings.ctaPrimary.text }}
+            </router-link>
+            <router-link
+              v-if="section.settings?.ctaSecondary"
+              :to="section.settings.ctaSecondary.url"
+              class="g-btn g-btn--ghost"
+            >
+              {{ section.settings.ctaSecondary.text }}
+            </router-link>
+          </div>
+
+          <router-link
+            v-else-if="section.settings?.ctaText && section.settings?.ctaUrl"
+            :to="section.settings.ctaUrl"
+            class="g-link section-link"
+          >
+            {{ section.settings.ctaText }}
+            <AppIcon name="arrowRight" :size="15" />
+          </router-link>
+        </div>
+      </section>
+    </template>
   </div>
 </template>
 
 <style scoped>
-/* Hero Section */
-.hero-section {
-  padding: 72px 0 76px;
-  background-color: var(--light-blue);
+/* ---------------------------------------------------------------------------
+   States
+   ------------------------------------------------------------------------ */
+.state-panel {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--g-line-2);
+  border-top-color: var(--g-volt);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------------ */
+.hero {
+  position: relative;
+  padding: clamp(60px, 8vw, 104px) 0 0;
+  overflow: hidden;
+}
+
+/* A faint vertical rhythm behind the fold — structure, not decoration. */
+.hero-grid-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 12.5% 100%;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 78%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 78%);
+}
+
+.hero-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: center;
+}
+
+.hero-copy h1 {
+  font-size: var(--g-display);
+  line-height: 0.96;
+  font-weight: 600;
+  margin: 0;
+  max-width: 13ch;
 }
 
 .hero-subhead {
-  font-size: 1.45rem;
-  font-weight: 500;
-  color: var(--primary-color);
-  margin-bottom: 22px;
+  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+  font-weight: 400;
+  color: var(--g-volt);
+  letter-spacing: -0.02em;
+  margin: 16px 0 0;
 }
 
 .hero-lede {
-  font-size: 1.2rem;
-  line-height: 1.65;
-  color: var(--text-color);
-  max-width: 620px;
-  margin-bottom: 26px;
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  color: var(--g-text-dim);
+  max-width: 52ch;
+  margin: 26px 0 0;
 }
 
 .hero-serves {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 22px;
+  gap: 8px;
   list-style: none;
   padding: 0;
-  margin: 0 0 30px;
+  margin: 26px 0 0;
 }
 
-.hero-serves li {
+.hero-cta {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--dark-blue);
-  font-size: 0.95rem;
-  font-weight: 500;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
 }
 
-.hero-serves svg {
-  color: var(--primary-color);
-}
-
-.hero-section .container {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-  gap: 48px;
-  align-items: center;
-}
-
-.hero-content {
-  max-width: 760px;
+.hero-terms {
+  font-size: 0.8125rem;
+  color: var(--g-text-faint);
+  margin: 16px 0 0;
 }
 
 .hero-graphic {
@@ -434,721 +434,385 @@ onMounted(() => {
   justify-content: flex-end;
 }
 
-.hero-content h1 {
-  font-size: 3.4rem;
-  line-height: 1.1;
-  margin-bottom: 10px;
-  color: var(--dark-blue);
-  max-width: 15ch;
-}
-
-.hero-content p {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin-bottom: 32px;
-  color: var(--text-color);
-}
-
-.hero-cta {
-  display: flex;
-  gap: 16px;
-}
-
-.hero-image img {
-  width: 100%;
-  max-width: 500px;
-}
-
-/* Content Section */
-.content-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
-}
-
-.content-text {
-  max-width: 760px;
-  margin: 0 0 40px;
-  line-height: 1.7;
-  color: var(--text-color);
-}
-
-.content-section .container {
-  display: block;
-}
-
-.content-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  color: var(--dark-blue);
-}
-
-/* Alternate content sections so consecutive blocks stay legible */
-.page-section:nth-child(even) .content-section {
-  background-color: var(--white, #fff);
-}
-
-/* Stats */
-.stats-grid {
+/* Proof strip — four hairline cells, flush with the container edges. */
+.proof-strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 24px;
-  margin: 40px 0 16px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border-top: 1px solid var(--g-line);
+  margin-top: clamp(48px, 6vw, 84px);
 }
 
-.stat-card {
-  background-color: var(--white, #fff);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius, 8px);
-  padding: 24px;
-}
-
-.stat-value {
-  font-size: 1.6rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--dark-blue);
-  margin-bottom: 8px;
-}
-
-.stat-label {
-  font-weight: 600;
-  color: var(--dark-blue);
-  margin-bottom: 8px;
-}
-
-.stat-detail {
-  font-size: 0.92rem;
-  line-height: 1.6;
-  color: var(--text-color);
-  margin: 0;
-}
-
-.stats-note {
-  text-align: left;
-  font-size: 0.82rem;
-  color: var(--text-color);
-  opacity: 0.7;
-  margin: 0;
-}
-
-/* Verticals */
-.verticals-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.vertical-card {
-  background-color: var(--white, #fff);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: var(--border-radius, 8px);
-  padding: 28px;
+.proof-item {
+  padding: 22px 24px 22px 0;
+  border-right: 1px solid var(--g-line);
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
-.vertical-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--border-radius);
-  background-color: var(--light-blue);
-  color: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
+.proof-item:last-child { border-right: none; }
+.proof-item + .proof-item { padding-left: 24px; }
 
-.vertical-card h3 {
-  margin: 0 0 12px;
-  min-height: 2.6em;
-  color: var(--dark-blue, #123);
-}
-
-.vertical-leak {
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.vertical-shift {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  padding: 16px;
-  border-radius: var(--border-radius, 8px);
-  background-color: var(--light-blue);
-  margin-bottom: 16px;
-  font-size: 0.9rem;
-}
-
-.shift-before {
-  opacity: 0.7;
-  text-decoration: line-through;
-}
-
-.shift-arrow {
-  color: var(--primary-color);
-}
-
-.shift-after {
-  font-weight: 600;
-  color: var(--dark-blue);
-}
-
-.vertical-proof {
-  margin: auto 0 0;
-  font-size: 0.9rem;
-  font-style: italic;
-  opacity: 0.85;
-}
-
-/* Offer ladder */
-.tiers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  margin-top: 40px;
-}
-
-.tier-card {
-  background-color: var(--white, #fff);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: var(--border-radius, 8px);
-  padding: 32px 28px;
-}
-
-.tier-featured {
-  border: 2px solid var(--primary-color);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.tier-card h3 {
-  margin: 0 0 16px;
-  font-size: 1.15rem;
-  color: var(--dark-blue, #123);
-}
-
-.tier-price {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.tier-timeline {
-  font-size: 0.9rem;
-  opacity: 0.75;
-  margin-bottom: 16px;
-}
-
-.tier-objective {
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Steps */
-.steps-list {
-  max-width: 820px;
-  margin: 40px 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.step-item {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-
-.step-number {
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  color: var(--white, #fff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.step-content h3 {
-  margin: 0 0 6px;
-  font-size: 1.1rem;
-  color: var(--dark-blue);
-}
-
-.step-content p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-/* No data states */
-.no-services,
-.no-team,
-.no-page-data {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--gray-600);
-}
-
-.no-page-data {
-  padding: 80px 20px;
-}
-
-/* Services Section */
-.services-section {
-  padding: 80px 0;
-  background-color: var(--white);
-}
-
-.section-header {
-  margin-bottom: 48px;
-}
-
-.section-intro {
-  max-width: 600px;
-  margin: 0;
-  font-size: 1.2rem;
-  color: var(--light-text);
-}
-
-.services-section h2,
-.team-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  color: var(--dark-blue);
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
-}
-
-.service-card {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--white);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  transition: transform 0.3s ease;
-}
-
-.service-card:hover {
-  transform: translateY(-5px);
-}
-
-.service-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  color: var(--white);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.service-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
-  color: var(--dark-blue);
-  min-height: 2.4em;
-}
-
-.service-card p {
-  color: var(--light-text);
-  margin-bottom: 20px;
-  flex-grow: 1;
-}
-
-.service-link {
-  display: inline-block;
-  align-self: flex-start;
+.proof-value {
+  font-size: 1.375rem;
   font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--g-text);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Value Proposition Section */
-.value-prop-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
+.proof-label {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--g-text-faint);
 }
 
-.value-prop-section .container {
+/* ---------------------------------------------------------------------------
+   Reference figures
+   ------------------------------------------------------------------------ */
+.figures {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
-}
-
-.value-prop-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  color: var(--dark-blue);
-}
-
-.value-prop-content > p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  color: var(--light-text);
-}
-
-.value-points {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.value-point {
-  display: flex;
-  gap: 16px;
-}
-
-.value-icon {
-  width: 30px;
-  height: 30px;
-  background-color: var(--primary-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--white);
-  flex-shrink: 0;
-}
-
-.value-text h4 {
-  font-size: 1.1rem;
-  margin-bottom: 5px;
-  color: var(--dark-blue);
-}
-
-.value-text p {
-  color: var(--light-text);
-}
-
-.value-prop-image img {
-  width: 100%;
-  max-width: 500px;
-}
-
-/* Team Section */
-.team-section {
-  padding: 80px 0;
-  background-color: var(--white);
-}
-
-.team-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  color: var(--dark-blue);
-}
-
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
-}
-
-.team-card {
-  background-color: var(--white);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-}
-
-.member-photo {
-  width: 110px;
-  height: 110px;
-  margin: 0 0 20px;
-  border-radius: 50%;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1px;
+  background: var(--g-line);
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
   overflow: hidden;
 }
 
-.member-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.team-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 5px;
-  color: var(--dark-blue);
-}
-
-.member-position {
-  font-size: 0.9rem;
-  color: var(--primary-color);
-  margin-bottom: 15px;
-  font-weight: 500;
-}
-
-.member-bio {
-  color: var(--light-text);
-  font-size: 0.95rem;
-}
-
-.team-cta {
-  margin-top: 40px;
-}
-
-/* CTA Section */
-.cta-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
-}
-
-.cta-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  color: var(--white);
-}
-
-.cta-section p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.cta-buttons {
+.figure {
+  background: var(--g-ink);
+  padding: 30px 26px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.figure-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--g-text);
+  line-height: 1.4;
+}
+
+.figure-detail {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--g-text-dim);
+  margin: 0;
+}
+
+.figure-source {
+  font-family: var(--g-mono);
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--g-text-faint);
+  margin: auto 0 0;
+  padding-top: 10px;
+}
+
+.figures-note {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--g-text-faint);
+  margin: 20px 0 0;
+  max-width: 90ch;
+}
+
+/* ---------------------------------------------------------------------------
+   Verticals
+   ------------------------------------------------------------------------ */
+.verticals {
+  border-top: 1px solid var(--g-line);
+}
+
+.vertical {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 48px);
+  padding: 30px 0;
+  border-bottom: 1px solid var(--g-line);
+  align-items: start;
+}
+
+.vertical-index {
+  font-family: var(--g-mono);
+  font-size: 0.75rem;
+  color: var(--g-volt);
+  padding-top: 5px;
+}
+
+.vertical-body h3 {
+  font-size: 1.375rem;
+  margin: 0 0 10px;
+  letter-spacing: -0.025em;
+}
+
+.vertical-leak {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--g-text-dim);
+  margin: 0;
+}
+
+.vertical-proof {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--g-text-faint);
+  margin: 10px 0 0;
+}
+
+.vertical-shift {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.shift-before {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--g-text-faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--g-text-faint);
+}
+
+.shift-rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--g-line-2), transparent);
+}
+
+.shift-after {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--g-volt);
+}
+
+/* ---------------------------------------------------------------------------
+   Tiers
+   ------------------------------------------------------------------------ */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 16px;
 }
 
-/* Loading and Error States */
-.loading-state,
-.error-state {
-  text-align: center;
-  padding: 100px 0;
+.tier h3 { font-size: 1.0625rem; margin: 0 0 14px; }
+
+.tier-price {
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  color: var(--g-text);
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 20px;
-}
+.tier--lead .tier-price { color: var(--g-volt); }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+.tier-timeline { margin: 6px 0 16px; display: block; }
 
-.error-state button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  border: none;
-  padding: 10px 20px;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  margin-top: 20px;
-  font-weight: 500;
-}
+.tier p { font-size: 0.875rem; line-height: 1.6; margin: 0; }
 
-/* Buttons */
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 14px 28px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-  transition: background-color 0.3s ease;
-}
+.tier--lead { border-color: var(--g-volt-line); }
 
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
-}
+/* ---------------------------------------------------------------------------
+   Services — rows, priced
+   ------------------------------------------------------------------------ */
+.service-rows { border-top: 1px solid var(--g-line); }
 
-.secondary-button {
-  background-color: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  padding: 14px 28px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-  transition: background-color 0.3s ease;
-}
-
-.secondary-button:hover {
-  background-color: rgba(76, 111, 255, 0.2);
-  color: var(--primary-color);
-}
-
-.text-button {
-  font-weight: 500;
-  color: var(--primary-color);
-  display: inline-flex;
+.service-row {
+  display: grid;
+  grid-template-columns: minmax(200px, 0.9fr) minmax(0, 1.6fr) 150px 24px;
+  gap: clamp(16px, 3vw, 40px);
   align-items: center;
-  gap: 8px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--g-line);
+  text-decoration: none;
+  transition: background-color 160ms ease, padding 160ms ease;
 }
 
-/* Page Content Section */
-.page-content-section {
-  padding: 60px 0;
-  background-color: var(--white);
+.service-row:hover {
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.page-content {
-  max-width: 800px;
-  margin: 0 auto;
-  line-height: 1.7;
-  color: var(--text-color);
+.service-name {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--g-text);
+  letter-spacing: -0.02em;
 }
 
-.page-content h1,
-.page-content h2,
-.page-content h3,
-.page-content h4,
-.page-content h5,
-.page-content h6 {
-  color: var(--dark-blue);
-  margin-bottom: 1rem;
-  margin-top: 2rem;
+.service-row:hover .service-name { color: var(--g-volt); }
+
+.service-desc {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--g-text-dim);
 }
 
-.page-content h1:first-child,
-.page-content h2:first-child,
-.page-content h3:first-child,
-.page-content h4:first-child,
-.page-content h5:first-child,
-.page-content h6:first-child {
-  margin-top: 0;
+.service-price {
+  font-family: var(--g-mono);
+  font-size: 0.8125rem;
+  color: var(--g-text);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
-.page-content p {
-  margin-bottom: 1.5rem;
+.service-arrow {
+  color: var(--g-text-faint);
+  display: flex;
+  justify-content: flex-end;
+  transition: transform 160ms ease, color 160ms ease;
 }
 
-.page-content ul,
-.page-content ol {
-  margin-bottom: 1.5rem;
-  padding-left: 2rem;
+.service-row:hover .service-arrow {
+  color: var(--g-volt);
+  transform: translateX(3px);
 }
 
-.page-content li {
-  margin-bottom: 0.5rem;
+/* ---------------------------------------------------------------------------
+   Steps
+   ------------------------------------------------------------------------ */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--g-line);
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
+  overflow: hidden;
 }
 
-.page-content a {
-  color: var(--primary-color);
-  text-decoration: underline;
+.step {
+  background: var(--g-ink);
+  padding: 30px 26px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 18px;
 }
 
-.page-content a:hover {
-  color: #3a5ad9;
+.g-band--bone .step { background: var(--g-bone); }
+
+.step-number {
+  font-family: var(--g-mono);
+  font-size: 1.25rem;
+  color: var(--g-volt);
+  line-height: 1.2;
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-  .hero-section .container,
-  .value-prop-section .container {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
+.g-band--bone .step-number { color: var(--g-bone-text); }
 
-  .hero-graphic {
-    justify-content: center;
-  }
+.step-body h3 { font-size: 1.0625rem; margin: 0 0 8px; }
 
-  .hero-image,
-  .value-prop-image {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-  }
+.step-body p { font-size: 0.9375rem; line-height: 1.65; margin: 0; }
 
-  .value-point {
-    justify-content: center;
-  }
+/* ---------------------------------------------------------------------------
+   Objections
+   ------------------------------------------------------------------------ */
+.faq { border-top: 1px solid var(--g-line); }
 
-  .hero-cta {
-    justify-content: center;
-  }
+.g-band--bone .faq { border-color: var(--g-line-bone); }
 
-  .hero-content h1 {
-    font-size: 2.5rem;
-  }
-
-  .value-prop-content h2,
-  .services-section h2,
-  .team-section h2,
-  .cta-section h2 {
-    font-size: 2rem;
-  }
+.faq-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.85fr) minmax(0, 1.6fr);
+  gap: clamp(20px, 4vw, 56px);
+  padding: 26px 0;
+  border-bottom: 1px solid var(--g-line);
 }
 
-@media (max-width: 768px) {
-  .cta-buttons {
-    flex-direction: column;
-    gap: 16px;
-    max-width: 300px;
-    margin: 0 auto;
-  }
+.g-band--bone .faq-row { border-color: var(--g-line-bone); }
+
+.faq-row h3 {
+  font-size: 1.0625rem;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
-/* On a phone the hero has to fit the first screen, so the type steps down and
-   the graphic gives up height rather than the calls to action falling below
-   the fold. */
+.faq-row p { font-size: 0.9375rem; line-height: 1.7; margin: 0; }
+
+/* ---------------------------------------------------------------------------
+   Value points
+   ------------------------------------------------------------------------ */
+.values {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px 40px;
+}
+
+.value { display: grid; grid-template-columns: 20px 1fr; gap: 14px; }
+
+.value-tick { color: var(--g-volt); margin-top: 3px; }
+
+.g-band--bone .value-tick { color: var(--g-bone-text); }
+
+.value h4 { font-size: 1rem; margin: 0 0 6px; }
+
+.value p { font-size: 0.9375rem; line-height: 1.65; margin: 0; }
+
+/* ---------------------------------------------------------------------------
+   Team
+   ------------------------------------------------------------------------ */
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.member { text-decoration: none; display: block; }
+
+.member-photo {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--g-line-2);
+}
+
+.member-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+.member h3 { font-size: 1.0625rem; margin: 0 0 4px; }
+
+.member-position {
+  font-family: var(--g-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--g-volt);
+  margin: 0 0 12px;
+}
+
+.member-bio { font-size: 0.875rem; line-height: 1.6; margin: 0; }
+
+/* ---------------------------------------------------------------------------
+   Calls to action
+   ------------------------------------------------------------------------ */
+.cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.section-link { margin-top: 32px; }
+
+/* ---------------------------------------------------------------------------
+   Responsive
+   ------------------------------------------------------------------------ */
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-copy h1 { max-width: none; }
+  .hero-graphic { justify-content: flex-start; margin-top: 8px; }
+  .vertical { grid-template-columns: 40px minmax(0, 1fr); }
+  .vertical-shift { grid-column: 2; padding-top: 14px; }
+  .service-row { grid-template-columns: minmax(0, 1fr) 120px 20px; }
+  .service-desc { display: none; }
+  .faq-row { grid-template-columns: 1fr; gap: 10px; }
+}
+
 @media (max-width: 640px) {
-  .hero-section {
-    padding: 40px 0 44px;
+  .proof-item {
+    border-right: none;
+    border-bottom: 1px solid var(--g-line);
+    padding: 16px 0 !important;
   }
-
-  .hero-subhead {
-    font-size: 1.1rem;
-    margin-bottom: 16px;
-  }
-
-  .hero-content h1 {
-    font-size: 1.95rem;
-    line-height: 1.15;
-    margin-bottom: 14px;
-    max-width: none;
-  }
-
-  .hero-lede {
-    font-size: 1.02rem;
-    line-height: 1.55;
-    margin-bottom: 18px;
-  }
-
-  .hero-serves {
-    gap: 6px 16px;
-    margin-bottom: 22px;
-  }
-
-  .hero-serves li {
-    font-size: 0.87rem;
-  }
-
-  .hero-graphic {
-    margin-top: 26px;
-  }
-
-  .hero-anim {
-    max-width: 300px;
-  }
+  .proof-item:last-child { border-bottom: none; }
+  .hero-cta .g-btn { flex: 1 1 auto; }
 }
 </style>

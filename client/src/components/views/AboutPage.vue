@@ -248,7 +248,7 @@ onMounted(() => {
 }
 
 .error-state button {
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   border: none;
   padding: 10px 20px;
@@ -261,7 +261,7 @@ onMounted(() => {
 /* Page Hero */
 .page-hero {
   padding: 80px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .page-hero .container {
@@ -341,8 +341,8 @@ onMounted(() => {
 }
 
 .stat-card {
-  background-color: var(--white, #fff);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius, 8px);
   padding: 24px;
 }
@@ -383,7 +383,8 @@ onMounted(() => {
 }
 
 .value-card {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   padding: 30px;
   box-shadow: var(--box-shadow);
@@ -429,14 +430,14 @@ onMounted(() => {
   left: 20px;
   height: calc(100% + 20px);
   width: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   opacity: 0.3;
 }
 
 .step-number {
   width: 40px;
   height: 40px;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   border-radius: 50%;
   display: flex;
@@ -486,7 +487,8 @@ onMounted(() => {
 }
 
 .team-card {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -534,7 +536,7 @@ onMounted(() => {
 }
 
 .expertise-tag {
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   color: var(--primary-color);
   font-size: 0.8rem;
   padding: 5px 10px;
@@ -543,59 +545,23 @@ onMounted(() => {
 
 /* CTA Section */
 .cta-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
+  padding: clamp(56px, 7vw, 92px) 0;
 }
 
 .cta-section h2 {
-  font-size: 2.5rem;
-  color: var(--white);
-  margin-bottom: 20px;
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
 }
 
 .cta-section p {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
+  font-size: 1.0625rem;
+  margin-bottom: 28px;
 }
 
 .cta-buttons {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-  text-decoration: none;
-}
-
-.secondary-button {
-  background-color: transparent;
-  border: 1px solid var(--white);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-  text-decoration: none;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
-}
-
-.secondary-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--white);
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 /* Page Content Section */
@@ -634,29 +600,18 @@ onMounted(() => {
   .content-section h2,
   .leadership-section h2,
   .cta-section h2 {
-    font-size: 2rem;
-  }
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
+}
   
   .approach-step {
     gap: 20px;
   }
   
   .cta-buttons {
-    flex-direction: column;
-    max-width: 250px;
-    margin: 0 auto;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
-
-.cta-section .primary-button,
-.request-section .primary-button {
-  background-color: var(--white);
-  color: var(--dark-blue);
-}
-
-.cta-section .primary-button:hover,
-.request-section .primary-button:hover {
-  background-color: var(--light-blue);
-  color: var(--dark-blue);
 }
 </style>

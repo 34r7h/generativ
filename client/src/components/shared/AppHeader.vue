@@ -90,18 +90,22 @@ onMounted(() => {
         </ul>
       </nav>
       
-      <!-- Auth Buttons -->
+      <!-- Actions -->
       <div class="auth-buttons">
-        <template v-if="isLoggedIn">
-          <router-link to="/admin/dashboard" class="btn btn-sm btn-primary">
-            Dashboard
-          </router-link>
-        </template>
-        <template v-else>
-          <router-link to="/admin/login" class="btn btn-sm btn-secondary">
-            Sign In
-          </router-link>
-        </template>
+        <router-link to="/contact" class="g-btn g-btn--ghost g-btn--sm header-talk">
+          Talk to us
+        </router-link>
+        <router-link to="/services/ai-opportunity-audit" class="g-btn g-btn--primary g-btn--sm">
+          Book the audit
+        </router-link>
+        <router-link
+          v-if="isLoggedIn"
+          to="/admin/dashboard"
+          class="header-admin"
+          aria-label="Dashboard"
+        >
+          Dashboard
+        </router-link>
       </div>
       
       <!-- Mobile Menu Button -->
@@ -126,24 +130,20 @@ onMounted(() => {
             </router-link>
           </li>
           <li class="mobile-auth">
-            <template v-if="isLoggedIn">
-              <router-link 
-                to="/admin/dashboard" 
-                class="btn btn-primary"
-                @click="isMobileMenuOpen = false"
-              >
-                Dashboard
-              </router-link>
-            </template>
-            <template v-else>
-              <router-link 
-                to="/admin/login" 
-                class="btn btn-secondary"
-                @click="isMobileMenuOpen = false"
-              >
-                Sign In
-              </router-link>
-            </template>
+            <router-link
+              to="/services/ai-opportunity-audit"
+              class="g-btn g-btn--primary"
+              @click="isMobileMenuOpen = false"
+            >
+              Book the audit
+            </router-link>
+            <router-link
+              :to="isLoggedIn ? '/admin/dashboard' : '/admin/login'"
+              class="g-btn g-btn--ghost"
+              @click="isMobileMenuOpen = false"
+            >
+              {{ isLoggedIn ? 'Dashboard' : 'Sign in' }}
+            </router-link>
           </li>
         </ul>
       </div>
@@ -158,192 +158,180 @@ onMounted(() => {
   left: 0;
   width: 100%;
   z-index: var(--z-sticky);
-  padding: 1rem 0;
-  transition: all var(--transition-normal);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  background: rgba(10, 10, 12, 0.72);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: background-color 220ms ease, border-color 220ms ease;
 }
 
 .site-header.scrolled {
-  box-shadow: var(--shadow-md);
-  padding: 0.75rem 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(10, 10, 12, 0.94);
+  border-bottom-color: var(--g-line);
 }
 
 .header-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 32px;
 }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-}
+.logo-container { flex: 0 0 auto; }
 
 .logo {
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--dark);
   text-decoration: none;
+  color: var(--g-text);
 }
 
-.logo img {
-  height: 40px;
-  width: auto;
-}
+.logo img { height: 32px; width: auto; }
 
-.logo-text {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.75rem;
-  letter-spacing: -0.025em;
-}
-
-.desktop-nav {
-  display: flex;
-}
+/* Nav sits hard against the wordmark, not centred: the eye runs left to right
+   along one line rather than hopping across a gap. */
+.desktop-nav { display: flex; margin-right: auto; }
 
 .desktop-nav ul {
   display: flex;
+  align-items: center;
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-.desktop-nav li {
-  margin: 0 0.75rem;
+  gap: 2px;
 }
 
 .desktop-nav a {
   display: inline-block;
-  padding: 0.5rem 0.75rem;
-  color: var(--gray-700);
-  font-weight: 500;
-  text-decoration: none;
-  transition: all var(--transition-fast);
-  border-radius: var(--border-radius-md);
   position: relative;
-}
-
-.desktop-nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 2px;
-  background-color: var(--primary);
-  transition: width var(--transition-normal);
+  padding: 8px 12px;
+  color: var(--g-text-dim);
+  font-size: 0.875rem;
+  font-weight: 450;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  border-radius: var(--g-r);
+  transition: color 160ms ease, background-color 160ms ease;
 }
 
 .desktop-nav a:hover {
-  color: var(--primary);
+  color: var(--g-text);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .desktop-nav a.active {
-  color: var(--primary);
+  color: var(--g-text);
 }
 
-.desktop-nav a.active::after {
-  width: 80%;
+/* Absolute, so the marker cannot add height to the active item and knock it
+   out of line with its siblings. */
+.desktop-nav a.active::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--g-volt);
 }
 
 .auth-buttons {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 10px;
+  flex: 0 0 auto;
 }
+
+.header-admin {
+  font-family: var(--g-mono);
+  font-size: 0.688rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g-text-faint);
+  text-decoration: none;
+}
+
+.header-admin:hover { color: var(--g-volt); }
 
 .mobile-menu-button {
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  width: 30px;
-  height: 20px;
+  width: 26px;
+  height: 15px;
   background: transparent;
   border: none;
   cursor: pointer;
   padding: 0;
+  margin-left: auto;
 }
 
 .mobile-menu-button span {
   display: block;
   width: 100%;
-  height: 2px;
-  background-color: var(--dark);
+  height: 1.5px;
+  background-color: var(--g-text);
   transition: all var(--transition-normal);
 }
 
 .mobile-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(10px);
+  inset: 0;
+  background: var(--g-ink);
   z-index: var(--z-drawer);
   transform: translateY(-100%);
-  transition: transform var(--transition-normal);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   display: none;
 }
 
-.mobile-nav.open {
-  transform: translateY(0);
-}
+.mobile-nav.open { transform: translateY(0); }
 
 .mobile-nav-container {
-  padding: 5rem 2rem;
+  padding: 96px 24px 40px;
   height: 100%;
   overflow-y: auto;
 }
 
-.mobile-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
+.mobile-nav ul { list-style: none; margin: 0; padding: 0; }
 
-.mobile-nav li {
-  margin-bottom: 1.5rem;
-}
+.mobile-nav li { border-bottom: 1px solid var(--g-line); }
 
-.mobile-nav a {
+/* Excludes the buttons in the drawer footer: this rule was repainting the
+   primary button's label light, on its bone plate. */
+.mobile-nav a:not(.g-btn) {
   display: block;
   font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--dark);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--g-text);
   text-decoration: none;
-  padding: 0.5rem 0;
-  transition: all var(--transition-fast);
+  padding: 16px 0;
 }
 
-.mobile-nav a:hover,
-.mobile-nav a.active {
-  color: var(--primary);
-}
+.mobile-nav a.active { color: var(--g-volt); }
 
 .mobile-auth {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  border-bottom: none !important;
 }
 
-@media (max-width: 1024px) {
-  .desktop-nav {
-    display: none;
-  }
-  
-  .mobile-menu-button {
-    display: flex;
-  }
-  
-  .mobile-nav {
-    display: block;
-  }
+@media (max-width: 1100px) {
+  .desktop-nav { display: none; }
+  .header-talk { display: none; }
+  .mobile-menu-button { display: flex; }
+  .mobile-nav { display: block; }
+  .header-container { gap: 16px; }
+  .auth-buttons { margin-left: auto; }
+}
+
+@media (max-width: 560px) {
+  .auth-buttons .g-btn { display: none; }
 }
 </style>

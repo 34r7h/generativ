@@ -152,7 +152,7 @@ watch(slug, () => {
 /* Header */
 .resource-hero {
   padding: 70px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .resource-hero-text {
@@ -171,7 +171,7 @@ watch(slug, () => {
 }
 
 .resource-type {
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   font-size: 0.8rem;
   font-weight: 500;
@@ -205,7 +205,7 @@ watch(slug, () => {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   border: none;
   border-radius: var(--border-radius);
@@ -217,7 +217,7 @@ watch(slug, () => {
 }
 
 .download-button:hover {
-  background-color: #3a5ad9;
+  background-color: var(--g-ink-3);
 }
 
 .download-note {
@@ -239,7 +239,8 @@ watch(slug, () => {
 }
 
 .figure-card {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 26px;
@@ -276,7 +277,8 @@ watch(slug, () => {
 .report-rail {
   max-width: 820px;
   margin: 0 auto 44px;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 22px 26px;
@@ -371,7 +373,7 @@ watch(slug, () => {
 /* Other reports */
 .other-reports {
   padding: 60px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .other-reports h2 {
@@ -393,7 +395,8 @@ watch(slug, () => {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 26px;

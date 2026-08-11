@@ -201,23 +201,6 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Join Team Section -->
-    <section class="join-team-section">
-      <div class="container">
-        <div class="join-content">
-          <h2>Join Our Team</h2>
-          <p>
-            We're always looking for talented individuals passionate about AI safety and performance.
-            If you're interested in joining our team, check out our current openings or send us your resume.
-          </p>
-          <div class="join-actions">
-            <a href="#" class="primary-button">View Open Positions</a>
-            <a href="#" class="secondary-button">Submit Your Resume</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Culture Section -->
     <section class="culture-section">
       <div class="container">
@@ -276,7 +259,7 @@ onMounted(() => {
 /* Hero Section */
 .page-hero {
   padding: 80px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .page-hero .container {
@@ -330,10 +313,10 @@ onMounted(() => {
 
 .search-input {
   width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
-  font-size: 1rem;
+  padding: 13px 15px;
+  border: 1px solid var(--g-line-2);
+  border-radius: var(--g-r);
+  font-size: 0.9375rem;
 }
 
 .search-input:focus {
@@ -349,23 +332,29 @@ onMounted(() => {
 }
 
 .tag-button {
-  background-color: var(--light-blue);
-  color: var(--dark-blue);
-  border: none;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 0.9rem;
+  background-color: transparent;
+  color: var(--g-text-dim);
+  border: 1px solid var(--g-line);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: var(--g-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: var(--transition);
+  transition: border-color 150ms ease, color 150ms ease, background-color 150ms ease;
 }
 
+/* The selected filter is marked with the accent as an outline, not as a fill:
+   a volt plate would need dark text on a saturated ground. */
 .tag-button.active {
-  background-color: var(--primary-color);
-  color: var(--white);
+  background-color: var(--g-volt-wash);
+  border-color: var(--g-volt);
+  color: var(--g-volt);
 }
 
 .tag-button:not(.active):hover {
-  background-color: rgba(76, 111, 255, 0.2);
+  border-color: var(--g-line-2);
+  color: var(--g-text);
 }
 
 .results-summary {
@@ -388,7 +377,8 @@ onMounted(() => {
 .team-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -396,7 +386,8 @@ onMounted(() => {
 }
 
 .team-card:hover {
-  transform: translateY(-5px);
+  border-color: var(--g-volt-line);
+  background-color: var(--g-ink-3);
 }
 
 .member-identity-link {
@@ -471,17 +462,21 @@ onMounted(() => {
 }
 
 .expertise-tag {
-  background-color: var(--light-blue);
-  color: var(--primary-color);
-  font-size: 0.8rem;
-  padding: 5px 10px;
-  border-radius: 15px;
+  background-color: var(--g-volt-wash);
+  border: 1px solid var(--g-volt-line);
+  color: var(--g-volt);
+  font-family: var(--g-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  padding: 4px 9px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: border-color 150ms ease, background-color 150ms ease;
 }
 
 .expertise-tag:hover {
-  background-color: rgba(76, 111, 255, 0.2);
+  background-color: rgba(214, 255, 62, 0.18);
+  border-color: var(--g-volt);
 }
 
 .member-social {
@@ -538,70 +533,7 @@ onMounted(() => {
   }
 }
 
-.secondary-button {
-  background-color: transparent;
-  color: var(--primary-color);
-  padding: 10px 20px;
-  border: 1px solid var(--primary-color);
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.secondary-button:hover {
-  background-color: var(--primary-color);
-  color: var(--white);
-}
-
-.secondary-button:hover {
-  background-color: rgba(76, 111, 255, 0.2);
-}
-
 /* Join Team Section */
-.join-team-section {
-  padding: 80px 0;
-  background-color: var(--light-blue);
-}
-
-.join-content {
-  max-width: 820px;
-  margin: 0;
-}
-
-.join-content h2 {
-  font-size: 2.5rem;
-  color: var(--dark-blue);
-  margin-bottom: 20px;
-}
-
-.join-content p {
-  font-size: 1.1rem;
-  color: var(--light-text);
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
-
-.join-actions {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
-}
-
 /* Culture Section */
 .culture-section {
   padding: 80px 0;
@@ -628,7 +560,8 @@ onMounted(() => {
 
 .culture-item {
   padding: 30px;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
 }
@@ -637,7 +570,7 @@ onMounted(() => {
   width: 52px;
   height: 52px;
   border-radius: var(--border-radius);
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   display: flex;
   align-items: center;
@@ -655,79 +588,32 @@ onMounted(() => {
   color: var(--light-text);
 }
 
-/* CTA Section */
-.cta-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
-}
-
+/* CTA Section — the shared bone band; only the local overrides remain. */
 .cta-section h2 {
-  color: inherit;
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-}
-
-.cta-section p {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.cta-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.cta-section .secondary-button {
-  background-color: transparent;
-  border: 1px solid var(--white);
-  color: var(--white);
-}
-
-.cta-section .secondary-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
   .page-hero h1,
-  .join-content h2,
   .culture-section h2,
   .cta-section h2 {
-    font-size: 2rem;
-  }
+  font-size: var(--g-h2);
+  margin-bottom: 16px;
+}
 }
 
 @media (max-width: 768px) {
-  .join-actions,
   .cta-buttons {
-    flex-direction: column;
-    max-width: 250px;
-    margin-left: auto;
-    margin-right: auto;
-    gap: 10px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
   .tag-filters {
     justify-content: center;
   }
 }
 
-.cta-section .primary-button,
-.request-section .primary-button {
-  background-color: var(--white);
-  color: var(--dark-blue);
-}
-
-.cta-section .primary-button:hover,
-.request-section .primary-button:hover {
-  background-color: var(--light-blue);
-  color: var(--dark-blue);
-}
 </style>

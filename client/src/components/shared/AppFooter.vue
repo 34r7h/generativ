@@ -91,14 +91,19 @@ onMounted(() => {
             </div>
           </div>
           
-          <!-- Newsletter -->
-          <div class="footer-newsletter">
-            <h3 class="footer-heading">Stay Updated</h3>
-            <p>Subscribe to our newsletter for the latest insights on AI safety and performance.</p>
-            <form class="newsletter-form" @submit.prevent="subscribeToNewsletter">
-              <input type="email" placeholder="Your email address" class="form-control" required />
-              <button type="submit" class="btn btn-primary">Subscribe</button>
-            </form>
+          <!-- Next step. The newsletter form that used to sit here called a
+               handler that was never defined, so submitting it threw. -->
+          <div class="footer-cta">
+            <h3 class="footer-heading">Start with the review</h3>
+            <p>Two days on site, $500, credited in full against an implementation.</p>
+            <div class="footer-cta-actions">
+              <router-link to="/services/ai-opportunity-audit" class="g-btn g-btn--primary g-btn--sm">
+                Book the audit
+              </router-link>
+              <router-link to="/contact" class="g-btn g-btn--ghost g-btn--sm">
+                Ask a question
+              </router-link>
+            </div>
           </div>
         </div>
       </div>
@@ -114,6 +119,7 @@ onMounted(() => {
           <div class="footer-bottom-links">
             <router-link to="/privacy">Privacy Policy</router-link>
             <router-link to="/terms">Terms of Service</router-link>
+            <router-link to="/admin/login">Sign in</router-link>
           </div>
         </div>
       </div>
@@ -123,190 +129,127 @@ onMounted(() => {
 
 <style scoped>
 .site-footer {
-  background-color: var(--dark);
-  color: var(--gray-300);
+  background-color: var(--g-ink);
+  border-top: 1px solid var(--g-line);
+  color: var(--g-text-dim);
 }
 
-.footer-main {
-  padding: var(--spacing-2xl) 0;
-}
+.footer-main { padding: 72px 0 56px; }
 
-/* Three children — brand, the link columns, the newsletter. The old
-   `1.5fr repeat(3, 1fr)` declared four tracks, so the links block was crushed
-   into a single 1fr while the fourth track sat empty. */
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.2fr 2.6fr 1.4fr;
-  gap: var(--spacing-2xl);
+  grid-template-columns: minmax(240px, 1.1fr) minmax(0, 2fr) minmax(230px, 1fr);
+  gap: 56px;
   align-items: start;
 }
 
-.footer-brand {
-  display: flex;
-  flex-direction: column;
-}
+.footer-brand { display: flex; flex-direction: column; gap: 18px; }
 
-.footer-logo {
-  margin-bottom: var(--spacing-md);
-}
-
-.footer-logo img {
-  height: 40px;
-  width: auto;
-}
-
-.logo-text {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.75rem;
-  letter-spacing: -0.025em;
-}
+.footer-logo img { height: 30px; width: auto; }
 
 .footer-tagline {
-  margin-bottom: var(--spacing-md);
-  color: var(--gray-400);
-}
-
-.footer-social {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.social-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--gray-300);
-  transition: all var(--transition-normal);
-}
-
-.social-icon:hover {
-  background-color: var(--primary);
-  color: white;
-  transform: translateY(-3px);
-}
-
-.footer-links-container {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: var(--spacing-lg);
-}
-
-.footer-heading {
-  color: white;
-  font-size: 1.125rem;
-  margin-bottom: var(--spacing-md);
-  font-weight: 600;
-}
-
-.footer-links ul {
-  list-style: none;
-  padding: 0;
+  color: var(--g-text-dim);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  max-width: 30ch;
   margin: 0;
 }
 
-.footer-links li {
-  margin-bottom: var(--spacing-sm);
+.footer-social { display: flex; gap: 8px; }
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
+  color: var(--g-text-dim);
+  transition: color 160ms ease, border-color 160ms ease;
 }
 
-.footer-links a {
-  color: var(--gray-400);
+.social-icon svg { width: 16px; height: 16px; }
+
+.social-icon:hover { color: var(--g-volt); border-color: var(--g-volt-line); }
+
+/* auto-fit, not auto-fill: with three columns declared and two present,
+   auto-fill leaves an empty track and a visible gutter to nowhere. */
+.footer-links-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 40px;
+}
+
+.footer-heading {
+  font-family: var(--g-mono);
+  font-size: 0.688rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-text-faint);
+  margin: 0 0 16px;
+}
+
+.footer-links ul { list-style: none; margin: 0; padding: 0; }
+
+.footer-links li { margin-bottom: 10px; }
+
+.footer-links a,
+.footer-links :deep(a) {
+  color: var(--g-text-dim);
+  font-size: 0.9375rem;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color 150ms ease;
 }
 
-.footer-links a:hover {
-  color: var(--primary);
+.footer-links a:hover { color: var(--g-text); }
+
+.footer-cta p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0 0 18px;
+  color: var(--g-text-dim);
 }
 
-.footer-newsletter p {
-  margin-bottom: var(--spacing-md);
-}
-
-.newsletter-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-}
-
-.newsletter-form .form-control {
-  flex: 1 1 180px;
-  min-width: 0;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.newsletter-form .form-control::placeholder {
-  color: var(--gray-500);
-}
-
-.newsletter-form .form-control:focus {
-  border-color: var(--primary);
-  background-color: rgba(255, 255, 255, 0.15);
-}
+.footer-cta-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .footer-bottom {
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: var(--spacing-md) 0;
+  border-top: 1px solid var(--g-line);
+  padding: 22px 0;
 }
 
 .footer-bottom-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .copyright {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--g-text-faint);
 }
 
-.footer-bottom-links {
-  display: flex;
-  gap: var(--spacing-md);
-}
+.footer-bottom-links { display: flex; gap: 22px; }
 
 .footer-bottom-links a {
-  color: var(--gray-400);
+  font-size: 0.8125rem;
+  color: var(--g-text-faint);
   text-decoration: none;
-  font-size: 0.875rem;
-  transition: color var(--transition-fast);
 }
 
-.footer-bottom-links a:hover {
-  color: var(--primary);
+.footer-bottom-links a:hover { color: var(--g-text); }
+
+@media (max-width: 980px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 44px; }
+  .footer-cta { grid-column: 1 / -1; }
 }
 
-@media (max-width: 1024px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  
-  .footer-links-container {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-xl);
-  }
-  
-  .footer-links-container {
-    grid-template-columns: 1fr;
-    grid-column: auto;
-  }
-  
-  .footer-bottom-content {
-    flex-direction: column;
-    gap: var(--spacing-md);
-    text-align: center;
-  }
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+  .footer-main { padding: 56px 0 40px; }
 }
 </style>

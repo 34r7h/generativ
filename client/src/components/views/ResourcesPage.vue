@@ -93,7 +93,7 @@ const total = computed(() => REPORTS.length);
 /* Hero Section */
 .page-hero {
   padding: 80px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .page-hero .container {
@@ -113,7 +113,7 @@ const total = computed(() => REPORTS.length);
   align-items: center;
   gap: 8px;
   margin-top: 28px;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   padding: 12px 22px;
   border-radius: var(--border-radius);
@@ -121,13 +121,12 @@ const total = computed(() => REPORTS.length);
 }
 
 .hero-button:hover {
-  background-color: #3a5ad9;
+  background-color: var(--g-ink-3);
   color: var(--white);
 }
 
 .page-hero h1 {
-  font-size: 3rem;
-  color: var(--dark-blue);
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
   margin-bottom: 1rem;
 }
 
@@ -143,7 +142,7 @@ const total = computed(() => REPORTS.length);
 }
 
 .resources-section.alt-bg {
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .section-header {
@@ -172,7 +171,8 @@ const total = computed(() => REPORTS.length);
 .resource-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -194,7 +194,7 @@ const total = computed(() => REPORTS.length);
   width: 40px;
   height: 40px;
   border-radius: var(--border-radius);
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   color: var(--primary-color);
   display: flex;
   align-items: center;
@@ -203,7 +203,7 @@ const total = computed(() => REPORTS.length);
 
 .resource-type {
   display: inline-block;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   font-size: 0.8rem;
   font-weight: 500;
@@ -258,7 +258,7 @@ const total = computed(() => REPORTS.length);
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   border: none;
   border-radius: var(--border-radius);
@@ -270,44 +270,29 @@ const total = computed(() => REPORTS.length);
 }
 
 .resource-download:hover {
-  background-color: #3a5ad9;
+  background-color: var(--g-ink-3);
 }
 
 /* Request Section */
 .request-section {
-  padding: 60px 0;
-  background-color: var(--dark-blue);
-  color: var(--white);
-  text-align: center;
+  padding: clamp(56px, 7vw, 92px) 0;
+  background: var(--g-bone);
+  color: var(--g-bone-text);
 }
 
 .request-section h2 {
-  color: inherit;
-  font-size: 2rem;
-  margin-bottom: 15px;
+  color: var(--g-bone-text);
+  font-size: var(--g-h2);
+  margin: 0 0 16px;
+  max-width: 20ch;
 }
 
 .request-section p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin-bottom: 30px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  display: inline-block;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
+  color: var(--g-bone-dim);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  max-width: 62ch;
+  margin: 0 0 28px;
 }
 
 /* Responsive */
@@ -329,23 +314,11 @@ const total = computed(() => REPORTS.length);
 @media (max-width: 768px) {
   .page-hero h1,
   .request-section h2 {
-    font-size: 2.5rem;
+    font-size: 1.9rem;
   }
   
   .section-header h2 {
     font-size: 1.8rem;
   }
-}
-
-.cta-section .primary-button,
-.request-section .primary-button {
-  background-color: var(--white);
-  color: var(--dark-blue);
-}
-
-.cta-section .primary-button:hover,
-.request-section .primary-button:hover {
-  background-color: var(--light-blue);
-  color: var(--dark-blue);
 }
 </style>

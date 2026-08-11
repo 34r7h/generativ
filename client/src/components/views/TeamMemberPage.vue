@@ -179,7 +179,7 @@ watch(slug, (value) => {
 /* Header */
 .member-hero {
   padding: 70px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .member-identity {
@@ -201,7 +201,8 @@ watch(slug, (value) => {
 }
 
 .identity-tags li {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   color: var(--primary-color);
   font-size: 0.85rem;
   font-weight: 500;
@@ -214,7 +215,8 @@ watch(slug, (value) => {
   height: 148px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   flex-shrink: 0;
 }
 
@@ -246,7 +248,8 @@ watch(slug, (value) => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   color: var(--primary-color);
   padding: 8px 14px;
   border-radius: var(--border-radius);
@@ -254,7 +257,7 @@ watch(slug, (value) => {
 }
 
 .contact-link:hover {
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
 }
 
@@ -313,7 +316,7 @@ watch(slug, (value) => {
 /* Colleagues */
 .colleagues {
   padding: 70px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .colleagues h2 {
@@ -335,7 +338,8 @@ watch(slug, (value) => {
   display: flex;
   align-items: center;
   gap: 16px;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 18px 20px;
@@ -395,17 +399,6 @@ watch(slug, (value) => {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
-}
-
-.primary-button {
-  display: inline-block;
-  background-color: var(--primary-color);
-  color: var(--white);
-  border: none;
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
 }
 
 @media (max-width: 640px) {

@@ -61,13 +61,14 @@ const sessionId = computed(() => route.query.session_id || '');
 
 .checkout-panel {
   padding: 90px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .panel-inner {
   max-width: 640px;
   margin: 0 auto;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 48px;
@@ -114,32 +115,6 @@ p {
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 28px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 12px 22px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
-  color: var(--white);
-}
-
-.secondary-button {
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  padding: 12px 22px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-}
-
-.secondary-button:hover {
-  background-color: var(--primary-color);
-  color: var(--white);
 }
 
 @media (max-width: 640px) {

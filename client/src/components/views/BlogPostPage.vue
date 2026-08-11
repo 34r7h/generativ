@@ -188,7 +188,7 @@ watch(postSlug, (slug) => {
 /* Post Header */
 .post-header {
   padding: 60px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .post-meta {
@@ -197,7 +197,7 @@ watch(postSlug, (slug) => {
 
 .post-category {
   display: inline-block;
-  background-color: var(--primary-color);
+  background-color: var(--g-volt-wash);
   color: var(--white);
   font-size: 0.8rem;
   font-weight: 500;
@@ -275,7 +275,7 @@ watch(postSlug, (slug) => {
 }
 
 .tag {
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   color: var(--primary-color);
   font-size: 0.8rem;
   padding: 5px 10px;
@@ -310,7 +310,7 @@ watch(postSlug, (slug) => {
 /* Related Posts */
 .related-posts {
   padding: 60px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .related-posts h2 {
@@ -327,7 +327,8 @@ watch(postSlug, (slug) => {
 }
 
 .related-post-card {
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 25px;
@@ -378,20 +379,6 @@ watch(postSlug, (slug) => {
 .not-found p {
   color: var(--light-text);
   margin-bottom: 30px;
-}
-
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  border: none;
-  padding: 12px 24px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.primary-button:hover {
-  background-color: #3a5ad9;
 }
 
 /* Responsive */

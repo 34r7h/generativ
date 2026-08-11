@@ -93,7 +93,7 @@ onMounted(() => {
 /* Hero Section */
 .page-hero {
   padding: 80px 0;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
 }
 
 .page-hero h1 {
@@ -123,7 +123,8 @@ onMounted(() => {
 .blog-card {
   display: flex;
   flex-direction: column;
-  background-color: var(--white);
+  background-color: var(--g-ink-2);
+  border: 1px solid var(--g-line);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 30px;
@@ -137,7 +138,7 @@ onMounted(() => {
 .blog-category {
   display: inline-block;
   align-self: flex-start;
-  background-color: var(--light-blue);
+  background-color: var(--g-ink-2);
   color: var(--primary-color);
   font-size: 0.8rem;
   font-weight: 500;

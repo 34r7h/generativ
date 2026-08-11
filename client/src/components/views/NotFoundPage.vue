@@ -64,26 +64,6 @@ p {
   gap: 16px;
 }
 
-.primary-button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 14px 28px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-}
-
-.secondary-button {
-  background-color: rgba(76, 111, 255, 0.1);
-  color: var(--primary-color);
-  padding: 14px 28px;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-}
-
 @media (max-width: 768px) {
   .not-found-actions {
     flex-direction: column;

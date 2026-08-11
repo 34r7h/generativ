@@ -148,23 +148,26 @@ defineProps({
   max-width: 480px;
 }
 
-/* Solid fills only — no gradients anywhere in the brand. */
-.g-surface { fill: #ffffff; }
-.g-muted { fill: #e5e7eb; }
-.g-neutral { fill: #9ca3af; }
-.g-primary { fill: #3b82f6; }
-.g-accent { fill: #10b981; }
-.g-dark { fill: #1e3a8a; }
-.g-onprimary { fill: #ffffff; }
-.g-onaccent { fill: #ffffff; }
-.g-ondark { fill: #ffffff; }
-.g-dot { fill: #1e3a8a; }
+/* Solid fills only — no gradients anywhere in the brand.
+   Drawn for the ink canvas: dark plates, hairline edges, and the accent used
+   sparingly. The previous palette was white plates on mid blue, which on a dark
+   page read as a stock illustration dropped onto the wrong site. */
+.g-surface { fill: #14141A; }
+.g-muted { fill: #1D1D25; }
+.g-neutral { fill: #4A4A55; }
+.g-primary { fill: #23232C; }
+.g-accent { fill: #D6FF3E; }
+.g-dark { fill: #0F0F14; }
+.g-onprimary { fill: #EDEDF0; }
+.g-onaccent { fill: #0A0A0C; }
+.g-ondark { fill: #EDEDF0; }
+.g-dot { fill: #D6FF3E; }
 
-.g-rule { stroke: #d1d5db; stroke-width: 3; stroke-linecap: round; }
-.g-wire { fill: none; stroke: #9ca3af; stroke-width: 3; stroke-linecap: round; }
-.g-check { fill: none; stroke: #ffffff; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
-.g-arrow { fill: none; stroke: #ffffff; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
-.g-lens { fill: #ffffff; fill-opacity: 0.28; }
-.g-lens-ring { fill: none; stroke: #1e3a8a; stroke-width: 6; }
-.g-lens-handle { fill: none; stroke: #1e3a8a; stroke-width: 10; stroke-linecap: round; }
+.g-rule { stroke: rgba(255, 255, 255, 0.16); stroke-width: 3; stroke-linecap: round; }
+.g-wire { fill: none; stroke: rgba(255, 255, 255, 0.22); stroke-width: 3; stroke-linecap: round; }
+.g-check { fill: none; stroke: #D6FF3E; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.g-arrow { fill: none; stroke: #D6FF3E; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.g-lens { fill: #D6FF3E; fill-opacity: 0.10; }
+.g-lens-ring { fill: none; stroke: #D6FF3E; stroke-width: 6; }
+.g-lens-handle { fill: none; stroke: #D6FF3E; stroke-width: 10; stroke-linecap: round; }
 </style>

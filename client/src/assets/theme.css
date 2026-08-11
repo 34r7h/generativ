@@ -1,0 +1,801 @@
+/* =============================================================================
+   Public theme — "ink and volt"
+   -----------------------------------------------------------------------------
+   The public site is a single dark canvas. Sections are separated by hairline
+   rules rather than alternating pastel bands, cards carry a 1px border instead
+   of a drop shadow, and one accent (volt) is reserved for data and marks.
+
+   Everything here is scoped under `.public-shell` so the admin, which is a
+   light UI built on the same token names, is not dragged along with it.
+
+   Two older stylesheets (main.css, design-system.css) both define overlapping
+   token names with different values, and component styles carry hardcoded
+   fallbacks like `var(--primary-color, #4c6fff)`. Redefining the legacy names
+   here — not deleting them — is what stops the old bootstrap blue reappearing
+   through those fallbacks.
+   ========================================================================== */
+
+.public-shell {
+  /* --- Surfaces ------------------------------------------------------- */
+  --g-ink: #0A0A0C;          /* page canvas */
+  --g-ink-2: #0F0F13;        /* raised panel */
+  --g-ink-3: #16161C;        /* hover / second raise */
+  --g-bone: #F2F0EA;         /* inversion panel */
+  --g-bone-2: #E4E1D8;
+
+  /* --- Ink on ink ------------------------------------------------------ */
+  --g-text: #EDEDF0;
+  --g-text-dim: #9C9CA8;
+  /* 4.5:1 against both ink surfaces. The previous value (#64646F) measured
+     3.39:1 and was the single cause of every contrast failure on the site. */
+  --g-text-faint: #85858F;
+
+  /* --- Ink on bone ----------------------------------------------------- */
+  --g-bone-text: #0A0A0C;
+  --g-bone-dim: #4A4A52;
+
+  /* --- Lines ----------------------------------------------------------- */
+  --g-line: rgba(255, 255, 255, 0.09);
+  --g-line-2: rgba(255, 255, 255, 0.18);
+  --g-line-bone: rgba(10, 10, 12, 0.14);
+
+  /* --- Accent ---------------------------------------------------------- */
+  --g-volt: #D6FF3E;
+  --g-volt-deep: #A8CC1F;
+  --g-volt-wash: rgba(214, 255, 62, 0.10);
+  --g-volt-line: rgba(214, 255, 62, 0.38);
+
+  /* --- Status ---------------------------------------------------------- */
+  --g-ok: #56D9A3;
+  --g-warn: #FFC24B;
+  --g-bad: #FF6B5A;
+
+  /* --- Geometry -------------------------------------------------------- */
+  --g-r: 4px;
+  --g-r-lg: 8px;
+  --g-max: 1240px;
+  --g-gutter: 28px;
+
+  /* --- Type ------------------------------------------------------------ */
+  --g-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --g-mono: 'JetBrains Mono', 'SF Mono', SFMono-Regular, ui-monospace, Menlo, monospace;
+  /* Clash Display was loaded from a third-party CDN and used five times; Inter's
+     variable axis at tight tracking does the same job without the dependency. */
+  --font-display: var(--g-font);
+  --font-sans: var(--g-font);
+  --font-mono: var(--g-mono);
+  --g-display: clamp(2.9rem, 6.4vw, 5.1rem);
+  --g-h2: clamp(1.9rem, 3.4vw, 2.9rem);
+  --g-h3: 1.2rem;
+
+  /* --- Legacy token overrides -----------------------------------------
+     Component styles across the public views still reference these names.
+     Pointing them at the new palette retints whole files at once and, more
+     importantly, keeps `var(--primary-color, #4c6fff)`-style fallbacks from
+     ever resolving.                                                       */
+  --primary-color: var(--g-volt);
+  --primary: var(--g-volt);
+  --primary-dark: var(--g-volt-deep);
+  --primary-light: var(--g-volt);
+  --secondary: var(--g-volt);
+  --accent: var(--g-volt);
+  --dark-blue: var(--g-text);
+  --dark: var(--g-ink);
+  --dark-text: var(--g-text);
+  --light-blue: var(--g-ink-2);
+  --light-bg: var(--g-ink-2);
+  --light: var(--g-ink-2);
+  --text-color: var(--g-text);
+  --light-text: var(--g-text-dim);
+  --border-color: var(--g-line);
+  --box-shadow: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-glow: none;
+  --border-radius: var(--g-r);
+  --border-radius-sm: 3px;
+  --border-radius-md: var(--g-r);
+  --border-radius-lg: var(--g-r-lg);
+  --border-radius-xl: 12px;
+  --success: var(--g-ok);
+  --warning: var(--g-warn);
+  --danger: var(--g-bad);
+  --error: var(--g-bad);
+  --info: var(--g-volt);
+  --gray-50: var(--g-ink-2);
+  --gray-100: var(--g-ink-2);
+  --gray-200: var(--g-ink-3);
+  --gray-300: var(--g-line-2);
+  --gray-400: var(--g-text-faint);
+  --gray-500: var(--g-text-dim);
+  --gray-600: var(--g-text-dim);
+  --gray-700: var(--g-text-dim);
+  --gray-800: var(--g-text);
+  --gray-900: var(--g-text);
+
+  background-color: var(--g-ink);
+  color: var(--g-text);
+  font-family: var(--g-font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* The page background itself, so overscroll and short pages stay ink. */
+body:has(.public-shell) {
+  background-color: #0A0A0C;
+}
+
+/* ---------------------------------------------------------------------------
+   Baseline typography
+   ------------------------------------------------------------------------ */
+
+.public-shell h1,
+.public-shell h2,
+.public-shell h3,
+.public-shell h4 {
+  color: var(--g-text);
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.public-shell h1 { letter-spacing: -0.042em; }
+
+.public-shell p {
+  color: var(--g-text-dim);
+}
+
+.public-shell a {
+  color: var(--g-text);
+}
+
+.public-shell a:hover {
+  color: var(--g-volt);
+}
+
+.public-shell ::selection {
+  background: var(--g-volt);
+  color: var(--g-ink);
+}
+
+/* ---------------------------------------------------------------------------
+   Layout primitives
+   ------------------------------------------------------------------------ */
+
+.public-shell .container {
+  max-width: var(--g-max);
+  margin: 0 auto;
+  padding: 0 var(--g-gutter);
+  width: 100%;
+}
+
+/* Sections are divided by a hairline, not by a change of background. */
+.public-shell .g-band {
+  border-top: 1px solid var(--g-line);
+  padding: clamp(64px, 8vw, 118px) 0;
+}
+
+.public-shell .g-band--flush { border-top: none; }
+.public-shell .g-band--tight { padding: clamp(48px, 5vw, 76px) 0; }
+
+/* Bone inversion. Dark text on a *neutral* panel — never on a saturated one. */
+.public-shell .g-band--bone {
+  background: var(--g-bone);
+  color: var(--g-bone-text);
+  border-top: none;
+}
+
+.public-shell .g-band--bone h1,
+.public-shell .g-band--bone h2,
+.public-shell .g-band--bone h3,
+.public-shell .g-band--bone h4 { color: var(--g-bone-text); }
+
+.public-shell .g-band--bone p { color: var(--g-bone-dim); }
+
+/* ---------------------------------------------------------------------------
+   Section headers — mono index, title, rule running to the right edge
+   ------------------------------------------------------------------------ */
+
+.public-shell .g-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  margin-bottom: clamp(38px, 5vw, 64px);
+}
+
+.public-shell .g-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--g-mono);
+  font-size: 0.688rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--g-volt);
+  margin: 0;
+}
+
+.public-shell .g-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--g-line);
+}
+
+.public-shell .g-band--bone .g-eyebrow { color: var(--g-bone-text); }
+.public-shell .g-band--bone .g-eyebrow::after { background: var(--g-line-bone); }
+
+.public-shell .g-title {
+  font-size: var(--g-h2);
+  line-height: 1.06;
+  margin: 0;
+  max-width: 20ch;
+}
+
+.public-shell .g-sub {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--g-text-dim);
+  max-width: 62ch;
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Cards — hairline, no shadow, no lift-on-hover bounce
+   ------------------------------------------------------------------------ */
+
+.public-shell .g-card {
+  background: var(--g-ink-2);
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
+  padding: 28px;
+  transition: border-color 180ms ease, background-color 180ms ease;
+  position: relative;
+}
+
+.public-shell .g-card:hover {
+  border-color: var(--g-line-2);
+  background: var(--g-ink-3);
+}
+
+.public-shell a.g-card:hover,
+.public-shell .g-card--link:hover {
+  border-color: var(--g-volt-line);
+}
+
+/* Neutralise the old global card treatment inside the public shell. */
+.public-shell .card {
+  background-color: var(--g-ink-2);
+  box-shadow: none;
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
+}
+
+.public-shell .card:hover { transform: none; }
+
+/* ---------------------------------------------------------------------------
+   Buttons
+   ------------------------------------------------------------------------ */
+
+.public-shell .g-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: var(--g-r);
+  border: 1px solid transparent;
+  font-family: var(--g-font);
+  font-size: 0.9375rem;
+  font-weight: 550;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+  white-space: nowrap;
+}
+
+/* Bone fill, ink label. Neutral surface, so this is not dark-on-colour. */
+.public-shell .g-btn--primary {
+  background: var(--g-bone);
+  color: var(--g-ink);
+  border-color: var(--g-bone);
+}
+
+.public-shell .g-btn--primary:hover {
+  background: var(--g-volt);
+  border-color: var(--g-volt);
+  color: var(--g-ink);
+}
+
+.public-shell .g-btn--ghost {
+  background: transparent;
+  color: var(--g-text);
+  border-color: var(--g-line-2);
+}
+
+.public-shell .g-btn--ghost:hover {
+  border-color: var(--g-volt);
+  color: var(--g-volt);
+  background: var(--g-volt-wash);
+}
+
+.public-shell .g-band--bone .g-btn--primary {
+  background: var(--g-ink);
+  color: var(--g-bone);
+  border-color: var(--g-ink);
+}
+
+.public-shell .g-band--bone .g-btn--primary:hover {
+  background: #23232B;
+  border-color: #23232B;
+  color: var(--g-bone);
+}
+
+.public-shell .g-band--bone .g-btn--ghost {
+  color: var(--g-bone-text);
+  border-color: var(--g-line-bone);
+}
+
+.public-shell .g-band--bone .g-btn--ghost:hover {
+  border-color: var(--g-bone-text);
+  color: var(--g-bone-text);
+  background: transparent;
+}
+
+.public-shell .g-btn--sm { padding: 10px 16px; font-size: 0.875rem; }
+
+/* A text link that reads as an action: label plus a rule that extends on hover */
+.public-shell .g-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--g-text);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--g-line-2);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.public-shell .g-link:hover {
+  color: var(--g-volt);
+  border-bottom-color: var(--g-volt);
+}
+
+/* ---------------------------------------------------------------------------
+   Data type — the proof numbers
+   ------------------------------------------------------------------------ */
+
+.public-shell .g-figure {
+  font-family: var(--g-font);
+  font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  color: var(--g-volt);
+  font-variant-numeric: tabular-nums;
+}
+
+.public-shell .g-mono {
+  font-family: var(--g-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--g-text-faint);
+}
+
+.public-shell .g-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--g-mono);
+  font-size: 0.688rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--g-text-dim);
+  border: 1px solid var(--g-line);
+  border-radius: 999px;
+  padding: 5px 11px;
+}
+
+.public-shell .g-tag--volt {
+  color: var(--g-volt);
+  border-color: var(--g-volt-line);
+  background: var(--g-volt-wash);
+}
+
+/* ---------------------------------------------------------------------------
+   Forms
+   ------------------------------------------------------------------------ */
+
+.public-shell input:not([type='checkbox']):not([type='radio']),
+.public-shell textarea,
+.public-shell select {
+  background: var(--g-ink-2);
+  border: 1px solid var(--g-line-2);
+  border-radius: var(--g-r);
+  color: var(--g-text);
+  padding: 13px 14px;
+  font-family: var(--g-font);
+  font-size: 0.9375rem;
+}
+
+.public-shell input::placeholder,
+.public-shell textarea::placeholder { color: var(--g-text-faint); }
+
+.public-shell input:focus,
+.public-shell textarea:focus,
+.public-shell select:focus {
+  border-color: var(--g-volt);
+  outline: none;
+}
+
+.public-shell label { color: var(--g-text-dim); font-size: 0.875rem; }
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal — opt-in, one pass, and off entirely for reduced motion
+   ------------------------------------------------------------------------ */
+
+/* Gated on `reveal-ready`, which the app adds only once the observer is live.
+   Without the gate, any failure to run that code — JS off, an error before
+   mount, a crawler that does not execute scripts — leaves the whole page
+   invisible. Content is visible by default and hidden only when something is
+   actually there to reveal it. */
+.public-shell.reveal-ready .g-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.public-shell.reveal-ready .g-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-shell.reveal-ready .g-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .public-shell { --g-gutter: 20px; }
+  .public-shell .g-card { padding: 22px; }
+}
+
+/* =============================================================================
+   Shared page furniture
+   -----------------------------------------------------------------------------
+   Class names the public views already use. Defining them once here — rather
+   than restyling `.primary-button` in eleven scoped blocks — is what keeps the
+   pages consistent, and it is why the per-page style blocks are now short.
+   ========================================================================== */
+
+/* --- Page hero ---------------------------------------------------------- */
+
+.public-shell .page-hero {
+  padding: clamp(56px, 7vw, 96px) 0 clamp(40px, 5vw, 64px);
+  border-bottom: 1px solid var(--g-line);
+  position: relative;
+}
+
+.public-shell .page-hero h1 {
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  line-height: 1.02;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.public-shell .page-hero .hero-description,
+.public-shell .page-hero > .container > p {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--g-text-dim);
+  max-width: 62ch;
+  margin: 20px 0 0;
+}
+
+/* --- Buttons in legacy markup ------------------------------------------- */
+
+.public-shell .primary-button,
+.public-shell .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 22px;
+  border-radius: var(--g-r);
+  border: 1px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.public-shell .primary-button {
+  background: var(--g-bone);
+  color: var(--g-ink);
+  border-color: var(--g-bone);
+}
+
+.public-shell .primary-button:hover {
+  background: var(--g-volt);
+  border-color: var(--g-volt);
+  color: var(--g-ink);
+}
+
+.public-shell .secondary-button {
+  background: transparent;
+  color: var(--g-text);
+  border-color: var(--g-line-2);
+}
+
+.public-shell .secondary-button:hover {
+  border-color: var(--g-volt);
+  color: var(--g-volt);
+  background: var(--g-volt-wash);
+}
+
+.public-shell .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--g-text);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--g-line-2);
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.public-shell .text-button:hover {
+  color: var(--g-volt);
+  border-bottom-color: var(--g-volt);
+}
+
+.public-shell .btn-primary {
+  background: var(--g-bone);
+  color: var(--g-ink);
+}
+
+.public-shell .btn-primary:hover { background: var(--g-volt); color: var(--g-ink); }
+
+.public-shell .btn-secondary {
+  background: transparent;
+  color: var(--g-text);
+  border: 1px solid var(--g-line-2);
+}
+
+/* --- Section headers in legacy markup ----------------------------------- */
+
+.public-shell .section-header {
+  margin-bottom: clamp(34px, 4vw, 54px);
+  max-width: 70ch;
+}
+
+.public-shell .section-header h2 {
+  font-size: var(--g-h2);
+  line-height: 1.06;
+  margin: 0;
+}
+
+.public-shell .section-intro,
+.public-shell .section-description {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--g-text-dim);
+  margin: 16px 0 0;
+  max-width: 62ch;
+}
+
+.public-shell .section-title {
+  font-size: var(--g-h2);
+  line-height: 1.06;
+  margin: 0 0 16px;
+}
+
+/* --- Loading and error states ------------------------------------------- */
+
+.public-shell .loading-state,
+.public-shell .error-state {
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: var(--g-text-dim);
+}
+
+.public-shell .spinner {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--g-line-2);
+  border-top-color: var(--g-volt);
+  border-radius: 50%;
+  animation: g-spin 0.8s linear infinite;
+}
+
+@keyframes g-spin { to { transform: rotate(360deg); } }
+
+/* --- Closing call-to-action band ---------------------------------------- */
+
+.public-shell .cta-section {
+  background: var(--g-bone);
+  color: var(--g-bone-text);
+  padding: clamp(56px, 7vw, 92px) 0;
+  text-align: left;
+}
+
+.public-shell .cta-section h2 {
+  color: var(--g-bone-text);
+  font-size: var(--g-h2);
+  line-height: 1.06;
+  margin: 0 0 16px;
+  max-width: 20ch;
+}
+
+.public-shell .cta-section p {
+  color: var(--g-bone-dim);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  max-width: 62ch;
+  margin: 0 0 28px;
+}
+
+.public-shell .cta-section .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.public-shell .cta-section .primary-button {
+  background: var(--g-ink);
+  color: var(--g-bone);
+  border-color: var(--g-ink);
+}
+
+.public-shell .cta-section .primary-button:hover {
+  background: #23232B;
+  border-color: #23232B;
+  color: var(--g-bone);
+}
+
+.public-shell .cta-section .secondary-button {
+  color: var(--g-bone-text);
+  border-color: var(--g-line-bone);
+}
+
+.public-shell .cta-section .secondary-button:hover {
+  background: transparent;
+  border-color: var(--g-bone-text);
+  color: var(--g-bone-text);
+}
+
+/* --- Prose from the CMS -------------------------------------------------- */
+
+.public-shell .prose,
+.public-shell .content-text,
+.public-shell .page-content,
+.public-shell .post-content,
+.public-shell .service-description-full {
+  color: var(--g-text-dim);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.public-shell .prose h2,
+.public-shell .content-text h2,
+.public-shell .page-content h2,
+.public-shell .post-content h2,
+.public-shell .service-description-full h2 {
+  font-size: 1.6rem;
+  margin: 44px 0 14px;
+}
+
+.public-shell .prose h3,
+.public-shell .content-text h3,
+.public-shell .page-content h3,
+.public-shell .post-content h3,
+.public-shell .service-description-full h3 {
+  font-size: 1.2rem;
+  margin: 34px 0 12px;
+}
+
+.public-shell .prose p,
+.public-shell .content-text p,
+.public-shell .page-content p,
+.public-shell .post-content p,
+.public-shell .service-description-full p {
+  margin: 0 0 18px;
+}
+
+.public-shell .prose ul,
+.public-shell .prose ol,
+.public-shell .content-text ul,
+.public-shell .content-text ol,
+.public-shell .page-content ul,
+.public-shell .page-content ol,
+.public-shell .post-content ul,
+.public-shell .post-content ol,
+.public-shell .service-description-full ul,
+.public-shell .service-description-full ol {
+  margin: 0 0 20px;
+  padding-left: 20px;
+}
+
+.public-shell .prose li,
+.public-shell .content-text li,
+.public-shell .page-content li,
+.public-shell .post-content li,
+.public-shell .service-description-full li {
+  margin-bottom: 9px;
+}
+
+.public-shell .prose strong,
+.public-shell .content-text strong,
+.public-shell .page-content strong,
+.public-shell .post-content strong,
+.public-shell .service-description-full strong {
+  color: var(--g-text);
+  font-weight: 600;
+}
+
+.public-shell .prose a,
+.public-shell .content-text a,
+.public-shell .page-content a,
+.public-shell .post-content a,
+.public-shell .service-description-full a {
+  color: var(--g-volt);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.public-shell blockquote {
+  border-left: 2px solid var(--g-volt);
+  padding-left: 20px;
+  margin: 26px 0;
+  color: var(--g-text);
+}
+
+.public-shell code {
+  font-family: var(--g-mono);
+  font-size: 0.875em;
+  background: var(--g-ink-2);
+  border: 1px solid var(--g-line);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+/* The closing band appears under two class names across the views. */
+.public-shell .request-section .primary-button {
+  background: var(--g-ink);
+  color: var(--g-bone);
+  border-color: var(--g-ink);
+}
+
+.public-shell .request-section .primary-button:hover {
+  background: #23232B;
+  border-color: #23232B;
+  color: var(--g-bone);
+}
+
+.public-shell .request-section .secondary-button {
+  color: var(--g-bone-text);
+  border-color: var(--g-line-bone);
+}
