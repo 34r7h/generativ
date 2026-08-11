@@ -789,12 +789,169 @@ const services: ServiceSeed[] = [
         '($5,000) are bought directly.'
     },
     isPublished: true,
-    sortOrder: 7,
+    sortOrder: 10,
     seo: {
       title: 'Implementation Sprint — Generativ Consulting Company',
       description:
         'One automated process built end to end in 7 to 14 days at a fixed price and integrated with existing systems.',
       keywords: ['automation sprint', 'AI implementation', 'speed to lead', 'patient intake automation']
+    }
+  },
+  {
+    slug: 'deadhead-reduction-sprint',
+    title: 'Deadhead Reduction Sprint',
+    shortDescription:
+      'Return loads matched against your ELD feed and the load boards before the truck runs empty, with the dispatcher approving every booking.',
+    fullDescription: `
+<p>The national average for deadhead sits in the 20 to 28 per cent range, and the point at which a lane stops paying for itself is nearer 15. Everything above that line is not a market condition; it is a dispatching problem, and it is the most expensive one in a small fleet.</p>
+
+<h3>What gets built</h3>
+<ul>
+  <li><strong>Continuous load-board scanning</strong> against your equipment types, operating lanes and the hours each driver actually has left, rather than a dispatcher refreshing a board between calls.</li>
+  <li><strong>ELD and telematics sync:</strong> real position and remaining hours of service, so a match is offered against where the truck will be, not where it was this morning.</li>
+  <li><strong>Net-rate scoring:</strong> every candidate load ranked on rate per loaded mile after the repositioning cost to reach it, which is the number that decides whether a backhaul was worth taking.</li>
+  <li><strong>Approval gate:</strong> loads are surfaced ranked, with the arithmetic shown. A dispatcher books. Nothing commits a truck by itself.</li>
+  <li><strong>Measured baseline:</strong> deadhead percentage and revenue per total mile recorded before the build and read again after, per truck and per lane.</li>
+</ul>
+
+<h3>Schedule and scope</h3>
+<p>Ten to fourteen days. One ELD or telematics provider, up to two load boards, and your existing dispatch tooling. Two weeks of handover with runbooks afterwards.</p>
+
+<h3>What it will not do</h3>
+<p>It cannot invent freight in a lane that has none, and published optimisation studies report cost reductions in the region of 12.5 per cent rather than the elimination of empty miles. If your deadhead is already under 15 per cent, say so and we will tell you to buy something else.</p>
+
+<h3>Terms</h3>
+<p>Fixed price. The $500 audit fee is credited against it if the audit was in the last 90 days.</p>
+    `,
+    benefits: [
+      'Load boards scanned continuously against equipment, lanes and remaining hours',
+      'Matches offered against real ELD position, not this morning\'s',
+      'Loads ranked on rate per loaded mile net of repositioning cost',
+      'A dispatcher approves every booking; nothing commits a truck by itself',
+      'Deadhead percentage measured before and after, per truck and per lane'
+    ],
+    pricing: '$2,500 fixed',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 250000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One ELD or telematics provider, up to two load boards, your existing dispatch ' +
+        'tooling. Your $500 audit fee is credited against it.'
+    },
+    isPublished: true,
+    sortOrder: 6,
+    seo: {
+      title: 'Deadhead Reduction Sprint — $2,500 | Generativ Consulting Company',
+      description:
+        'A fixed-price build that scans load boards against your ELD feed and ranks return loads on rate per loaded mile net of repositioning, with dispatcher approval on every booking.',
+      keywords: ['deadhead reduction', 'empty miles', 'backhaul matching', 'ELD integration', 'trucking automation']
+    }
+  },
+  {
+    slug: 'freight-paperwork-to-invoice',
+    title: 'Freight Paperwork to Invoice',
+    shortDescription:
+      'Rate confirmations, bills of lading and delivery receipts read into the TMS, with the invoice raised the day the POD lands instead of at week end.',
+    fullDescription: `
+<p>In most small carriers the load is delivered days before it is billed, because billing waits on a driver to hand in paperwork and on somebody to key it. The freight was hauled either way; the money simply arrives later than it needed to, and every day of that gap is financed by the carrier.</p>
+
+<h3>What gets built</h3>
+<ul>
+  <li><strong>Rate confirmations parsed on arrival:</strong> load number, lane, rate, accessorials and appointment windows extracted into the TMS rather than retyped from a PDF in an inbox.</li>
+  <li><strong>Driver capture:</strong> bills of lading and delivery receipts photographed from the cab, checked for legibility and completeness at the point of capture, and attached to the load.</li>
+  <li><strong>Invoice on delivery:</strong> the invoice assembled from the rate confirmation and the signed POD and sent the same day, with the documents each broker requires already attached.</li>
+  <li><strong>Exception handling:</strong> short pays, missing signatures and mismatches between the rate confirmation and the invoice raised to a person with both documents side by side.</li>
+  <li><strong>Approval gate:</strong> nothing is billed without a human accepting the extraction. Corrections are recorded, so accuracy is measured rather than assumed.</li>
+</ul>
+
+<h3>What it moves</h3>
+<p>Days between delivery and invoice, and the share of invoices that are short paid or returned for missing paperwork. Both are measured before the build and read again after.</p>
+
+<h3>Schedule and scope</h3>
+<p>Seven to ten days. One TMS or accounting system and one document set. Two weeks of handover with runbooks.</p>
+
+<h3>Terms</h3>
+<p>Fixed price. The $500 audit fee is credited against it if the audit was in the last 90 days.</p>
+    `,
+    benefits: [
+      'Rate confirmations parsed into the TMS instead of retyped from a PDF',
+      'BOLs and PODs captured from the cab and checked at the point of capture',
+      'Invoice raised the day the POD lands, with broker-required documents attached',
+      'Short pays and rate mismatches raised with both documents side by side',
+      'Days-to-invoice measured before and after'
+    ],
+    pricing: '$1,500 fixed',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 150000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One TMS or accounting system, one document set. Your $500 audit fee is ' +
+        'credited against it.'
+    },
+    isPublished: true,
+    sortOrder: 7,
+    seo: {
+      title: 'Freight Paperwork to Invoice — $1,500 | Generativ Consulting Company',
+      description:
+        'A fixed-price build that reads rate confirmations, bills of lading and delivery receipts into the TMS and raises the invoice the day the POD lands.',
+      keywords: ['freight billing automation', 'POD processing', 'rate confirmation', 'TMS integration', 'carrier cash flow']
+    }
+  },
+  {
+    slug: 'detention-and-accessorial-recovery',
+    title: 'Detention and Accessorial Recovery',
+    shortDescription:
+      'Detention, layover and TONU detected from your own ELD timestamps and billed with the evidence attached, instead of being absorbed.',
+    fullDescription: `
+<p>Detention is the one leak where the money has already been earned. The driver sat at the dock; the hours are recorded in the ELD; the charge is in the rate confirmation. What is usually missing is somebody assembling the evidence within the window the broker allows, so the claim is never made and the time is written off as the cost of doing business.</p>
+
+<h3>What gets built</h3>
+<ul>
+  <li><strong>Automatic detection:</strong> arrival and departure timestamps from the ELD compared against the appointment window and the free time in the rate confirmation, per stop.</li>
+  <li><strong>Evidence assembled as it happens:</strong> geofence entry and exit, the signed BOL with in and out times, and the driver's own note, collected while the truck is still there rather than reconstructed a fortnight later.</li>
+  <li><strong>Claims raised inside the window:</strong> a claim pack generated and sent before the broker's filing deadline, in the format that broker accepts.</li>
+  <li><strong>The other accessorials:</strong> layover, truck-ordered-not-used, lumper reimbursement, extra stops and driver-assist tracked on the same mechanism.</li>
+  <li><strong>Chase and outcome:</strong> unanswered claims followed up on a schedule, and every claim recorded as paid, short paid or refused, so you can see which customers are worth the dock time.</li>
+</ul>
+
+<h3>Approval</h3>
+<p>Nothing is sent to a customer without a person approving it. Billing a broker for detention is a commercial decision about a relationship, not a data-processing one.</p>
+
+<h3>Schedule and scope</h3>
+<p>Seven to ten days. One ELD provider and one TMS or billing system. Two weeks of handover with runbooks.</p>
+
+<h3>Terms</h3>
+<p>Fixed price. The $500 audit fee is credited against it if the audit was in the last 90 days. We do not take a percentage of what is recovered — the fee is the fee, so the incentive to file marginal claims against your own customers does not exist.</p>
+    `,
+    benefits: [
+      'Detention detected from your own ELD timestamps against the rate confirmation',
+      'Evidence collected while the truck is at the dock, not reconstructed later',
+      'Claims filed inside the broker\'s window, in the format they accept',
+      'Layover, TONU, lumper, extra stops and driver-assist on the same mechanism',
+      'Every claim recorded as paid, short paid or refused, by customer',
+      'Fixed fee, not a percentage of recoveries'
+    ],
+    pricing: '$2,000 fixed',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 200000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One ELD provider, one TMS or billing system. Fixed fee — never a percentage ' +
+        'of what is recovered. Your $500 audit fee is credited against it.'
+    },
+    isPublished: true,
+    sortOrder: 8,
+    seo: {
+      title: 'Detention and Accessorial Recovery — $2,000 | Generativ Consulting Company',
+      description:
+        'Detect detention, layover and TONU from ELD timestamps, assemble the evidence at the dock, and file claims inside the broker window with a person approving each one.',
+      keywords: ['detention billing', 'accessorial recovery', 'TONU', 'carrier revenue recovery', 'ELD detention']
     }
   },
   {
@@ -832,7 +989,7 @@ const services: ServiceSeed[] = [
       note: 'Entry tier. Cancel any time; larger estates are quoted on volume.'
     },
     isPublished: true,
-    sortOrder: 6,
+    sortOrder: 9,
     seo: {
       title: 'Managed Operations Retainer | Generativ Consulting Company',
       description:
@@ -873,7 +1030,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted on the number of systems under test.'
     },
     isPublished: true,
-    sortOrder: 8,
+    sortOrder: 11,
     seo: {
       title: 'AI Safety Testing | Generativ Consulting Company',
       description:
@@ -913,7 +1070,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted against measured throughput targets.'
     },
     isPublished: true,
-    sortOrder: 9,
+    sortOrder: 12,
     seo: {
       title: 'Parallelization Infrastructure | Generativ Consulting Company',
       description:
@@ -953,7 +1110,7 @@ const services: ServiceSeed[] = [
       note: 'Standalone cohort of up to twelve people, on site. Included with an implementation handover.'
     },
     isPublished: true,
-    sortOrder: 10,
+    sortOrder: 13,
     seo: {
       title: 'Critical Thinking Education | Generativ Consulting Company',
       description:
@@ -999,7 +1156,7 @@ const services: ServiceSeed[] = [
         'questions and 3 locations.'
     },
     isPublished: true,
-    sortOrder: 12,
+    sortOrder: 15,
     seo: {
       title: 'Answer Engine Optimization (AEO) | Generativ Consulting Company',
       description:
@@ -1051,7 +1208,7 @@ const services: ServiceSeed[] = [
         '3 locations. $500 less than the two bought separately.'
     },
     isPublished: true,
-    sortOrder: 13,
+    sortOrder: 16,
     seo: {
       title: 'Search Visibility Foundation — $3,500 | Generativ Consulting Company',
       description:
@@ -1105,7 +1262,7 @@ const services: ServiceSeed[] = [
         'paid to the platform directly and is never marked up. Cancel any month.'
     },
     isPublished: true,
-    sortOrder: 14,
+    sortOrder: 17,
     seo: {
       title: 'Agentic Search Marketing (SEM) | Generativ Consulting Company',
       description:
@@ -1151,7 +1308,7 @@ const services: ServiceSeed[] = [
         'retainer attached to it.'
     },
     isPublished: true,
-    sortOrder: 11,
+    sortOrder: 14,
     seo: {
       title: 'Technical SEO Foundation | Generativ Consulting Company',
       description:
