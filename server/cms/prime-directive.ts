@@ -779,14 +779,17 @@ const services: ServiceSeed[] = [
       'Human approval gates on every critical action',
       'Two-week handover with runbooks and training'
     ],
-    pricing: '$1,500 – $3,500 fixed price (50% upfront)',
+    pricing: 'Quoted; fixed packages from $1,500',
     pricingDetail: {
       model: 'quote',
       purchasable: false,
-      note: 'Quoted after the review, against the process being automated.'
+      note:
+        'For scopes outside the fixed packages. Inbound Response Automation ($1,500), ' +
+        'the Records and Intake Sprint ($2,500) and the Practice Automation Package ' +
+        '($5,000) are bought directly.'
     },
     isPublished: true,
-    sortOrder: 2,
+    sortOrder: 6,
     seo: {
       title: 'Implementation Sprint — Generativ Consulting Company',
       description:
@@ -829,7 +832,7 @@ const services: ServiceSeed[] = [
       note: 'Entry tier. Cancel any time; larger estates are quoted on volume.'
     },
     isPublished: true,
-    sortOrder: 3,
+    sortOrder: 5,
     seo: {
       title: 'Managed Operations Retainer | Generativ Consulting Company',
       description:
@@ -870,7 +873,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted on the number of systems under test.'
     },
     isPublished: true,
-    sortOrder: 4,
+    sortOrder: 7,
     seo: {
       title: 'AI Safety Testing | Generativ Consulting Company',
       description:
@@ -910,7 +913,7 @@ const services: ServiceSeed[] = [
       note: 'Quoted against measured throughput targets.'
     },
     isPublished: true,
-    sortOrder: 5,
+    sortOrder: 8,
     seo: {
       title: 'Parallelization Infrastructure | Generativ Consulting Company',
       description:
@@ -950,7 +953,7 @@ const services: ServiceSeed[] = [
       note: 'Standalone cohort of up to twelve people, on site. Included with an implementation handover.'
     },
     isPublished: true,
-    sortOrder: 6,
+    sortOrder: 9,
     seo: {
       title: 'Critical Thinking Education | Generativ Consulting Company',
       description:
@@ -991,7 +994,7 @@ const services: ServiceSeed[] = [
       note: 'Scoped on the size of the question set and the number of locations.'
     },
     isPublished: true,
-    sortOrder: 7,
+    sortOrder: 10,
     seo: {
       title: 'Answer Engine Optimization (AEO) | Generativ Consulting Company',
       description:
@@ -1032,7 +1035,7 @@ const services: ServiceSeed[] = [
       note: 'Scoped on account size and ad spend. Spend is paid to the platform and not marked up.'
     },
     isPublished: true,
-    sortOrder: 8,
+    sortOrder: 11,
     seo: {
       title: 'Agentic Search Marketing (SEM) | Generativ Consulting Company',
       description:
@@ -1073,7 +1076,7 @@ const services: ServiceSeed[] = [
       note: 'Scoped on the size of the site and the number of service and location pages.'
     },
     isPublished: true,
-    sortOrder: 9,
+    sortOrder: 12,
     seo: {
       title: 'Technical SEO Foundation | Generativ Consulting Company',
       description:
@@ -1108,13 +1111,18 @@ const services: ServiceSeed[] = [
       'Unusual cases escalated with the transcript attached',
       'Every enquiry attributed to the campaign or page behind it'
     ],
+    pricing: '$1,500 fixed',
     pricingDetail: {
-      model: 'quote',
-      purchasable: false,
-      note: 'Scoped on channels covered and the systems it books into.'
+      model: 'one_time',
+      amount: 150000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'Fixed scope: one intake channel set, one calendar, one system of record. ' +
+        'Your $500 audit fee is credited against it if the audit was in the last 90 days.'
     },
     isPublished: true,
-    sortOrder: 10,
+    sortOrder: 2,
     seo: {
       title: 'Inbound Response Automation | Generativ Consulting Company',
       description:
@@ -1122,8 +1130,124 @@ const services: ServiceSeed[] = [
       keywords: ['speed to lead', 'lead response automation', 'inbound enquiries', 'lead qualification']
     }
   }
-];
+,
+{
+    slug: 'records-and-intake-sprint',
+    title: 'Records and Intake Sprint',
+    shortDescription:
+      'Intake forms and client documents captured, validated and written into the system of record as structured data, behind a human approval gate.',
+    fullDescription: `
+<p>The same build, whichever side of it you sit on: information arrives on paper, in a PDF or over the phone, and a member of staff retypes it into the system that actually matters. Manual document processing runs 10 to 30 minutes per file at a labour cost of $12 to $20; paper intake and reminders consume 8 to 15 front-desk hours a week in a typical practice.</p>
 
+<h3>What gets built</h3>
+<ul>
+  <li><strong>Intake that arrives structured:</strong> mobile forms with validation at the point of entry, so the correction happens before the record is written rather than after.</li>
+  <li><strong>Document extraction:</strong> client packets, referral letters, contracts and tax documents parsed for the fields you actually key in, in one to two seconds per file.</li>
+  <li><strong>Write-back:</strong> the result written into the EHR, practice management system or matter file as structured data — not an email for someone to re-enter.</li>
+  <li><strong>Approval gate:</strong> every extraction is drafted for a person to accept or correct. Corrections are recorded, so the failure modes are visible rather than assumed.</li>
+  <li><strong>Reminders:</strong> text-based confirmation and reminder flows on the appointments the intake creates, where the practice books appointments.</li>
+</ul>
+
+<h3>Who it is for</h3>
+<p>Dental and medical practices replacing paper intake and phone reminders, and law and tax offices replacing hand-keyed extraction from client documents. HIPAA-ready where the practice requires it.</p>
+
+<h3>Scope and schedule</h3>
+<p>Ten to fourteen days. One intake path and one document type, integrated with one system of record, with two weeks of handover, runbooks and training afterwards.</p>
+
+<h3>Terms</h3>
+<p>Fixed price. If you have paid for an AI Opportunity Audit in the last 90 days, the $500 is credited against this and refunded when the build starts.</p>
+    `,
+    benefits: [
+      'Fixed price and fixed scope, delivered in 10 to 14 days',
+      'Extraction in one to two seconds per file, behind a human approval gate',
+      'Written into the EHR or practice management system as structured data',
+      'Corrections recorded, so accuracy is measured rather than assumed',
+      'HIPAA-ready where the practice requires it',
+      'Two-week handover with runbooks and training'
+    ],
+    pricing: '$2,500 fixed',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 250000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'One intake path and one document type, into one system of record. ' +
+        'Your $500 audit fee is credited against it if the audit was in the last 90 days.'
+    },
+    isPublished: true,
+    sortOrder: 3,
+    seo: {
+      title: 'Records and Intake Sprint — $2,500 | Generativ Consulting Company',
+      description:
+        'A fixed-price build that captures intake forms and client documents, validates them, and writes them into the EHR or practice management system as structured data behind a human approval gate.',
+      keywords: [
+        'patient intake automation',
+        'document extraction',
+        'HIPAA intake',
+        'practice management automation'
+      ]
+    }
+  },
+  {
+    slug: 'practice-automation-package',
+    title: 'Practice Automation Package',
+    shortDescription:
+      'All three bottlenecks the audit found, built and handed over, then run under monitoring for the first 30 days.',
+    fullDescription: `
+<p>The audit produces three costed bottlenecks and a 90-day roadmap. Most practices build the first one, learn something, and stall on the other two. This is the package that finishes the roadmap.</p>
+
+<h3>What is included</h3>
+<ul>
+  <li><strong>Three processes automated end to end</strong>, in the order the roadmap ranks them, each integrated with the system of record it depends on.</li>
+  <li><strong>Approval gates on every critical action</strong>, with each non-deterministic decision traceable to the inputs that produced it.</li>
+  <li><strong>Thirty days of monitored operation</strong> after handover: we watch the runs, fix what breaks, and tune the thresholds against real traffic rather than against the assumptions in the report.</li>
+  <li><strong>A measurement baseline</strong> taken before the first build and read again at the end, so the saving is a number rather than an impression.</li>
+  <li><strong>Handover</strong> with runbooks and training, so the practice can operate all three without us.</li>
+</ul>
+
+<h3>Schedule</h3>
+<p>Six to eight weeks for the three builds, then the 30 days of monitored operation. Work is sequenced so the first process is live while the second is being built.</p>
+
+<h3>What it costs separately</h3>
+<p>Bought one at a time these run $1,500 to $2,500 each, and the monitoring is $1,500 a month. The package is $5,000.</p>
+
+<h3>Terms</h3>
+<p>Fixed price. An AI Opportunity Audit is a prerequisite — we do not build three processes against a practice we have not walked. The $500 audit fee is credited against this and refunded when the first build starts. After the 30 days, the Managed Operations Retainer is optional and separately priced; nothing renews automatically.</p>
+    `,
+    benefits: [
+      'The whole 90-day roadmap built, not just the first item',
+      'Three processes end to end, each in the systems already in use',
+      'Thirty days of monitored operation after handover, included',
+      'Before-and-after measurement, so the saving is a number',
+      'Cheaper than the three sprints and a month of monitoring bought separately',
+      'Nothing renews automatically'
+    ],
+    pricing: '$5,000 fixed',
+    pricingDetail: {
+      model: 'one_time',
+      amount: 500000,
+      currency: 'usd',
+      purchasable: true,
+      note:
+        'Requires a completed AI Opportunity Audit; the $500 is credited against this. ' +
+        'Includes 30 days of monitored operation. Nothing renews automatically.'
+    },
+    isPublished: true,
+    sortOrder: 4,
+    seo: {
+      title: 'Practice Automation Package — $5,000 | Generativ Consulting Company',
+      description:
+        'All three bottlenecks identified by the AI Opportunity Audit, built end to end and handed over, then run under monitoring for 30 days. Fixed price.',
+      keywords: [
+        'automation package',
+        'small practice automation',
+        'AI implementation package',
+        'process automation'
+      ]
+    }
+  }
+];
 // ---------------------------------------------------------------------------
 // Blog — one post per factor behind the offer.
 // ---------------------------------------------------------------------------
