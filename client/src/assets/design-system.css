@@ -34,7 +34,9 @@
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', SFMono-Regular, ui-monospace, Menlo, Monaco, Consolas, monospace;
-  --font-display: 'Clash Display', var(--font-sans);
+  /* Clash Display was loaded from a third-party CDN; that import is gone, so
+     naming the family here only described a font nothing could resolve. */
+  --font-display: var(--font-sans);
 
   /* Spacing */
   --spacing-xs: 0.25rem;   /* 4px */

@@ -239,7 +239,7 @@ const homePage: PageSeed = {
       id: 'services-overview',
       type: 'services',
       title: 'Services',
-      content: 'What follows an audit, and the practice behind it. Prices are the ones you pay.',
+      content: 'What follows an audit, and the practice behind it. Where a price is fixed it is shown; the rest are scoped against the work.',
       sortOrder: 4,
       settings: { eyebrow: 'Offer' }
     },

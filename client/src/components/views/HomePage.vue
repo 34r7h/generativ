@@ -42,28 +42,20 @@ const bodySections = computed(() => orderedSections.value.filter((s) => s.type !
 /*
  * Price shown on a service row.
  *
- * This column is one line by design — the row rhythm is the point of the list.
- * Several `pricing` strings are full sentences ("Included in implementation and
- * retainer engagements; standalone assessments from $15,000"), so the figure is
- * extracted rather than printed: the stored amount when there is one, otherwise
- * the first money value in the string, otherwise "On application". The full
- * wording is on the service page.
+ * The gate is the stored pricing model, exactly as `formatPrice` applies it on
+ * the services page: anything quoted or not purchasable reads "On application".
+ * An earlier version parsed the free-text `pricing` string as a fallback, which
+ * printed "$1,500" for the Implementation Sprint (stored range $1,500–$3,500,
+ * model `quote`) and "From $15,000" for AI Safety Testing — prices the service
+ * pages themselves do not quote.
  */
 function priceOf(service) {
   const detail = service.pricingDetail;
+  if (!detail || !detail.purchasable || detail.model === 'quote') return 'On application';
+  if (typeof detail.amount !== 'number') return 'On application';
 
-  if (detail?.purchasable && typeof detail.amount === 'number') {
-    const formatted = `$${(detail.amount / 100).toLocaleString('en-US')}`;
-    return detail.model === 'subscription' ? `${formatted}/mo` : formatted;
-  }
-
-  const text = service.pricing || '';
-  const money = text.match(/\$[\d,]+(?:[–-]\s*\$?[\d,]+)?/);
-  if (!money) return 'On application';
-
-  const prefix = /\bfrom\b/i.test(text) ? 'From ' : '';
-  const suffix = /\b(per month|\/mo|monthly)\b/i.test(text) ? '/mo' : '';
-  return `${prefix}${money[0].replace(/\s+/g, '')}${suffix}`;
+  const formatted = `$${(detail.amount / 100).toLocaleString('en-US')}`;
+  return detail.model === 'subscription' ? `${formatted}/mo` : formatted;
 }
 
 async function fetchPageData() {
