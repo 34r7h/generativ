@@ -331,7 +331,14 @@ onMounted(() => {
   .auth-buttons { margin-left: auto; }
 }
 
+/* The primary call to action stays on the smallest screens — only the
+   secondary one goes. Hiding both left the mobile header with nothing but a
+   hamburger, on the site's most-visited page. */
 @media (max-width: 560px) {
+  .auth-buttons .g-btn--sm { padding: 9px 13px; font-size: 0.8125rem; }
+}
+
+@media (max-width: 390px) {
   .auth-buttons .g-btn { display: none; }
 }
 </style>
