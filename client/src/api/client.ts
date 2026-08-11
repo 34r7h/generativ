@@ -350,6 +350,28 @@ export const cmsAPI = {
   },
 
   // Settings
+  // Contact form. Public: no token is sent and none is required.
+  submitContactForm: async (submission: any) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'submitContactForm',
+      submission
+    });
+  },
+
+  getContactSubmissions: async () => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'getContactSubmissions'
+    });
+  },
+
+  updateContactSubmission: async (id: string, status: string) => {
+    return apiRequest<any>('/cms', 'POST', {
+      operation: 'updateContactSubmission',
+      id,
+      status
+    });
+  },
+
   getSiteSettings: async () => {
     return apiRequest<any>('/cms', 'POST', {
       operation: 'getSiteSettings'

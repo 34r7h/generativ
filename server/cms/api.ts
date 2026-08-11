@@ -1,5 +1,7 @@
 // Supported CMS operations
 export type CMSOperation =
+  // Contact form: public submit, authenticated read and triage
+  'submitContactForm' | 'getContactSubmissions' | 'updateContactSubmission' |
   // Page operations
   'createPage' | 'getPage' | 'getPageBySlug' | 'getAllPages' | 'updatePage' | 'deletePage' |
   // Team member operations
@@ -76,7 +78,10 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
     // Publishable key and currency only; see payments.getPublicConfig.
     'getPaymentConfig',
     // Prices come from the stored service record, never from the request.
-    'createCheckoutSession'
+    'createCheckoutSession',
+    // The public contact form. Fields are whitelisted and length-capped below;
+    // status and timestamps are set server-side, never taken from the request.
+    'submitContactForm'
   ];
   
   // Check if operation is public
@@ -448,6 +453,62 @@ export async function handleCMSOperation(operation: CMSOperation, requestData: a
         }
         return { success: mediaDeleted };
       
+      // Contact form
+      //
+      // The public form used to resolve a timer and throw the message away, so
+      // every enquiry made through this site was silently discarded. It is
+      // stored now; `createContactSubmission` and the store behind it already
+      // existed and had simply never been reachable.
+      case 'submitContactForm': {
+        const form = requestData.submission || {};
+        const clean = (value: unknown, max: number) =>
+          typeof value === 'string' ? value.trim().slice(0, max) : '';
+
+        const name = clean(form.name, 120);
+        const email = clean(form.email, 200);
+        const subject = clean(form.subject, 200);
+        const message = clean(form.message, 5000);
+
+        if (!name || !email || !subject || !message) {
+          return { success: false, error: 'Name, email, subject and message are required' };
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          return { success: false, error: 'A valid email address is required' };
+        }
+
+        const allowedTypes = ['contact', 'assessment', 'newsletter'];
+        const formType = allowedTypes.includes(form.formType) ? form.formType : 'contact';
+
+        const submissionId = await cmsDB.createContactSubmission({
+          name,
+          email,
+          phone: clean(form.phone, 40) || undefined,
+          company: clean(form.company, 160) || undefined,
+          subject,
+          message,
+          formType,
+          status: 'new'
+        });
+
+        return { success: !!submissionId, id: submissionId };
+      }
+
+      case 'getContactSubmissions': {
+        const submissions = await cmsDB.getAllContactSubmissions();
+        submissions.sort((a, b) => (b.submittedAt || '').localeCompare(a.submittedAt || ''));
+        return { success: true, submissions };
+      }
+
+      case 'updateContactSubmission': {
+        if (!requestData.id || !requestData.status) {
+          return { success: false, error: 'Submission id and status are required' };
+        }
+        const updated = await cmsDB.updateContactSubmission(requestData.id, {
+          status: requestData.status
+        });
+        return { success: updated };
+      }
+
       // Settings operations
       case 'getSiteSettings':
         const settings = await cmsDB.getSiteSettings();

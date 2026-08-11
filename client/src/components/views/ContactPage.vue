@@ -120,18 +120,20 @@ async function submitForm() {
   error.value = null;
   
   try {
-    // In a real implementation, this would call an API endpoint
-    // For this demo, we'll simulate a successful submission
-    console.log('Submitting form data:', formData.value);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Simulate successful submission
+    // This used to await a one-second timer and then declare success, so every
+    // enquiry made through this site was discarded without ever leaving the
+    // browser. It posts to the CMS now.
+    const response = await cmsAPI.submitContactForm(formData.value);
+
+    if (!response.success) {
+      error.value = response.error || 'Failed to submit the form. Please try again.';
+      loading.value = false;
+      return;
+    }
+
     success.value = true;
     loading.value = false;
-    
-    // Reset form after success
+
     formData.value = {
       name: '',
       email: '',

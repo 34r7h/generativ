@@ -9,7 +9,7 @@
  * saveSiteSettings spreads whatever object it is given, so contactHours needs
  * no server-side migration; it simply persists alongside the rest.
  */
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AdminSidebar from './components/AdminSidebar.vue';
 import AdminHeader from './components/AdminHeader.vue';
@@ -33,6 +33,50 @@ const form = ref({
   contactHours: '',
   socialLinks: { linkedin: '', twitter: '', github: '' }
 });
+
+// The enquiries the public form now writes. Until this existed there was no
+// screen anywhere that showed them.
+const submissions = ref([]);
+const inboxError = ref(null);
+const inboxLoading = ref(true);
+
+const newCount = computed(() => submissions.value.filter((s) => s.status === 'new').length);
+
+function formatWhen(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime())
+    ? ''
+    : d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+async function loadSubmissions() {
+  try {
+    inboxLoading.value = true;
+    inboxError.value = null;
+    const response = await cmsAPI.getContactSubmissions();
+    if (response.success) {
+      submissions.value = response.submissions || [];
+    } else {
+      inboxError.value = response.error || 'Could not load enquiries.';
+    }
+  } catch (err) {
+    console.error('Failed to load submissions:', err);
+    inboxError.value = 'Could not load enquiries.';
+  } finally {
+    inboxLoading.value = false;
+  }
+}
+
+async function setStatus(submission, status) {
+  const previous = submission.status;
+  submission.status = status;
+  const response = await cmsAPI.updateContactSubmission(submission.id, status).catch(() => null);
+  if (!response?.success) {
+    submission.status = previous;
+    inboxError.value = 'Could not update that enquiry.';
+  }
+}
 
 async function loadSettings() {
   try {
@@ -133,6 +177,55 @@ onMounted(() => {
           <p>{{ notice }}</p>
         </div>
 
+        <section class="panel">
+          <div class="panel-head">
+            <h2>
+              Enquiries
+              <span class="count" v-if="newCount">{{ newCount }} new</span>
+            </h2>
+            <button class="ghost-button small" type="button" @click="loadSubmissions">
+              <AppIcon name="workflow" :size="15" />
+              <span>Refresh</span>
+            </button>
+          </div>
+
+          <p v-if="inboxError" class="inbox-note danger">{{ inboxError }}</p>
+          <p v-else-if="inboxLoading" class="inbox-note">Loading enquiries…</p>
+          <p v-else-if="!submissions.length" class="inbox-note">
+            Nothing yet. Messages sent through the contact form appear here.
+          </p>
+
+          <ul v-else class="inbox">
+            <li v-for="item in submissions" :key="item.id" class="enquiry" :class="item.status">
+              <div class="enquiry-head">
+                <div>
+                  <strong>{{ item.subject }}</strong>
+                  <span class="enquiry-from">
+                    {{ item.name }} —
+                    <a :href="`mailto:${item.email}`">{{ item.email }}</a>
+                    <template v-if="item.company"> · {{ item.company }}</template>
+                    <template v-if="item.phone"> · {{ item.phone }}</template>
+                  </span>
+                </div>
+                <div class="enquiry-meta">
+                  <span class="when">{{ formatWhen(item.submittedAt) }}</span>
+                  <select
+                    class="input status-select"
+                    :value="item.status"
+                    @change="setStatus(item, $event.target.value)"
+                  >
+                    <option value="new">New</option>
+                    <option value="inProgress">In progress</option>
+                    <option value="completed">Done</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </div>
+              </div>
+              <p class="enquiry-message">{{ item.message }}</p>
+            </li>
+          </ul>
+        </section>
+
         <form class="panel" @submit.prevent="save">
           <div class="panel-head">
             <h2>How people reach you</h2>
@@ -200,6 +293,61 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.count {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.inbox-note { color: var(--gray-600); margin: 0; }
+.inbox-note.danger { color: var(--danger); }
+
+.inbox { list-style: none; margin: 0; padding: 0; }
+
+.enquiry {
+  border-top: 1px solid var(--gray-200);
+  padding: 16px 0;
+}
+
+.enquiry.completed,
+.enquiry.archived { opacity: 0.6; }
+
+.enquiry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.enquiry-from {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--gray-600);
+  margin-top: 3px;
+}
+
+.enquiry-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.when { font-size: 0.8rem; color: var(--gray-500); }
+
+.status-select { width: auto; padding: 5px 8px; font-size: 0.8rem; }
+
+.enquiry-message {
+  margin: 10px 0 0;
+  color: var(--gray-700);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
 .admin-layout {
   display: grid;
   grid-template-columns: auto 1fr;
