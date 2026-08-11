@@ -1,6 +1,6 @@
 <script setup>
 import BrandMark from './BrandMark.vue';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { cmsAPI } from '../../api/client';
 
@@ -44,6 +44,31 @@ const navItems = [
   { name: 'Contact', path: '/contact' }
 ];
 
+/*
+ * The current page, shown beside the wordmark on small screens where the nav
+ * itself is behind the menu button and nothing else says where you are.
+ * Empty on the home page — the hero already says it.
+ */
+const pageLabel = computed(() => {
+  if (route.path === '/') return '';
+  const top = navItems.find((item) => item.path !== '/' && route.path.startsWith(item.path));
+  if (top) return top.name;
+  const last = route.path.split('/').filter(Boolean).pop() || '';
+  return last.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+});
+
+// The drawer covers the page; letting the page behind it scroll leaves the
+// reader somewhere else when it closes.
+watch(isMobileMenuOpen, (open) => {
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = '';
+  window.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('keydown', onKeydown);
+});
+
 // Check if a route is active
 const isActive = (path) => {
   if (path === '/') {
@@ -57,8 +82,13 @@ const isActive = (path) => {
   return route.path.startsWith(path);
 };
 
+function onKeydown(e) {
+  if (e.key === 'Escape') isMobileMenuOpen.value = false;
+}
+
 onMounted(() => {
   window.addEventListener('scroll', handleScroll);
+  window.addEventListener('keydown', onKeydown);
   checkLoginStatus();
   fetchSiteSettings();
   
@@ -77,6 +107,7 @@ onMounted(() => {
           <img v-if="siteSettings?.logo?.filePath" :src="siteSettings.logo.filePath" alt="Generativ Consulting" />
           <BrandMark v-else size="md" />
         </router-link>
+        <span class="header-page" v-if="pageLabel">{{ pageLabel }}</span>
       </div>
       
       <!-- Desktop Navigation -->
@@ -116,38 +147,67 @@ onMounted(() => {
       </button>
     </div>
     
-    <!-- Mobile Navigation -->
-    <div :class="['mobile-nav', { 'open': isMobileMenuOpen }]">
-      <div class="mobile-nav-container">
-        <ul>
-          <li v-for="item in navItems" :key="item.path">
-            <router-link 
-              :to="item.path" 
-              :class="{ active: isActive(item.path) }"
-              @click="isMobileMenuOpen = false"
-            >
-              {{ item.name }}
-            </router-link>
-          </li>
-          <li class="mobile-auth">
-            <router-link
-              to="/services/ai-opportunity-audit"
-              class="g-btn g-btn--primary"
-              @click="isMobileMenuOpen = false"
-            >
-              Book the audit
-            </router-link>
-            <router-link
-              :to="isLoggedIn ? '/admin/dashboard' : '/admin/login'"
-              class="g-btn g-btn--ghost"
-              @click="isMobileMenuOpen = false"
-            >
-              {{ isLoggedIn ? 'Dashboard' : 'Sign in' }}
-            </router-link>
-          </li>
-        </ul>
+    <!--
+      Teleported to the body on purpose. The header carries a backdrop-filter,
+      which makes it a containing block for its fixed-position descendants: in
+      Safari the drawer resolved against the 72px header instead of the
+      viewport, so translateY(-100%) moved it only 72px and its first links sat
+      visible under the logo, scrolling, on every page load.
+    -->
+    <Teleport to="body">
+      <div
+        class="mobile-scrim"
+        :class="{ open: isMobileMenuOpen }"
+        @click="isMobileMenuOpen = false"
+      ></div>
+
+      <div :class="['mobile-nav', { 'open': isMobileMenuOpen }]">
+        <div class="mobile-nav-head">
+          <span class="mobile-nav-title">Menu</span>
+          <button
+            class="mobile-nav-close"
+            type="button"
+            aria-label="Close menu"
+            @click="isMobileMenuOpen = false"
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor"
+                    stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="mobile-nav-container">
+          <ul>
+            <li v-for="item in navItems" :key="item.path">
+              <router-link
+                :to="item.path"
+                :class="{ active: isActive(item.path) }"
+                @click="isMobileMenuOpen = false"
+              >
+                {{ item.name }}
+              </router-link>
+            </li>
+            <li class="mobile-auth">
+              <router-link
+                to="/services/ai-opportunity-audit"
+                class="g-btn g-btn--primary"
+                @click="isMobileMenuOpen = false"
+              >
+                Book the audit
+              </router-link>
+              <router-link
+                :to="isLoggedIn ? '/admin/dashboard' : '/admin/login'"
+                class="g-btn g-btn--ghost"
+                @click="isMobileMenuOpen = false"
+              >
+                {{ isLoggedIn ? 'Dashboard' : 'Sign in' }}
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </Teleport>
   </header>
 </template>
 
@@ -179,7 +239,26 @@ onMounted(() => {
   gap: 32px;
 }
 
-.logo-container { flex: 0 0 auto; }
+.logo-container {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Where you are, next to the wordmark. Only on the screens where the nav is
+   behind the menu button; the desktop nav already marks the active item. */
+.header-page {
+  display: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--g-volt);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 .logo {
   display: flex;
@@ -278,38 +357,106 @@ onMounted(() => {
   transition: all var(--transition-normal);
 }
 
-.mobile-nav {
+.mobile-scrim {
   position: fixed;
   inset: 0;
-  background: var(--g-ink);
-  z-index: var(--z-drawer);
-  transform: translateY(-100%);
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: rgba(4, 4, 6, 0.62);
+  z-index: 199;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 260ms ease, visibility 0s linear 260ms;
   display: none;
 }
 
-.mobile-nav.open { transform: translateY(0); }
+.mobile-scrim.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 260ms ease, visibility 0s;
+}
+
+/* Anchored to the right, under the button that opens it, rather than a panel
+   dropping from the top-left. */
+.mobile-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(340px, 86vw);
+  /* dvh, not vh: on iOS the address bar makes 100vh taller than what is on
+     screen, which would leave the closed panel short of fully off-stage. */
+  height: 100dvh;
+  background: var(--g-ink);
+  color: var(--g-text);
+  border-left: 1px solid var(--g-line);
+  z-index: var(--z-drawer);
+  transform: translateX(100%);
+  /* visibility is what takes the closed panel out of the accessibility tree and
+     out of reach of a stray tap; the delay lets it finish sliding out first. */
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 300ms;
+  visibility: hidden;
+  display: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.mobile-nav.open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
+}
+
+@supports not (height: 100dvh) {
+  .mobile-nav { height: 100vh; }
+}
+
+.mobile-nav-head {
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px 0 24px;
+  border-bottom: 1px solid var(--g-line);
+}
+
+.mobile-nav-title {
+  font-family: var(--g-mono);
+  font-size: 0.688rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-text-faint);
+}
+
+/* The panel covers the button that opened it, so it carries its own way out. */
+.mobile-nav-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--g-line);
+  border-radius: var(--g-r);
+  background: transparent;
+  color: var(--g-text);
+  cursor: pointer;
+}
+
+.mobile-nav-close:hover { border-color: var(--g-volt); color: var(--g-volt); }
 
 .mobile-nav-container {
-  padding: 96px 24px 40px;
-  height: 100%;
-  overflow-y: auto;
+  padding: 12px 24px 40px;
 }
 
 .mobile-nav ul { list-style: none; margin: 0; padding: 0; }
 
 .mobile-nav li { border-bottom: 1px solid var(--g-line); }
 
-/* Excludes the buttons in the drawer footer: this rule was repainting the
-   primary button's label light, on its bone plate. */
 .mobile-nav a:not(.g-btn) {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 500;
   letter-spacing: -0.03em;
   color: var(--g-text);
   text-decoration: none;
-  padding: 16px 0;
+  padding: 15px 0;
 }
 
 .mobile-nav a.active { color: var(--g-volt); }
@@ -325,8 +472,10 @@ onMounted(() => {
 @media (max-width: 1100px) {
   .desktop-nav { display: none; }
   .header-talk { display: none; }
+  .header-page { display: block; }
   .mobile-menu-button { display: flex; }
-  .mobile-nav { display: block; }
+  .mobile-nav,
+  .mobile-scrim { display: block; }
   .header-container { gap: 16px; }
   .auth-buttons { margin-left: auto; }
 }

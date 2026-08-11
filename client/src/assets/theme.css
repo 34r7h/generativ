@@ -15,7 +15,17 @@
    through those fallbacks.
    ========================================================================== */
 
-.public-shell {
+/*
+ * The palette lives on :root, not on .public-shell.
+ *
+ * The mobile drawer is teleported to <body> — outside #app-container — because
+ * the header's backdrop-filter made it a containing block for the drawer's
+ * fixed positioning. Scoping these to .public-shell would leave the teleported
+ * drawer with none of them. Nothing in the admin references a --g- token, so
+ * declaring them globally does not reach it; the legacy overrides below, which
+ * would, stay scoped.
+ */
+:root {
   /* --- Surfaces ------------------------------------------------------- */
   --g-ink: #0A0A0C;          /* page canvas */
   --g-ink-2: #0F0F13;        /* raised panel */
@@ -68,6 +78,9 @@
   --g-h2: clamp(1.9rem, 3.4vw, 2.9rem);
   --g-h3: 1.2rem;
 
+}
+
+.public-shell {
   /* --- Legacy token overrides -----------------------------------------
      Component styles across the public views still reference these names.
      Pointing them at the new palette retints whole files at once and, more
@@ -280,7 +293,7 @@ body:has(.public-shell) {
    Buttons
    ------------------------------------------------------------------------ */
 
-.public-shell .g-btn {
+.g-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -300,54 +313,54 @@ body:has(.public-shell) {
 }
 
 /* Bone fill, ink label. Neutral surface, so this is not dark-on-colour. */
-.public-shell .g-btn--primary {
+.g-btn.g-btn--primary {
   background: var(--g-bone);
   color: var(--g-ink);
   border-color: var(--g-bone);
 }
 
-.public-shell .g-btn--primary:hover {
+.g-btn.g-btn--primary:hover {
   background: var(--g-volt);
   border-color: var(--g-volt);
   color: var(--g-ink);
 }
 
-.public-shell .g-btn--ghost {
+.g-btn.g-btn--ghost {
   background: transparent;
   color: var(--g-text);
   border-color: var(--g-line-2);
 }
 
-.public-shell .g-btn--ghost:hover {
+.g-btn.g-btn--ghost:hover {
   border-color: var(--g-volt);
   color: var(--g-volt);
   background: var(--g-volt-wash);
 }
 
-.public-shell .g-band--bone .g-btn--primary {
+.g-band--bone .g-btn.g-btn--primary {
   background: var(--g-ink);
   color: var(--g-bone);
   border-color: var(--g-ink);
 }
 
-.public-shell .g-band--bone .g-btn--primary:hover {
+.g-band--bone .g-btn.g-btn--primary:hover {
   background: #23232B;
   border-color: #23232B;
   color: var(--g-bone);
 }
 
-.public-shell .g-band--bone .g-btn--ghost {
+.g-band--bone .g-btn.g-btn--ghost {
   color: var(--g-bone-text);
   border-color: var(--g-line-bone);
 }
 
-.public-shell .g-band--bone .g-btn--ghost:hover {
+.g-band--bone .g-btn.g-btn--ghost:hover {
   border-color: var(--g-bone-text);
   color: var(--g-bone-text);
   background: transparent;
 }
 
-.public-shell .g-btn--sm { padding: 10px 16px; font-size: 0.875rem; }
+.g-btn.g-btn--sm { padding: 10px 16px; font-size: 0.875rem; }
 
 /* A text link that reads as an action: label plus a rule that extends on hover */
 .public-shell .g-link {
