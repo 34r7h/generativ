@@ -22,6 +22,7 @@
 
 import {
   getAllPages,
+  deletePage,
   getAllServices,
   getAllBlogPosts,
   createPage,
@@ -1939,28 +1940,47 @@ const blogPosts: BlogSeed[] = [
 // Idempotent upsert
 // ---------------------------------------------------------------------------
 
-async function upsertPages(): Promise<{ created: number; updated: number }> {
+async function upsertPages(): Promise<{ created: number; updated: number; deduped: number }> {
   const existing = await getAllPages();
   let created = 0;
   let updated = 0;
+  let deduped = 0;
 
   for (const seed of [homePage, aboutPage, privacyPage, termsPage]) {
-    const matches = existing.filter(p => p.slug === seed.slug);
+    const matches = existing
+      .filter(p => p.slug === seed.slug)
+      // Oldest first: the earliest record is the one whose id has been linked
+      // to and indexed, so that is the one worth keeping.
+      .sort((a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''));
+
     if (matches.length === 0) {
       await createPage(seed);
       created++;
-    } else {
-      // Update every record carrying this slug so no stale duplicate can win a lookup.
-      // Preserve the original publication date on re-sync.
-      const { publishedAt, ...rest } = seed;
-      for (const match of matches) {
-        await updatePage(match.id, rest);
-        updated++;
-      }
+      continue;
+    }
+
+    // Preserve the original publication date on re-sync.
+    const { publishedAt, ...rest } = seed;
+    const [keep, ...extras] = matches;
+    await updatePage(keep.id, rest);
+    updated++;
+
+    /*
+     * Collapse duplicates.
+     *
+     * Earlier syncs wrote the same content to every record carrying a slug, so
+     * a lookup could return any of them and edits made in the admin to the
+     * wrong copy silently did nothing — the dashboard warned about `home` x2
+     * and `about` x3. Since this function has just written identical content to
+     * the survivor, dropping the rest loses nothing.
+     */
+    for (const extra of extras) {
+      await deletePage(extra.id);
+      deduped++;
     }
   }
 
-  return { created, updated };
+  return { created, updated, deduped };
 }
 
 async function upsertServices(): Promise<{ created: number; updated: number }> {
@@ -2303,7 +2323,7 @@ export async function syncPrimeDirective() {
   console.log('  site settings: updated');
 
   const pageResult = await upsertPages();
-  console.log(`  pages: ${pageResult.created} created, ${pageResult.updated} updated`);
+  console.log(`  pages: ${pageResult.created} created, ${pageResult.updated} updated, ${pageResult.deduped} duplicates removed`);
 
   const serviceResult = await upsertServices();
   console.log(`  services: ${serviceResult.created} created, ${serviceResult.updated} updated`);

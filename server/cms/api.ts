@@ -12,8 +12,11 @@ export type CMSOperation =
   'createBlogPost' | 'getBlogPost' | 'getBlogPostBySlug' | 'getAllBlogPosts' | 'updateBlogPost' | 'deleteBlogPost' |
   // Media operations
   'uploadMedia' | 'getMedia' | 'getAllMedia' | 'updateMedia' | 'deleteMedia' |
-  // Resource operations
-  'createResource' | 'getResource' | 'getAllResources' | 'updateResource' | 'deleteResource' |
+  // Resource operations were declared here but never implemented in the switch
+  // below, so every call fell through to the unknown-operation branch and
+  // returned 400. Resources are code-owned (client/src/config/reports.js) and
+  // the public site never asks the CMS for them, so the names are removed
+  // rather than backed with handlers nothing would render.
   // Settings
   'getSiteSettings' | 'updateSiteSettings' |
   // Admin users

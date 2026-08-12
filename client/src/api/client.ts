@@ -313,64 +313,13 @@ export const cmsAPI = {
     }, true);
   },
 
-  // Resources
-  getAllResources: async () => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'getAllResources'
-    });
-  },
-
-  getResourceBySlug: async (slug: string) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'getResourceBySlug',
-      slug
-    });
-  },
-
-  createResource: async (resource: any) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'createResource',
-      resource
-    }, true);
-  },
-
-  updateResource: async (resourceId: string, updates: any) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'updateResource',
-      resourceId,
-      updates
-    }, true);
-  },
-
-  deleteResource: async (resourceId: string) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'deleteResource',
-      resourceId
-    }, true);
-  },
-
-  // Settings
-  // Contact form. Public: no token is sent and none is required.
-  submitContactForm: async (submission: any) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'submitContactForm',
-      submission
-    });
-  },
-
-  getContactSubmissions: async () => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'getContactSubmissions'
-    });
-  },
-
-  updateContactSubmission: async (id: string, status: string) => {
-    return apiRequest<any>('/cms', 'POST', {
-      operation: 'updateContactSubmission',
-      id,
-      status
-    });
-  },
+  /*
+   * Resources are code-owned (client/src/config/reports.js), not CMS records.
+   * The five CRUD methods that used to sit here called operations the server
+   * has no case for, so each returned 400 — which is what broke /admin/resources.
+   * Removed rather than implemented: the public page does not read the CMS for
+   * resources, so those records would have had nothing rendering them.
+   */
 
   getSiteSettings: async () => {
     return apiRequest<any>('/cms', 'POST', {
